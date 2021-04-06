@@ -87,9 +87,14 @@ if [ $1 = "install" ]; then
 			"state_topic": "homeassistant/sensor/'$name'_mode_set/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
-		-t "homeassistant/sensor/"$name"_error_msg_code/config" \
-		-m '{"name": "'$name'_error_msg_code", 
-			"state_topic": "homeassistant/sensor/'$name'_error_msg_code/state"}'
+		-t "homeassistant/sensor/"$name"_error_msg/config" \
+		-m '{"name": "'$name'_error_msg", 
+			"state_topic": "homeassistant/sensor/'$name'_error_msg/state"}'
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-t "homeassistant/sensor/"$name"_is_fault/config" \
+		-m '{"name": "'$name'_is_fault", 
+			"state_topic": "homeassistant/sensor/'$name'_is_fault/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/switch/"$name"_silent/config" \
@@ -97,7 +102,6 @@ if [ $1 = "install" ]; then
 			"command_topic": "homeassistant/switch/'$name'_silent/set",
 			"state_topic": "homeassistant/binary_sensor/'$name'_silent/state"}'
 
-#	sed 's/%NAME%/'$name'/g' $path/climate.json > $path/tmp/climate.json
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/climate/$name/config" \
 		-m '{"name":"'$name'",
@@ -126,7 +130,8 @@ elif [ $1 = "uninstall" ]; then
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_mode_set/config"
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_settemp/config"
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/switch/"$name"_silent/config"
-	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_error_msg_code/config"
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_error_msg/config"
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_is_fault/config"
 
 elif [ $1 = "status" ]; then
 	curl -s -H "Content-Type: application/json; charset=utf-8" \
@@ -135,10 +140,42 @@ elif [ $1 = "status" ]; then
 	-X POST $cloudurl/app/device/getDeviceStatus.json > $path/tmp/status
 
 	online=`cat $path/tmp/status | jq -r '.object_result."status"'`
+	is_fault=`cat $path/tmp/status | jq -r '.object_result."is_fault"'`
+	if [ $is_fault = "true" ];then
+		curl -s -H "Content-Type: application/json; charset=utf-8" \
+		-H "x-token: $token" \
+		-d '{"device_code":"'$device'"}' \
+		-X POST $cloudurl/app/device/getFaultDataByDeviceCode.json > $path/tmp/fault
+		error_msg=`cat $path/tmp/fault | jq -r '.object_result[]."description"'`
 
+		mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+			-m "${error_msg}" \
+			-t "homeassistant/sensor/"$name"_error_msg/state"
+
+	elif [ $is_fault = "false" ];then
+		error_msg=" "
+
+		mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+			-m "${error_msg}" \
+			-t "homeassistant/sensor/"$name"_error_msg/state"
+	fi
+
+	fi
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-m "${online}" \
 		-t "homeassistant/sensor/"$name"_status/state"
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-m "${is_fault}" \
+		-t "homeassistant/sensor/"$name"_is_fault/state"
+
+elif [ $1 = "test" ]; then
+	curl -s -H "Content-Type: application/json; charset=utf-8" \
+	-H "x-token: $token" \
+	-d '{"device_code":"'$device'"}' \
+	-X POST $cloudurl/app/device/getFaultDataByDeviceCode.json > $path/tmp/fault
+	cat $path/tmp/fault
+
 
 elif [ $1 = "info" ]; then
 	curl -s -H "Content-Type: application/json; charset=utf-8" \
@@ -166,9 +203,6 @@ elif [ $1 = "info" ]; then
 		-m "${outlettemp}" \
 		-t "homeassistant/sensor/"$name"_outlet/state"
 
-	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
-		-m "${error_msg_code}" \
-		-t "homeassistant/sensor/"$name"_error_msg_code/state"
 
 	if [ $silent = "0" ];then
 		mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
