@@ -160,7 +160,6 @@ elif [ $1 = "status" ]; then
 			-t "homeassistant/sensor/"$name"_error_msg/state"
 	fi
 
-	fi
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-m "${online}" \
 		-t "homeassistant/sensor/"$name"_status/state"
