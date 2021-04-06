@@ -147,14 +147,12 @@ elif [ $1 = "status" ]; then
 		-d '{"device_code":"'$device'"}' \
 		-X POST $cloudurl/app/device/getFaultDataByDeviceCode.json > $path/tmp/fault
 		error_msg=`cat $path/tmp/fault | jq -r '.object_result[]."description"'`
-
 		mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 			-m "${error_msg}" \
 			-t "homeassistant/sensor/"$name"_error_msg/state"
 
 	elif [ $is_fault = "false" ];then
-		error_msg=" "
-
+		error_msg="No Error"
 		mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 			-m "${error_msg}" \
 			-t "homeassistant/sensor/"$name"_error_msg/state"
@@ -188,7 +186,6 @@ elif [ $1 = "info" ]; then
 	outlettemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="T03")' | jq -r '.value'`
 	mode=`cat $path/tmp/info | jq '.object_result[] | select(.code=="Mode")' | jq -r '.value'`
 	silent=`cat $path/tmp/info | jq '.object_result[] | select(.code=="Manual-mute")' | jq -r '.value'`
-	error_msg_code=`cat $path/tmp/info | jq -r '.error_msg_code'`
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-m "${settemp}" \
