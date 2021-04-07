@@ -42,65 +42,88 @@ if [ $1 = "install" ]; then
 	echo install
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_status/config" \
-		-m '{"name": "'$name'_status", 
+		-m '{"name": "'$name' Status", 
 			"state_topic": "homeassistant/sensor/'$name'_status/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/binary_sensor/"$name"_power/config" \
-		-m '{"name": "'$name'_power", 
+		-m '{"name": "'$name' Power", 
 			"state_topic": "homeassistant/binary_sensor/'$name'_power/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/binary_sensor/"$name"_silent/config" \
-		-m '{"name": "'$name'_silent", 
+		-m '{"name": "'$name' Silent", 
 			"state_topic": "homeassistant/binary_sensor/'$name'_silent/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_settemp/config" \
-		-m '{"name": "'$name'_settemp", 
+		-m '{"name": "'$name' Settemp", 
 			"device_class": "temperature", 
 			"unit_of_measurement": "°C", 
 			"state_topic": "homeassistant/sensor/'$name'_settemp/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_inlet/config" \
-		-m '{"name": "'$name'_inlet", 
+		-m '{"name": "'$name' Inlet", 
 			"device_class": "temperature", 
 			"unit_of_measurement": "°C", 
 			"state_topic": "homeassistant/sensor/'$name'_inlet/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_outlet/config" \
-		-m '{"name": "'$name'_outlet", 
+		-m '{"name": "'$name' Outlet", 
 			"device_class": "temperature", 
 			"unit_of_measurement": "°C", 
 			"state_topic": "homeassistant/sensor/'$name'_outlet/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_mode_state/config" \
-		-m '{"name": "'$name'_mode_state", 
+		-m '{"name": "'$name' Mode State", 
 			"state_topic": "homeassistant/sensor/'$name'_mode_state/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_mode_set/config" \
-		-m '{"name": "'$name'_mode_set", 
+		-m '{"name": "'$name' Mode set", 
 			"state_topic": "homeassistant/sensor/'$name'_mode_set/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_error_msg/config" \
-		-m '{"name": "'$name'_error_msg", 
+		-m '{"name": "'$name' Error msg", 
 			"state_topic": "homeassistant/sensor/'$name'_error_msg/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/sensor/"$name"_is_fault/config" \
-		-m '{"name": "'$name'_is_fault", 
+		-m '{"name": "'$name' Is fault", 
 			"state_topic": "homeassistant/sensor/'$name'_is_fault/state"}'
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/switch/"$name"_silent/config" \
-		-m '{"name": "'$name'_silent",
+		-m '{"name": "'$name' Silent",
 			"command_topic": "homeassistant/switch/'$name'_silent/set",
 			"state_topic": "homeassistant/binary_sensor/'$name'_silent/state"}'
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-t "homeassistant/sensor/"$name"_ambient/config" \
+		-m '{"name": "'$name' Ambient", 
+			"device_class": "temperature", 
+			"unit_of_measurement": "°C", 
+			"state_topic": "homeassistant/sensor/'$name'_ambient/state"}'
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-t "homeassistant/sensor/"$name"_coil/config" \
+		-m '{"name": "'$name' Coil", 
+			"device_class": "temperature", 
+			"unit_of_measurement": "°C", 
+			"state_topic": "homeassistant/sensor/'$name'_coil/state"}'
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-t "homeassistant/sensor/"$name"_suction/config" \
+		-m '{"name": "'$name' Suction", 
+			"device_class": "temperature", 
+			"unit_of_measurement": "°C", 
+			"state_topic": "homeassistant/sensor/'$name'_suction/state"}'
+
+
 
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
 		-t "homeassistant/climate/$name/config" \
@@ -132,6 +155,9 @@ elif [ $1 = "uninstall" ]; then
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/switch/"$name"_silent/config"
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_error_msg/config"
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_is_fault/config"
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_ambient/config"
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_coil/config"
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -m '' -t "homeassistant/sensor/"$name"_suction/config"
 
 elif [ $1 = "status" ]; then
 	curl -s -H "Content-Type: application/json; charset=utf-8" \
@@ -169,21 +195,24 @@ elif [ $1 = "status" ]; then
 elif [ $1 = "test" ]; then
 	curl -s -H "Content-Type: application/json; charset=utf-8" \
 	-H "x-token: $token" \
-	-d '{"device_code":"'$device'"}' \
-	-X POST $cloudurl/app/device/getFaultDataByDeviceCode.json > $path/tmp/fault
-	cat $path/tmp/fault
+	-d '{"device_code":"'$device'","protocal_codes":["'$2'"]}' \
+	-X POST $cloudurl/app/device/getDataByCode.json > $path/tmp/test
+	cat $path/tmp/test
 
 
 elif [ $1 = "info" ]; then
 	curl -s -H "Content-Type: application/json; charset=utf-8" \
 	-H "x-token: $token" \
-	-d '{"device_code":"'$device'","protocal_codes":["Power","Mode","Manual-mute","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02"]}' \
+	-d '{"device_code":"'$device'","protocal_codes":["Power","Mode","Manual-mute","T01","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02","T04","T05"]}' \
 	-X POST $cloudurl/app/device/getDataByCode.json > $path/tmp/info
 
 	power=`cat $path/tmp/info | jq '.object_result[] | select(.code=="Power")' | jq -r '.value'`
 	settemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="Set_Temp")' | jq -r '.value'`
+	suctiontemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="T01")' | jq -r '.value'`
 	inlettemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="T02")' | jq -r '.value'`
 	outlettemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="T03")' | jq -r '.value'`
+	coiltemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="T04")' | jq -r '.value'`
+	ambienttemp=`cat $path/tmp/info | jq '.object_result[] | select(.code=="T05")' | jq -r '.value'`
 	mode=`cat $path/tmp/info | jq '.object_result[] | select(.code=="Mode")' | jq -r '.value'`
 	silent=`cat $path/tmp/info | jq '.object_result[] | select(.code=="Manual-mute")' | jq -r '.value'`
 
@@ -199,6 +228,17 @@ elif [ $1 = "info" ]; then
 		-m "${outlettemp}" \
 		-t "homeassistant/sensor/"$name"_outlet/state"
 
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-m "${ambienttemp}" \
+		-t "homeassistant/sensor/"$name"_ambient/state"
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-m "${coiltemp}" \
+		-t "homeassistant/sensor/"$name"_coil/state"
+
+	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
+		-m "${suctiontemp}" \
+		-t "homeassistant/sensor/"$name"_suction/state"
 
 	if [ $silent = "0" ];then
 		mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
