@@ -153,14 +153,16 @@ elif [ $1 = "status" ]; then
 			-m "${error_msg}" \
 			-t "homeassistant/sensor/"$name"_error_msg/state"
 	fi
-
+	
+	status()
+	{
 	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
-		-m "${online}" \
-		-t "homeassistant/sensor/"$name"_status/state"
+		-m "${1}" \
+		-t "homeassistant/sensor/"$name"_"$2"/state"
+	}
 
-	mosquitto_pub -r -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass \
-		-m "${is_fault}" \
-		-t "homeassistant/sensor/"$name"_is_fault/state"
+	status $online status
+	status $is_fault is_fault
 
 elif [ $1 = "test" ]; then
 	curl -s -H "Content-Type: application/json; charset=utf-8" \
@@ -225,7 +227,6 @@ mosquitto_status()
 			mosquitto_status sensor auto mode_state
 		fi
 	fi
-
 
 #control
 
