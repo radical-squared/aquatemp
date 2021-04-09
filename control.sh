@@ -9,7 +9,6 @@ name=`cat $path/settings | grep hassname | cut -f2`
 check()
 {
 $path/heatpump info
-sleep 1
 }
 
 mosquitto_sub -v -R -h $mqtt -p $mqttport -u $mqttuser -P $mqttpass -t homeassistant/# | while read line
@@ -19,18 +18,15 @@ do
 	silent=`echo $line | grep "$name"_silent/set | rev | cut -d ' ' -f1 | rev`
 	if [ ! -z $settemp ]; then
 		$path/heatpump temp $settemp
-		echo $line
 		check
 	fi
 	if [ ! -z $silent ]; then
 		$path/heatpump silent $silent
-		echo $line
 		check
 	fi	
 	if [ ! -z $mode ]; then
 		echo $line
 		if [ $mode = "off" ]; then
-			$path/heatpump off
 			check
 		elif [ $mode = "heat" ]; then
 			$path/heatpump on
