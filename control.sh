@@ -27,6 +27,7 @@ do
 	if [ ! -z $mode ]; then
 		echo $line
 		if [ $mode = "off" ]; then
+			$path/heatpump off
 			check
 		elif [ $mode = "heat" ]; then
 			$path/heatpump on
