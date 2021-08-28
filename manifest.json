@@ -2,7 +2,7 @@
   "codeowners": ["@sickidolderivative"],
   "config_flow": false,
   "dependencies": [],
-  "documentation": "https://github.com/sickidolderivative/squatemp",
+  "documentation": "https://github.com/sickidolderivative/aquatemp",
   "domain": "aquatemp",
   "name": "aquatemp",
   "version": "1.0",
