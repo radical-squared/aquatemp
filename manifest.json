@@ -1,0 +1,10 @@
+{
+  "codeowners": ["@sickidolderivative"],
+  "config_flow": false,
+  "dependencies": [],
+  "documentation": "https://github.com/sickidolderivative/squatemp",
+  "domain": "aquatemp",
+  "name": "aquatemp",
+  "version": "1.0",
+  "requirements": []
+}
