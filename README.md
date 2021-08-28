@@ -1,26 +1,20 @@
-# aquatemp
+# Home Assistant Aquatemp Heat Pump sensor (Custom component) 
 
-Bash scripts for integration of AquaTemp wifi module to Home Assistant using mqtt autodiscovery
+This is Home Assistant's custom sensor that retrieves data from Aquatemp cloud and makes it available in Home Assistant. It creates sensor.aquatemp entity that shows heat pump's online/offline status, as well as water inlet and outlet temperatures and is_fault status as attributes. Aquatemp's cloud protocol is based on dst6se's https://github.com/dst6se/aquatemp project.
 
-requirement of mosquitto_pub and mosquitto_sub and jq
-(sudo apt-get install mosquitto-clients jq)
-
-first run
-
-1.	edit settings file for your needs
-2.	./heatpump install
-3.	add control.sh and status.sh to systemd
-	(you could use the script "setup_systemd install" to add and enable the service "ubuntu"
-	the service name will be aquatemp_control and aquatemp_status)
-
-uninstall
-
-1.	./heatpump uninstall (removes the entities from Home Assistant)
-2.	remove control.sh and status.sh from systemd
-	(you could use the script "setup_systemd uninstall" to remove and disable the service "ubuntu")
-
-
-Poll intervall for the app is 20s, so i recommend to not set this to lower value than 20s 
-
-![plot](./example.png)
-
+### Home Assistant Setup
+To install copy the directory to your custom_components folder, restart HA and then add the following to your configuration.yaml file:
+```
+sensor:
+  - platform: aquatemp
+    name: aquatemp
+    username: your_username
+    password: your_password
+    
+  - platform: template
+    sensors:
+      pool_temperature:
+        unit_of_measurement: "C"
+        value_template: "{{state_attr('sensor.aquatemp','in')}}"
+  ```
+  
