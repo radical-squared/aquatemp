@@ -1,20 +1,17 @@
-# Home Assistant Aquatemp Heat Pump sensor (Custom component) 
+# Home Assistant Aquatemp Heat Pump Climate Entity (custom component) 
 
-This is Home Assistant's custom sensor that retrieves data from Aquatemp cloud and makes it available in Home Assistant. It creates sensor.aquatemp entity that shows heat pump's online/offline status, as well as water inlet and outlet temperatures and is_fault status as attributes. Aquatemp's cloud protocol is based on dst6se's https://github.com/dst6se/aquatemp project.
+This is Home Assistant's custom climate entity to control Aquatemp-compatible heat pumps through Aquatemp cloud API. It allows controlling temperature, HVAC mode (heat, cool, auto, off) and fan mode (low, auto). It also reports faults through entity attributes. Aquatemp's cloud protocol is based on dst6se's https://github.com/dst6se/aquatemp project.
 
 ### Home Assistant Setup
 To install copy the directory to your custom_components folder, restart HA and then add the following to your configuration.yaml file:
 ```
-sensor:
+climate:
   - platform: aquatemp
     name: aquatemp
     username: your_username
     password: your_password
-    
-  - platform: template
-    sensors:
-      pool_temperature:
-        unit_of_measurement: "C"
-        value_template: "{{state_attr('sensor.aquatemp','in')}}"
+    min_temp: 20
+    max_temp: 35
+    temperature_unit: C
   ```
   
