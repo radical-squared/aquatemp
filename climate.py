@@ -138,7 +138,14 @@ class Aquatemp(ClimateEntity):
         """Set new target temperature."""
         temperature = kwargs.get("temperature")
 
-        data = {"param":[{"device_code":self._device_code,"protocol_code":"R02","value":temperature},{"device_code":self._device_code,"protocol_code":"Set_Temp","value":temperature}]} 
+        if self._hvac_mode == HVAC_MODE_COOL:
+            mode = 'R01'
+        elif self._hvac_mode == HVAC_MODE_AUTO:
+            mode = 'R03'
+        else:
+            mode = 'R02'
+
+        data = {"param":[{"device_code":self._device_code,"protocol_code":mode,"value":temperature},{"device_code":self._device_code,"protocol_code":"Set_Temp","value":temperature}]} 
         t = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data)).json()
 
         if t['error_msg'] == "Success":
@@ -197,46 +204,59 @@ class Aquatemp(ClimateEntity):
         if t['error_msg'] == "Success":
             self._fan_mode = fm        
 
+
+
     def update(self):
         """Fetch new state data for the sensor."""
         
+        self.fetch_data()
+
+        # Check Power
+        self._attributes['power'] = 'on' if self.get_value('Power') == '1' else 'off'
+
+        # Check hvac_mode & target temperature
+        if self._attributes['power'] == 'off':
+            self._hvac_mode = HVAC_MODE_OFF
+        else:
+            mode = self.get_value('Mode')
+            if mode == '0':
+                self._hvac_mode = HVAC_MODE_COOL
+                self._target_temperature = float(self.get_value('R01'))
+            elif mode == '1':
+                self._hvac_mode = HVAC_MODE_HEAT
+                self._target_temperature = float(self.get_value('R02'))             
+            elif mode == '2':
+                self._hvac_mode = HVAC_MODE_AUTO     
+                self._target_temperature = float(self.get_value('R03'))
+
+        self._fan_mode = FAN_AUTO if self.get_value('Manual-mute') == '0' else FAN_LOW
+        self._current_temperature = float(self.get_value('T02'))
+        self._attributes['ambient_temperature'] = float(self.get_value('T05'))
+
+        self.fetch_errors()
+
+    def get_value(self, code):
+        if 'codes' in self._attributes:
+            for c in self._attributes['codes']:
+                if c['code'] == code:
+                    return c['value']
+        return None
+
+    def fetch_data(self):
+
         data = {"device_code":self._device_code,"protocal_codes":["Power","Mode","Manual-mute","T01","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02","T04","T05"]}
         t = requests.post(URL_GETDATABYCODE, headers = self._headers, data=json.dumps(data)).json()
-        for i in t['object_result']:
-            if i['code'] == 'T02':
-                self._current_temperature = float(i['value'])
-            elif i['code'] == 'R02':
-                self._target_temperature = float(i['value'])     
-            elif i['code'] == 'T05':
-                self._attributes['ambient_temperature'] = float(i['value'])
-            elif i['code'] == 'Mode':
-                if self._hvac_mode == HVAC_MODE_OFF:
-                    continue
-                elif i['value'] == '0':
-                    self._hvac_mode = HVAC_MODE_COOL
-                elif i['value'] == '1':
-                    self._hvac_mode = HVAC_MODE_HEAT
-                elif i['value'] == '2':
-                    self._hvac_mode = HVAC_MODE_AUTO
-            elif i['code'] == 'Power':
-                if i['value'] == '0':
-                    self._hvac_mode = HVAC_MODE_OFF
-                    self._attributes['power'] = 'off'
-                elif i['value'] == '1':
-                    self._attributes['power'] = 'on'
-            elif i['code'] == 'Manual-mute':
-                if i['value'] == '0':
-                    self._fan_mode = FAN_AUTO
-                elif i['value'] == '1':
-                    self._fan_mode = FAN_LOW
+        
+        if t['error_msg'] == "Success":
+            self._attributes['codes'] = t['object_result']
 
-
-        data.pop('protocal_codes')
-        u = requests.post(URL_GETDEVICESTATUS, headers = self._headers, data=json.dumps(data)).json()
+    def fetch_errors(self):
+        
+        u = requests.post(URL_GETDEVICESTATUS, headers = self._headers, data=json.dumps({"device_code":self._device_code})).json()
         self._attributes['is_fault'] = bool(u['object_result']['is_fault'])
 
         if self._attributes['is_fault'] == True:
-            v = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps(data)).json()
+            v = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps({"device_code":self._device_code})).json()
             self._attributes['fault'] = v['object_result'][0]['description']
         else:
             if "fault" in self._attributes:
