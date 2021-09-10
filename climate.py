@@ -232,6 +232,7 @@ class Aquatemp(ClimateEntity):
         self._fan_mode = FAN_AUTO if self.get_value('Manual-mute') == '0' else FAN_LOW
         self._current_temperature = float(self.get_value('T02'))
         self._attributes['ambient_temperature'] = float(self.get_value('T05'))
+        self._attributes['outlet_temperature'] = float(self.get_value('T03'))
 
         self.fetch_errors()
 
