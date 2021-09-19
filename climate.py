@@ -265,4 +265,4 @@ class Aquatemp(ClimateEntity):
             self._attributes['fault'] = v['object_result'][0]['description']
         else:
             if "fault" in self._attributes:
-                self._attributes['fault'] = 'No Error'
+                self._attributes.pop('fault')
