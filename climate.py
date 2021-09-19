@@ -233,7 +233,10 @@ class Aquatemp(ClimateEntity):
         self._current_temperature = float(self.get_value('T02'))
         self._attributes['ambient_temperature'] = float(self.get_value('T05'))
         self._attributes['outlet_temperature'] = float(self.get_value('T03'))
-
+        self._attributes['inlet_temperature'] = float(self.get_value('T02'))
+        self._attributes['suction_temperature'] = float(self.get_value('T01'))
+        self._attributes['coil_temperature'] = float(self.get_value('T04'))
+        
         self.fetch_errors()
 
     def get_value(self, code):
@@ -255,10 +258,11 @@ class Aquatemp(ClimateEntity):
         
         u = requests.post(URL_GETDEVICESTATUS, headers = self._headers, data=json.dumps({"device_code":self._device_code})).json()
         self._attributes['is_fault'] = bool(u['object_result']['is_fault'])
+        self._attributes['status'] = u['object_result']['status']
 
         if self._attributes['is_fault'] == True:
             v = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps({"device_code":self._device_code})).json()
             self._attributes['fault'] = v['object_result'][0]['description']
         else:
             if "fault" in self._attributes:
-                self._attributes.pop('fault')
+                self._attributes['fault'] = 'No Error'
