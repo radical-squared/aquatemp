@@ -146,10 +146,12 @@ class Aquatemp(ClimateEntity):
             mode = 'R02'
 
         data = {"param":[{"device_code":self._device_code,"protocol_code":mode,"value":temperature},{"device_code":self._device_code,"protocol_code":"Set_Temp","value":temperature}]} 
-        t = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data)).json()
+        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
+        if response:
+            t = response.json()
 
-        if t['error_msg'] == "Success":
-            self._target_temperature = temperature
+            if t['error_msg'] == "Success":
+                self._target_temperature = temperature
 
     def set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
@@ -160,9 +162,11 @@ class Aquatemp(ClimateEntity):
 
         if self._hvac_mode == HVAC_MODE_OFF and hvac_mode != HVAC_MODE_OFF:
             data = {"param":[{"device_code":self._device_code,"protocol_code":"power","value":"1"}]}
-            t = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data)).json()
-            if t['error_msg'] == "Success":
-                self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
+            response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
+            if response:
+                t = response.json()
+                if t['error_msg'] == "Success":
+                    self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
 
         if hvac_mode == HVAC_MODE_COOL:
             value = "0"
@@ -179,11 +183,14 @@ class Aquatemp(ClimateEntity):
             hm = HVAC_MODE_OFF            
 
         data = {"param":[{"device_code":self._device_code,"protocol_code":code,"value":value}]}
-        t = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data)).json()
+        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
+        
+        if response:
+            t = response.json()
 
-        if t['error_msg'] == "Success":
-            self._hvac_mode = hm
-            self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
+            if t['error_msg'] == "Success":
+                self._hvac_mode = hm
+                self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
 
     def set_fan_mode(self, fan_mode):
         """Set new target fan mode."""            
@@ -199,10 +206,13 @@ class Aquatemp(ClimateEntity):
             fm = FAN_LOW
 
         data = {"param":[{"device_code":self._device_code,"protocol_code":"Manual-mute","value":mode}]}
-        t = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data)).json()
+        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
 
-        if t['error_msg'] == "Success":
-            self._fan_mode = fm        
+        if response:
+            t = response.json()
+
+            if t['error_msg'] == "Success":
+                self._fan_mode = fm        
 
 
 
@@ -246,19 +256,26 @@ class Aquatemp(ClimateEntity):
     def fetch_data(self):
 
         data = {"device_code":self._device_code,"protocal_codes":["Power","Mode","Manual-mute","T01","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02","T04","T05"]}
-        t = requests.post(URL_GETDATABYCODE, headers = self._headers, data=json.dumps(data)).json()
+        response = requests.post(URL_GETDATABYCODE, headers = self._headers, data=json.dumps(data))
+
+        if response:
+            t = response.json()
         
-        if t['error_msg'] == "Success":
-            self._attributes['codes'] = t['object_result']
+            if t['error_msg'] == "Success":
+                self._attributes['codes'] = t['object_result']
 
     def fetch_errors(self):
         
-        u = requests.post(URL_GETDEVICESTATUS, headers = self._headers, data=json.dumps({"device_code":self._device_code})).json()
-        self._attributes['is_fault'] = bool(u['object_result']['is_fault'])
+        response = requests.post(URL_GETDEVICESTATUS, headers = self._headers, data=json.dumps({"device_code":self._device_code}))
+        if response:
+            u = response.json()
+            self._attributes['is_fault'] = bool(u['object_result']['is_fault'])
 
         if self._attributes['is_fault'] == True:
-            v = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps({"device_code":self._device_code})).json()
-            self._attributes['fault'] = v['object_result'][0]['description']
+            response = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps({"device_code":self._device_code}))
+            if response:
+                v = response.json()
+                self._attributes['fault'] = v['object_result'][0]['description']
         else:
             if "fault" in self._attributes:
                 self._attributes.pop('fault')
