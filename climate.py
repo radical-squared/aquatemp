@@ -38,7 +38,6 @@ class Aquatemp(ClimateEntity):
 
     def __init__(self, config):
         """Initialize the climate entity."""
-        # self._state = None
         self._name = config['name']
         self._token = None
         self._device_code = None
@@ -59,16 +58,8 @@ class Aquatemp(ClimateEntity):
 
         self._headers = {"Content-Type": "application/json; charset=utf-8"}
         
-        # GET X-TOKEN
-        data = {"user_name":self._username, "password":self._password,"type":"2"}
-        r = requests.post(URL_LOGIN, headers=self._headers, data=json.dumps(data)).json()
-        self._token = r['object_result']['x-token']        
-        self._headers['x-token'] = self._token
 
-        # GET DEVICE CODE
-        s = requests.post(URL_DEVICELIST, headers = self._headers).json()
-        self._device_code = s['object_result'][0]['device_code']
-
+        self.login()
         self.update()
 
 
@@ -263,9 +254,10 @@ class Aquatemp(ClimateEntity):
 
         if response:
             t = response.json()
-        
             if t['error_msg'] == "Success":
                 self._attributes['codes'] = t['object_result']
+        else:
+            self.login()
 
     def fetch_errors(self):
         
@@ -273,13 +265,39 @@ class Aquatemp(ClimateEntity):
         if response:
             u = response.json()
             self._attributes['is_fault'] = bool(u['object_result']['is_fault'])
-            self._attributes['status'] = u['object_result']['status']
-            
+        else:
+            self.login()
+
         if self._attributes['is_fault'] == True:
             response = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps({"device_code":self._device_code}))
             if response:
                 v = response.json()
                 self._attributes['fault'] = v['object_result'][0]['description']
+            else:
+                self.login()
         else:
             if "fault" in self._attributes:
                 self._attributes.pop('fault')
+
+
+
+    def login(self):
+
+        # GET X-TOKEN
+        data = {"user_name":self._username, "password":self._password,"type":"2"}
+        r = requests.post(URL_LOGIN, headers=self._headers, data=json.dumps(data)).json()
+        self._token = r['object_result']['x-token']        
+        self._headers['x-token'] = self._token
+
+        # GET DEVICE CODE
+        s = requests.post(URL_DEVICELIST, headers = self._headers).json()
+        self._device_code = s['object_result'][0]['device_code']
+
+
+
+        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
+        if response:
+            t = response.json()
+
+            if t['error_msg'] == "Success":
+                self._target_temperature = temperature        
