@@ -249,7 +249,7 @@ class Aquatemp(ClimateEntity):
 
     def fetch_data(self):
 
-        data = {"device_code":self._device_code,"protocal_codes":["Power","Mode","Manual-mute","T01","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02","T04","T05"]}
+        data = {"device_code":self._device_code,"protocal_codes":["Power","Mode","Manual-mute","T01","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02","T04","T05","T06","T07","T12","T14"]}
         response = requests.post(URL_GETDATABYCODE, headers = self._headers, data=json.dumps(data))
 
         if response:
