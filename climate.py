@@ -45,6 +45,8 @@ class Aquatemp(ClimateEntity):
         self._password = config['password']
         self._min_temp = config['min_temp']
         self._max_temp = config['max_temp']        
+        self._inlet_temp = config['inlet_temp']
+        self._outlet_temp = config['outlet_temp']   
         self._temperature_unit = TEMP_CELSIUS if config['temperature_unit'] == "C" else TEMP_FAHRENHEIT
 
 
@@ -113,6 +115,16 @@ class Aquatemp(ClimateEntity):
     def min_temp(self):
         """Returns the minimum temperature."""
         return self._min_temp
+    
+    @property
+    def inlet_temp(self):
+        """Returns the inlet temperature."""
+        return self._inlet_temp
+    
+    @property
+    def outlet_temp(self):
+        """Returns the outlet temperature."""
+        return self._outlet_temp
 
     @property
     def name(self):
@@ -233,8 +245,8 @@ class Aquatemp(ClimateEntity):
         self._fan_mode = FAN_AUTO if self.get_value('Manual-mute') == '0' else FAN_LOW
         self._current_temperature = float(self.get_value('T02'))
         self._attributes['ambient_temperature'] = float(self.get_value('T05'))
-        self._attributes['outlet_temperature'] = float(self.get_value('T03'))
-        self._attributes['inlet_temperature'] = float(self.get_value('T02'))
+        self._outlet_temp = float(self.get_value('T03'))
+        self._inlet_temp = float(self.get_value('T02'))
         self._attributes['suction_temperature'] = float(self.get_value('T01'))
         self._attributes['coil_temperature'] = float(self.get_value('T04'))
 
