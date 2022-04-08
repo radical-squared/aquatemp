@@ -45,8 +45,8 @@ class Aquatemp(ClimateEntity):
         self._password = config['password']
         self._min_temp = config['min_temp']
         self._max_temp = config['max_temp']        
-        self._inlet_temp = config['inlet_temp']
-        self._outlet_temp = config['outlet_temp']   
+        self._inlet_temp = None
+        self._outlet_temp = None 
         self._temperature_unit = TEMP_CELSIUS if config['temperature_unit'] == "C" else TEMP_FAHRENHEIT
 
 
