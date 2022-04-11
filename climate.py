@@ -64,6 +64,10 @@ class Aquatemp(ClimateEntity):
         self.login()
         self.update()
 
+    @property
+    def extra_state_attributes(self):
+        """Return entity specific state attributes."""
+        return self._attributes
 
     @property
     def fan_modes(self):
@@ -245,8 +249,8 @@ class Aquatemp(ClimateEntity):
         self._fan_mode = FAN_AUTO if self.get_value('Manual-mute') == '0' else FAN_LOW
         self._current_temperature = float(self.get_value('T02'))
         self._attributes['ambient_temperature'] = float(self.get_value('T05'))
-        self._outlet_temp = float(self.get_value('T03'))
-        self._inlet_temp = float(self.get_value('T02'))
+        self._attributes['outlet_temperature'] = float(self.get_value('T03'))
+        self._attributes['inlet_temperature'] = float(self.get_value('T02'))
         self._attributes['suction_temperature'] = float(self.get_value('T01'))
         self._attributes['coil_temperature'] = float(self.get_value('T04'))
 
