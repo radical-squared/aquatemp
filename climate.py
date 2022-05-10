@@ -316,9 +316,9 @@ class Aquatemp(ClimateEntity):
 
 
 
-        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
-        if response:
-            t = response.json()
+#         response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
+#         if response:
+#             t = response.json()
 
-            if t['error_msg'] == "Success":
-                self._target_temperature = temperature        
+#             if t['error_msg'] == "Success":
+#                 self._target_temperature = temperature        
