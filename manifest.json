@@ -1,10 +1,10 @@
 {
-  "codeowners": ["@sickidolderivative"],
+  "codeowners": ["@radical-squared"],
   "config_flow": false,
   "dependencies": [],
-  "documentation": "https://github.com/sickidolderivative/aquatemp",
+  "documentation": "https://github.com/radical-squared/aquatemp",
   "domain": "aquatemp",
   "name": "aquatemp",
-  "version": "1.2",
+  "version": "1.3",
   "requirements": []
 }
