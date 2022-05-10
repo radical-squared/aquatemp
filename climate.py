@@ -136,6 +136,11 @@ class Aquatemp(ClimateEntity):
         return self._name  
 
     @property
+    def unique_id(self):
+        """Return the device code of the sensor as a unique ID to allow the devices to be edited on the dashboard."""
+        return self._device_code  
+
+    @property
     def device_state_attributes(self):
         """Return device specific state attributes."""
         return self._attributes
