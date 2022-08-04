@@ -257,7 +257,7 @@ class Aquatemp(ClimateEntity):
         self._attributes['outlet_temperature'] = float(self.get_value('T03'))
         self._attributes['inlet_temperature'] = float(self.get_value('T02'))
         self._attributes['suction_temperature'] = float(self.get_value('T01'))
-        self._attributes['coil_temperature'] = float(self.get_value('T04'))
+#         self._attributes['coil_temperature'] = float(self.get_value('T04'))
 
         self.fetch_errors()
 
