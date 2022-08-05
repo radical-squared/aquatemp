@@ -13,5 +13,12 @@ climate:
     min_temp: 20
     max_temp: 35
     temperature_unit: C
+    unique_id: my_aquatemp
+    expose_codes: true
+    attribute_map:
+      T05: ambient_temperature
+      T03: outlet_temperature
+      T02: inlet_temperature
+      T01: suction_temperature  
   ```
   
