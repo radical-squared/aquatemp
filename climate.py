@@ -1,11 +1,16 @@
 """Platform for climate integration."""
+from operator import attrgetter
 from homeassistant.const import (TEMP_CELSIUS, TEMP_FAHRENHEIT,)
 from homeassistant.helpers.entity import Entity
 from homeassistant.components.climate import ClimateEntity
 
-import requests
+# from aiohttp import ClientSession, ClientResponse
+import aiohttp
 import json
 from datetime import datetime
+import asyncio
+
+import logging
 
 
 from homeassistant.components.climate.const import (
@@ -18,19 +23,21 @@ from homeassistant.components.climate.const import (
     FAN_AUTO,
     FAN_LOW,
 )
+SERVER_URL="https://cloud.linked-go.com"
+LOGIN_PATH="/cloudservice/api/app/user/login.json"
+DEVICELIST_PATH="/cloudservice/api/app/device/deviceList.json"
+GETDATABYCODE_PATH="/cloudservice/api/app/device/getDataByCode.json"
+GETDEVICESTATUS_PATH="/cloudservice/api/app/device/getDeviceStatus.json"
+CONTROL_PATH="/cloudservice/api/app/device/control.json"
+GETFAULT_PATH="/cloudservice/api/app/device/getFaultDataByDeviceCode.json"
 
-URL_LOGIN="https://cloud.linked-go.com/cloudservice/api/app/user/login.json"
-URL_DEVICELIST="https://cloud.linked-go.com/cloudservice/api/app/device/deviceList.json"
-URL_GETDATABYCODE="https://cloud.linked-go.com/cloudservice/api/app/device/getDataByCode.json"
-URL_GETDEVICESTATUS="https://cloud.linked-go.com/cloudservice/api/app/device/getDeviceStatus.json"
-URL_CONTROL="https://cloud.linked-go.com/cloudservice/api/app/device/control.json"
-URL_GETFAULT="https://cloud.linked-go.com/cloudservice/api/app/device/getFaultDataByDeviceCode.json"
 
+_LOGGER = logging.getLogger(__name__)
 
-
-def setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the climate platform."""
-    add_entities([Aquatemp(config)])
+    async_add_entities([Aquatemp(config)])
+    _LOGGER.debug("async_add_entities passed.")
 
 
 class Aquatemp(ClimateEntity):
@@ -41,6 +48,7 @@ class Aquatemp(ClimateEntity):
         self._name = config['name']
         self._token = None
         self._device_code = None
+        self._uid = config['unique_id']
         self._username = config['username']
         self._password = config['password']
         self._min_temp = config['min_temp']
@@ -48,6 +56,8 @@ class Aquatemp(ClimateEntity):
         self._inlet_temp = None
         self._outlet_temp = None 
         self._temperature_unit = TEMP_CELSIUS if config['temperature_unit'] == "C" else TEMP_FAHRENHEIT
+        self._attribute_map = config['attribute_map']
+        self._expose_codes = bool(config['expose_codes'])
 
 
         self._current_temperature = None
@@ -56,13 +66,11 @@ class Aquatemp(ClimateEntity):
         self._fan_mode = None
 
         self._attributes = {}
+        self._codes = {}
 
+        self._headers = {'Content-Type': 'application/json; charset=utf-8'}
+        # _LOGGER.debug(config['attribute_map'])
 
-        self._headers = {"Content-Type": "application/json; charset=utf-8"}
-        
-
-        self.login()
-        self.update()
 
     @property
     def extra_state_attributes(self):
@@ -138,7 +146,7 @@ class Aquatemp(ClimateEntity):
     @property
     def unique_id(self):
         """Return the device code of the sensor as a unique ID to allow the devices to be edited on the dashboard."""
-        return self._device_code  
+        return self._uid  
 
     @property
     def device_state_attributes(self):
@@ -146,7 +154,14 @@ class Aquatemp(ClimateEntity):
         return self._attributes
 
 
-    def set_temperature(self, **kwargs):
+    def get_value(self, code):
+        if len(self._codes) > 0:
+            for c in self._codes:
+                if c['code'] == code:
+                    return c['value']
+        return None
+
+    async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get("temperature")
 
@@ -157,15 +172,16 @@ class Aquatemp(ClimateEntity):
         else:
             mode = 'R02'
 
-        data = {"param":[{"device_code":self._device_code,"protocol_code":mode,"value":temperature},{"device_code":self._device_code,"protocol_code":"Set_Temp","value":temperature}]} 
-        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
-        if response:
-            t = response.json()
+        data = {'param':[{'device_code':self._device_code,'protocol_code':mode,'value':temperature},{'device_code':self._device_code,'protocol_code':'Set_Temp','value':temperature}]} 
+        
+        async with aiohttp.ClientSession(SERVER_URL) as session:
+            async with session.post(CONTROL_PATH, headers = self._headers, json=data) as response:
+                if response:
+                    response_json = await response.json()
+                    if response_json['error_msg'] == "Success":
+                        self._target_temperature = temperature
 
-            if t['error_msg'] == "Success":
-                self._target_temperature = temperature
-
-    def set_hvac_mode(self, hvac_mode):
+    async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
 
         code = 'mode'
@@ -173,12 +189,15 @@ class Aquatemp(ClimateEntity):
         hm = None
 
         if self._hvac_mode == HVAC_MODE_OFF and hvac_mode != HVAC_MODE_OFF:
-            data = {"param":[{"device_code":self._device_code,"protocol_code":"power","value":"1"}]}
-            response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
-            if response:
-                t = response.json()
-                if t['error_msg'] == "Success":
-                    self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
+            data = {'param':[{'device_code':self._device_code,'protocol_code':'power','value':'1'}]}
+            async with aiohttp.ClientSession(SERVER_URL) as session:
+                async with session.post(CONTROL_PATH, headers = self._headers, json=data) as response:
+                    # _LOGGER.debug(response)
+                    if response.status:
+                        response_json = await response.json()
+                        _LOGGER.debug(response_json)
+                        if response_json['error_msg'] == "Success":
+                            self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
 
         if hvac_mode == HVAC_MODE_COOL:
             value = "0"
@@ -195,16 +214,17 @@ class Aquatemp(ClimateEntity):
             hm = HVAC_MODE_OFF            
 
         data = {"param":[{"device_code":self._device_code,"protocol_code":code,"value":value}]}
-        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
-        
-        if response:
-            t = response.json()
+        async with aiohttp.ClientSession(SERVER_URL) as session:
+            async with session.post(CONTROL_PATH, headers = self._headers, json=data) as response:
+                # _LOGGER.debug(response)
+                if response:
+                    response_json = await response.json()
+                    _LOGGER.debug(response_json)
+                    if response_json['error_msg'] == "Success":
+                        self._hvac_mode = hm
+                        self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
 
-            if t['error_msg'] == "Success":
-                self._hvac_mode = hm
-                self._attributes['power'] = 'off' if hvac_mode == HVAC_MODE_OFF else 'on'
-
-    def set_fan_mode(self, fan_mode):
+    async def async_set_fan_mode(self, fan_mode):
         """Set new target fan mode."""            
 
         mode = 0
@@ -217,22 +237,26 @@ class Aquatemp(ClimateEntity):
             mode = "1"
             fm = FAN_LOW
 
-        data = {"param":[{"device_code":self._device_code,"protocol_code":"Manual-mute","value":mode}]}
-        response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
+        data = {'param':[{'device_code':self._device_code,'protocol_code':'Manual-mute','value':mode}]}
+        async with aiohttp.ClientSession(SERVER_URL) as session:
+            async with session.post(CONTROL_PATH, headers = self._headers, json=data) as response:
+                _LOGGER.debug(response.status)
+                if response.status == 200:
+                    response_json = await response.json()
+                    _LOGGER.debug(response_json)
+                    if response_json['error_msg'] == "Success":
+                        self._fan_mode = fm        
 
-        if response:
-            t = response.json()
 
-            if t['error_msg'] == "Success":
-                self._fan_mode = fm        
-
-
-
-    def update(self):
+    async def async_update(self):
         """Fetch new state data for the sensor."""
-        
-        self.fetch_data()
+        # _LOGGER.debug("inside async_update")
 
+        if self._token == None:
+            async with aiohttp.ClientSession(SERVER_URL) as session:
+                await self.login(session)
+        
+        await self.fetch_data()
         # Check Power
         self._attributes['power'] = 'on' if self.get_value('Power') == '1' else 'off'
 
@@ -253,72 +277,64 @@ class Aquatemp(ClimateEntity):
 
         self._fan_mode = FAN_AUTO if self.get_value('Manual-mute') == '0' else FAN_LOW
         self._current_temperature = float(self.get_value('T02'))
-        self._attributes['ambient_temperature'] = float(self.get_value('T05'))
-        self._attributes['outlet_temperature'] = float(self.get_value('T03'))
-        self._attributes['inlet_temperature'] = float(self.get_value('T02'))
-        self._attributes['suction_temperature'] = float(self.get_value('T01'))
-#         self._attributes['coil_temperature'] = float(self.get_value('T04'))
 
-        self.fetch_errors()
+        for code in self._attribute_map:
+            self._attributes[self._attribute_map[code]] = float(self.get_value(code))
 
-    def get_value(self, code):
-        if 'codes' in self._attributes:
-            for c in self._attributes['codes']:
-                if c['code'] == code:
-                    return c['value']
-        return None
 
-    def fetch_data(self):
+        await self.fetch_errors()
 
-        data = {"device_code":self._device_code,"protocal_codes":["Power","Mode","Manual-mute","T01","T02","2074","2075","2076","2077","H03","Set_Temp","R08","R09","R10","R11","R01","R02","R03","T03","1158","1159","F17","H02","T04","T05","T06","T07","T12","T14"]}
-        response = requests.post(URL_GETDATABYCODE, headers = self._headers, data=json.dumps(data))
+    async def fetch_data(self):
 
-        if response:
-            t = response.json()
-            if t['error_msg'] == "Success":
-                self._attributes['codes'] = t['object_result']
-        else:
-            self.login()
+        data = {'device_code':self._device_code,'protocal_codes':['Power','Mode','Manual-mute','T01','T02','2074','2075','2076','2077','H03','Set_Temp','R08','R09','R10','R11','R01','R02','R03','T03','1158','1159','F17','H02','T04','T05','T06','T07','T12','T14']}
 
-    def fetch_errors(self):
-        
-        response = requests.post(URL_GETDEVICESTATUS, headers = self._headers, data=json.dumps({"device_code":self._device_code}))
-        if response:
-            u = response.json()
-            self._attributes['is_fault'] = bool(u['object_result']['is_fault'])
-        else:
-            self.login()
+        async with aiohttp.ClientSession(SERVER_URL) as session:
+            async with session.post(GETDATABYCODE_PATH, headers = self._headers, json=data) as response:
+                if response.status == 200:
+                    response_json = await response.json()
+                    if response_json['error_msg'] == "Success":
+                        self._codes = response_json['object_result']
+                    if self._expose_codes:
+                        self._attributes['codes'] = response_json['object_result']
+                else:
+                    await self.login(session)
 
-        if self._attributes['is_fault'] == True:
-            response = requests.post(URL_GETFAULT, headers = self._headers, data=json.dumps({"device_code":self._device_code}))
-            if response:
-                v = response.json()
-                self._attributes['fault'] = v['object_result'][0]['description']
+    async def fetch_errors(self):
+
+        async with aiohttp.ClientSession(SERVER_URL) as session:
+            async with session.post(GETDEVICESTATUS_PATH, headers = self._headers, json={"device_code":self._device_code}) as response:
+                if response:
+                    response_json = await response.json()
+                    self._attributes['is_fault'] = bool(response_json['object_result']['is_fault'])
+                else:
+                    await self.login(session)
+
+            if self._attributes['is_fault'] == True:
+                async with session.post(GETFAULT_PATH, headers = self._headers, json={"device_code":self._device_code}) as response:
+                    if response:
+                        response_json = await response.json()
+                        self._attributes['fault'] = response_json['object_result'][0]['description']
+                    else:
+                        await self.login(session)
             else:
-                self.login()
-        else:
-            if "fault" in self._attributes:
-                self._attributes.pop('fault')
+                if "fault" in self._attributes:
+                    self._attributes.pop('fault')
 
 
 
-    def login(self):
+    async def login(self, session):
 
         # GET X-TOKEN
-        data = {"user_name":self._username, "password":self._password,"type":"2"}
-        r = requests.post(URL_LOGIN, headers=self._headers, data=json.dumps(data)).json()
-        self._token = r['object_result']['x-token']        
-        self._headers['x-token'] = self._token
+        # _LOGGER.debug("inside login")
+        data = {'user_name':self._username, 'password':self._password,'type':'2'}
+        async with session.post(LOGIN_PATH, headers = self._headers, json=data) as response:
+            response_json = await response.json()
+            self._token = response_json['object_result']['x-token']        
+            self._headers['x-token'] = self._token
+            # _LOGGER.debug(response_json)
 
         # GET DEVICE CODE
-        s = requests.post(URL_DEVICELIST, headers = self._headers).json()
-        self._device_code = s['object_result'][0]['device_code']
+        async with session.post(DEVICELIST_PATH, headers = self._headers) as response:
+            response_json = await response.json()
+            self._device_code = response_json['object_result'][0]['device_code']
 
-
-
-#         response = requests.post(URL_CONTROL, headers = self._headers, data=json.dumps(data))
-#         if response:
-#             t = response.json()
-
-#             if t['error_msg'] == "Success":
-#                 self._target_temperature = temperature        
