@@ -36,8 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the climate platform."""
-    async_add_entities([Aquatemp(config)])
-    _LOGGER.debug("async_add_entities passed.")
+    async_add_entities([Aquatemp(config)],True)
 
 
 class Aquatemp(ClimateEntity):
