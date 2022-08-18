@@ -249,7 +249,6 @@ class Aquatemp(ClimateEntity):
 
     async def async_update(self):
         """Fetch new state data for the sensor."""
-        # _LOGGER.debug("inside async_update")
 
         if self._token == None:
             async with aiohttp.ClientSession(SERVER_URL) as session:
@@ -306,6 +305,7 @@ class Aquatemp(ClimateEntity):
             async with session.post(GETDATABYCODE_PATH, headers = self._headers, json=data) as response:
                 if response.status == 200:
                     response_json = await response.json()
+                    _LOGGER.debug(response_json)
                     if response_json['error_msg'] == "Success":
                         self._codes = response_json['object_result']
                     if self._expose_codes:
@@ -319,6 +319,7 @@ class Aquatemp(ClimateEntity):
             async with session.post(GETDEVICESTATUS_PATH, headers = self._headers, json={"device_code":self._device_code}) as response:
                 if response:
                     response_json = await response.json()
+                    _LOGGER.debug(response_json)
                     self._attributes['is_fault'] = bool(response_json['object_result']['is_fault'])
                 else:
                     await self.login(session)
@@ -327,6 +328,7 @@ class Aquatemp(ClimateEntity):
                 async with session.post(GETFAULT_PATH, headers = self._headers, json={"device_code":self._device_code}) as response:
                     if response:
                         response_json = await response.json()
+                        _LOGGER.debug(response_json)
                         self._attributes['fault'] = response_json['object_result'][0]['description']
                     else:
                         await self.login(session)
@@ -343,12 +345,14 @@ class Aquatemp(ClimateEntity):
         data = {'user_name':self._username, 'password':self._password,'type':'2'}
         async with session.post(LOGIN_PATH, headers = self._headers, json=data) as response:
             response_json = await response.json()
+            _LOGGER.debug(response_json)
             self._token = response_json['object_result']['x-token']        
             self._headers['x-token'] = self._token
-            # _LOGGER.debug(response_json)
+            
 
         # GET DEVICE CODE
         async with session.post(DEVICELIST_PATH, headers = self._headers) as response:
             response_json = await response.json()
+            _LOGGER.debug(response_json)
             self._device_code = response_json['object_result'][0]['device_code']
 
