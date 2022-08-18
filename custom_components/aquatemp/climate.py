@@ -253,13 +253,18 @@ class Aquatemp(ClimateEntity):
 
         if self._token == None:
             async with aiohttp.ClientSession(SERVER_URL) as session:
-                await self.login(session)
+                try:
+                    await self.login(session)
+                except:
+                    self._token = None
+                    _LOGGER.error("Error logging in. Will keep on trying.")
+                    return   
                 
         try:
             await self.fetch_data()
         except:
             self._token = None
-            _LOGGER.debug("Error fetching data. Reconnecting.")
+            _LOGGER.error("Error fetching data. Reconnecting.")
             return
         
         # Check Power
@@ -290,7 +295,7 @@ class Aquatemp(ClimateEntity):
             await self.fetch_errors()
         except:
             self._token = None
-            _LOGGER.debug("Error fetching errors. Reconnecting.")
+            _LOGGER.error("Error fetching errors. Reconnecting.")
             return            
 
     async def fetch_data(self):
