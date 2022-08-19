@@ -23,3 +23,9 @@ climate:
       T01: suction_temperature  
   ```
   
+  
+  
+To debug in case of problems, add the following to the logger section of configuration.yaml:
+```
+  custom_components.aquatemp.climate: debug
+```
