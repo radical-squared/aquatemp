@@ -285,10 +285,13 @@ class Aquatemp(ClimateEntity):
                 self._target_temperature = float(self.get_value('R03'))
 
         self._fan_mode = FAN_AUTO if self.get_value('Manual-mute') == '0' else FAN_LOW
-        self._current_temperature = float(self.get_value('T02'))
+
+        if self.get_value('T02') is not None:
+            self._current_temperature = float(self.get_value('T02'))
 
         for code in self._attribute_map:
-            self._attributes[self._attribute_map[code]] = float(self.get_value(code))
+            if self.get_value(code) is not None:
+                self._attributes[self._attribute_map[code]] = float(self.get_value(code))
 
         try:
             await self.fetch_errors()
@@ -355,4 +358,3 @@ class Aquatemp(ClimateEntity):
             response_json = await response.json()
             _LOGGER.debug(response_json)
             self._device_code = response_json['object_result'][0]['device_code']
-
