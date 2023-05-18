@@ -1,4 +1,5 @@
 {
-  "name": "aquatemp",
-  "render_readme": true
+  "name": "Aqua Temp",
+  "render_readme": true,
+  "iot_class": "Cloud Polling"
 }
