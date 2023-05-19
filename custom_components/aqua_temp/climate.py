@@ -94,6 +94,8 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         self._attr_temperature_unit = self._config_data.get(
             CONF_TEMPERATURE_UNIT, DEFAULT_TEMPERATURE_UNIT
         )
+        self._attr_name = entity_name
+        self._attr_unique_id = slugify_uid
 
     @property
     def extra_state_attributes(self):

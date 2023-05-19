@@ -132,6 +132,11 @@ PROTOCOL_CODES = {
     "T14": None,
 }
 
+BINARY_SENSOR_IS_ON = {
+    "Power": "1",
+    "device_status": "ONLINE",
+}
+
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
 CONFIG_FIELDS = [CONF_TEMPERATURE_UNIT]

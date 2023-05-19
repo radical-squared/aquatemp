@@ -20,7 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities
 ):
-    """Setup the sensor platform."""
+    """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     entities = []
 
@@ -62,11 +62,13 @@ class AquaTempStatusEntity(CoordinatorEntity, BinarySensorEntity):
 
         self.entity_description = entity_description
         self._attr_device_info = device_info
+        self._attr_name = entity_name
+        self._attr_unique_id = slugify_uid
 
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        status = self.coordinator.api_data.get(self._key)
+        status = self._api_data.get(self._key)
         is_on = status == "ONLINE"
 
         return is_on
@@ -100,6 +102,6 @@ class AquaTempFaultEntity(CoordinatorEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
-        is_on = self.coordinator.api_data.get(self._key, False)
+        is_on = self._api_data.get(self._key, False)
 
         return is_on
