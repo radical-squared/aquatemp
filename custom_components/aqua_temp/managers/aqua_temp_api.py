@@ -9,8 +9,7 @@ from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .aqua_temp_config_manager import AquaTempConfigManager
-from .consts import (
+from ..common.consts import (
     CONTROL_PATH,
     DEVICELIST_PATH,
     FAN_MODE_MAPPING,
@@ -26,7 +25,8 @@ from .consts import (
     PROTOCOL_CODES,
     SERVER_URL,
 )
-from .exceptions import LoginError, OperationFailedException
+from ..common.exceptions import LoginError, OperationFailedException
+from .aqua_temp_config_manager import AquaTempConfigManager
 
 _LOGGER = logging.getLogger(__name__)
 

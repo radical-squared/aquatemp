@@ -4,7 +4,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-from .consts import (
+from ..common.consts import (
     CONF_TEMPERATURE_UNIT,
     CONFIG_FIELDS,
     DEFAULT_TEMPERATURE_UNIT,
@@ -26,6 +26,10 @@ class AquaTempConfigManager:
     @property
     def name(self):
         return self._entry.title
+
+    @property
+    def unique_id(self):
+        return self._entry.unique_id
 
     async def initialize(self):
         local_data = await self._load()

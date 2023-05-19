@@ -3,11 +3,12 @@ import logging
 
 import async_timeout
 
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+from ..common.consts import DATA_ITEM_API, DATA_ITEM_CONFIG, DOMAIN
 from .aqua_temp_api import AquaTempAPI
 from .aqua_temp_config_manager import AquaTempConfigManager
-from .consts import DATA_ITEM_API, DATA_ITEM_CONFIG
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,6 +36,19 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     @property
     def config_data(self):
         return self.data.get(DATA_ITEM_CONFIG)
+
+    def get_device(self, device_code: str) -> DeviceInfo:
+        device_data = self.api_data.get(device_code)
+        device_nickname = device_data.get("device_nick_name", device_code)
+        device_type = device_data.get("device_type")
+
+        device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._config_manager.unique_id)},
+            name=device_nickname,
+            model=device_type,
+        )
+
+        return device_info
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
