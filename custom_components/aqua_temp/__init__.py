@@ -4,10 +4,10 @@ import sys
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .aqua_temp_api import AquaTempAPI
-from .aqua_temp_config_manager import AquaTempConfigManager
-from .aqua_temp_coordinator import AquaTempCoordinator
-from .consts import DOMAIN, SUPPORTED_DOMAINS
+from .common.consts import DOMAIN, PLATFORMS
+from .managers.aqua_temp_api import AquaTempAPI
+from .managers.aqua_temp_config_manager import AquaTempConfigManager
+from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,9 +37,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
             await coordinator.async_config_entry_first_refresh()
 
-            load = hass.config_entries.async_forward_entry_setup
-            for domain in SUPPORTED_DOMAINS:
-                await load(entry, domain)
+            await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
         initialized = True
 

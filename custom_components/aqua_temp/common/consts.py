@@ -1,10 +1,9 @@
-from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
 from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.const import (
     CONF_TEMPERATURE_UNIT,
     STATE_OFF,
     STATE_ON,
+    Platform,
     UnitOfTemperature,
 )
 
@@ -143,4 +142,4 @@ DATA_ITEM_CONFIG = "configuration"
 
 DEFAULT_TEMPERATURE_UNIT = UnitOfTemperature.CELSIUS
 
-SUPPORTED_DOMAINS = [CLIMATE_DOMAIN, SENSOR_DOMAIN]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.CLIMATE, Platform.SENSOR]
