@@ -68,11 +68,17 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         except Exception as err:
             raise UpdateFailed(f"Error communicating with API: {err}")
 
-    async def set_hvac_mode(self, hvac_mode):
-        await self._api.set_hvac_mode(hvac_mode)
+    def get_temperature_unit(self, device_code: str):
+        return self._config_manager.get_temperature_unit(device_code)
 
-    async def set_temperature(self, hvac_mode, temperature):
-        await self._api.set_temperature(hvac_mode, temperature)
+    async def set_hvac_mode(self, device_code: str, hvac_mode):
+        await self._api.set_hvac_mode(device_code, hvac_mode)
 
-    async def set_fan_mode(self, fan_mode):
-        await self._api.set_fan_mode(fan_mode)
+    async def set_temperature(self, device_code: str, hvac_mode, temperature):
+        await self._api.set_temperature(device_code, hvac_mode, temperature)
+
+    async def set_fan_mode(self, device_code: str, fan_mode):
+        await self._api.set_fan_mode(device_code, fan_mode)
+
+    async def set_temperature_unit(self, device_code: str, option: str):
+        await self._config_manager.update_temperature_unit(device_code, option)

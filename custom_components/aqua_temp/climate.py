@@ -13,13 +13,12 @@ from homeassistant.components.climate.const import (
     HVACMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_TEMPERATURE_UNIT, STATE_ON
+from homeassistant.const import STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
 from .common.consts import (
-    DEFAULT_TEMPERATURE_UNIT,
     DOMAIN,
     FAN_MODE_MAPPING,
     HVAC_MODE_MAPPING,
@@ -66,7 +65,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
 
-        entity_name = f"{coordinator.name} {device_name}"
+        entity_name = device_name
 
         device_id = self._api_data.get("device_id")
         slugify_uid = slugify(f"{CLIMATE_DOMAIN}_{device_id}")
@@ -91,9 +90,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         self._attr_hvac_mode = HVACMode.OFF
         self._attr_fan_mode = FAN_AUTO
 
-        self._attr_temperature_unit = self._config_data.get(
-            CONF_TEMPERATURE_UNIT, DEFAULT_TEMPERATURE_UNIT
-        )
+        self._attr_temperature_unit = self.coordinator.get_temperature_unit(device_code)
         self._attr_name = entity_name
         self._attr_unique_id = slugify_uid
 

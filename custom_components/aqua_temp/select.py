@@ -1,18 +1,19 @@
+from abc import ABC
 import logging
 
-from homeassistant.components.sensor import (
-    DOMAIN as SENSOR_DOMAIN,
-    SensorDeviceClass,
-    SensorEntity,
-    SensorEntityDescription,
+from homeassistant.components.select import (
+    DOMAIN as SELECT_DOMAIN,
+    SelectEntity,
+    SelectEntityDescription,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import DOMAIN, PROTOCOL_CODES
+from .common.consts import DOMAIN
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,31 +22,26 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
-    """Setup the sensor platform."""
+    """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     entities = []
 
     for device_code in coordinator.api_data:
-        temperature_entities = [
-            AquaTempTemperatureEntity(device_code, key, coordinator)
-            for key in PROTOCOL_CODES
-            if key.startswith("T") and PROTOCOL_CODES.get(key) is not None
-        ]
+        entity = AquaTempSelectEntity(device_code, coordinator)
 
-        entities.extend(temperature_entities)
+        entities.append(entity)
 
     _LOGGER.debug(f"Setting up sensor entities: {entities}")
 
     async_add_entities(entities, True)
 
 
-class AquaTempTemperatureEntity(CoordinatorEntity, SensorEntity):
+class AquaTempSelectEntity(CoordinatorEntity, SelectEntity, ABC):
     """Representation of a sensor."""
 
-    def __init__(self, device_code: str, key: str, coordinator: AquaTempCoordinator):
+    def __init__(self, device_code: str, coordinator: AquaTempCoordinator):
         super().__init__(coordinator)
 
-        self._key = key
         self._device_code = device_code
         self._api_data = self.coordinator.api_data[self._device_code]
         self._config_data = self.coordinator.config_data
@@ -53,17 +49,18 @@ class AquaTempTemperatureEntity(CoordinatorEntity, SensorEntity):
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
 
-        entity_name = f"{device_name} {PROTOCOL_CODES.get(key)}"
+        entity_name = f"{device_name} Temperature Unit"
 
         device_id = self._api_data.get("device_id")
-        slugify_uid = slugify(f"{SENSOR_DOMAIN}_{key}_{device_id}")
+        slugify_uid = slugify(f"{SELECT_DOMAIN}_temp_unit_{device_id}")
 
-        native_unit = self.coordinator.get_temperature_unit(device_code)
-
-        entity_description = SensorEntityDescription(slugify_uid)
+        entity_description = SelectEntityDescription(slugify_uid)
         entity_description.name = entity_name
-        entity_description.device_class = SensorDeviceClass.TEMPERATURE
-        entity_description.native_unit_of_measurement = native_unit
+        entity_description.entity_category = EntityCategory.CONFIG
+        entity_description.options = [
+            UnitOfTemperature.CELSIUS,
+            UnitOfTemperature.FAHRENHEIT,
+        ]
 
         self.entity_description = entity_description
         self._attr_device_info = device_info
@@ -71,11 +68,14 @@ class AquaTempTemperatureEntity(CoordinatorEntity, SensorEntity):
         self._attr_unique_id = slugify_uid
 
     @property
-    def native_value(self) -> float | int | str | None:
-        """Return current state."""
-        state: float | int | str | None = self._api_data.get(self._key)
+    def current_option(self) -> str | None:
+        """Return the selected entity option to represent the entity state."""
+        temperature_unit = self.coordinator.get_temperature_unit(self._device_code)
 
-        if isinstance(state, str):
-            state = float(state)
+        return temperature_unit
 
-        return state
+    async def async_select_option(self, option: str) -> None:
+        """Change the selected option."""
+        await self.coordinator.set_temperature_unit(self._device_code, option)
+
+        await self.coordinator.async_request_refresh()

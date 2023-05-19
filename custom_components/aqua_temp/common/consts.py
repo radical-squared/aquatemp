@@ -1,3 +1,4 @@
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 from homeassistant.const import (
     CONF_TEMPERATURE_UNIT,
@@ -132,9 +133,17 @@ PROTOCOL_CODES = {
     "T14": None,
 }
 
-BINARY_SENSOR_IS_ON = {
-    "Power": "1",
-    "device_status": "ONLINE",
+BINARY_SENSOR_CONFIG = {
+    "Power": {
+        "value": "1",
+        "name": "Power",
+        "device_class": BinarySensorDeviceClass.POWER,
+    },
+    "device_status": {
+        "value": "ONLINE",
+        "name": "Status",
+        "device_class": BinarySensorDeviceClass.CONNECTIVITY,
+    },
 }
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
@@ -147,4 +156,4 @@ DATA_ITEM_CONFIG = "configuration"
 
 DEFAULT_TEMPERATURE_UNIT = UnitOfTemperature.CELSIUS
 
-PLATFORMS = [Platform.BINARY_SENSOR, Platform.CLIMATE, Platform.SENSOR]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.CLIMATE, Platform.SENSOR, Platform.SELECT]
