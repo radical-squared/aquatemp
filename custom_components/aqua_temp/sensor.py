@@ -70,11 +70,13 @@ class AquaTempTemperatureEntity(CoordinatorEntity, SensorEntity):
 
         self.entity_description = entity_description
         self._attr_device_info = device_info
+        self._attr_name = entity_name
+        self._attr_unique_id = slugify_uid
 
     @property
     def native_value(self) -> float | int | str | None:
         """Return current state."""
-        state: float | int | str | None = self.coordinator.api_data.get(self._key)
+        state: float | int | str | None = self._api_data.get(self._key)
 
         if isinstance(state, str):
             state = float(state)

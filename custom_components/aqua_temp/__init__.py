@@ -21,23 +21,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     initialized = False
 
     try:
-        if DOMAIN not in hass.data:
-            hass.data[DOMAIN] = {}
+        config_manager = AquaTempConfigManager(hass, entry)
+        await config_manager.initialize()
 
-        if entry.entry_id not in hass.data[DOMAIN]:
-            config_manager = AquaTempConfigManager(hass, entry)
-            await config_manager.initialize()
+        api = AquaTempAPI(hass, config_manager)
+        await api.initialize()
 
-            api = AquaTempAPI(hass, config_manager)
-            await api.initialize()
+        coordinator = AquaTempCoordinator(hass, api, config_manager)
 
-            coordinator = AquaTempCoordinator(hass, api, config_manager)
+        hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
-            hass.data[DOMAIN][entry.entry_id] = coordinator
+        await coordinator.async_config_entry_first_refresh()
 
-            await coordinator.async_config_entry_first_refresh()
+        _LOGGER.info("Finished loading integration")
 
-            await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+        _LOGGER.info("Finished loading components")
 
         initialized = True
 
@@ -52,9 +52,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    if DOMAIN not in hass.data:
-        hass.data[DOMAIN] = {}
-
     del hass.data[DOMAIN][entry.entry_id]
 
     return True
