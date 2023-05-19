@@ -1,15 +1,10 @@
 from homeassistant.config_entries import STORAGE_VERSION, ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-from ..common.consts import (
-    CONF_TEMPERATURE_UNIT,
-    CONFIG_FIELDS,
-    DEFAULT_TEMPERATURE_UNIT,
-    DOMAIN,
-)
+from ..common.consts import CONF_TEMPERATURE_UNIT, CONFIG_FIELDS, DOMAIN
 
 
 class AquaTempConfigManager:
@@ -31,6 +26,12 @@ class AquaTempConfigManager:
     def unique_id(self):
         return self._entry.unique_id
 
+    def get_temperature_unit(self, device_code: str):
+        temperature_units = self.data.get(CONF_TEMPERATURE_UNIT, {})
+        temperature_unit = temperature_units.get(device_code, UnitOfTemperature.CELSIUS)
+
+        return temperature_unit
+
     async def initialize(self):
         local_data = await self._load()
 
@@ -46,15 +47,17 @@ class AquaTempConfigManager:
         self.data[CONF_USERNAME] = username
         self.data[CONF_PASSWORD] = password
 
-    async def update_temperature_unit(self, value):
-        self.data[CONF_TEMPERATURE_UNIT] = value
+    async def update_temperature_unit(self, device_code: str, value: str):
+        self.data[CONF_TEMPERATURE_UNIT][device_code] = value
+
+        await self._save()
 
     async def _load(self):
         result = await self._store.async_load()
 
         if result is None:
             result = {
-                CONF_TEMPERATURE_UNIT: DEFAULT_TEMPERATURE_UNIT,
+                CONF_TEMPERATURE_UNIT: {},
             }
 
         return result
