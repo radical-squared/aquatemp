@@ -8,10 +8,10 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 
-from .aqua_temp_api import AquaTempAPI
-from .aqua_temp_config_manager import AquaTempConfigManager
-from .consts import DEFAULT_NAME, DOMAIN
-from .exceptions import LoginError
+from .common.consts import DEFAULT_NAME, DOMAIN
+from .common.exceptions import LoginError
+from .managers.aqua_temp_api import AquaTempAPI
+from .managers.aqua_temp_config_manager import AquaTempConfigManager
 
 _LOGGER = logging.getLogger(__name__)
 

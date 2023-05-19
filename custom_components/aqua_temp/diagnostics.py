@@ -9,8 +9,8 @@ from homeassistant.const import CONF_PASSWORD
 from homeassistant.core import HomeAssistant, callback
 
 from . import DOMAIN
-from .aqua_temp_coordinator import AquaTempCoordinator
-from .consts import DATA_ITEM_CONFIG
+from .common.consts import DATA_ITEM_CONFIG
+from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 

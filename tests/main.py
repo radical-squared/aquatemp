@@ -3,8 +3,10 @@ import logging
 import os
 import sys
 
-from custom_components.aqua_temp.aqua_temp_api import AquaTempAPI
-from custom_components.aqua_temp.aqua_temp_config_manager import AquaTempConfigManager
+from custom_components.aqua_temp.managers.aqua_temp_api import AquaTempAPI
+from custom_components.aqua_temp.managers.aqua_temp_config_manager import (
+    AquaTempConfigManager,
+)
 
 DEBUG = str(os.environ.get("DEBUG", False)).lower() == str(True).lower()
 
