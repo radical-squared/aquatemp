@@ -65,10 +65,15 @@ POWER_MODE_MAPPING = {POWER_MODE_OFF: STATE_OFF, POWER_MODE_ON: STATE_ON}
 
 MANUAL_MUTE_MAPPING = {MANUAL_MUTE_AUTO: FAN_AUTO, MANUAL_MUTE_LOW: FAN_LOW}
 
+PROTOCOL_CODE_POWER = "Power"
+PROTOCOL_CODE_HVAC_MODE = "Mode"
+PROTOCOL_CODE_FAN_MODE = "Manual-mute"
+PROTOCOL_CODE_CURRENT_TEMP = "T02"
+
 PROTOCOL_CODES = {
-    "Power": None,
-    "Mode": None,
-    "Manual-mute": None,
+    PROTOCOL_CODE_POWER: None,
+    PROTOCOL_CODE_HVAC_MODE: None,
+    PROTOCOL_CODE_FAN_MODE: None,
     "2074": None,
     "2075": None,
     "2076": None,
@@ -118,10 +123,10 @@ PROTOCOL_CODES = {
     "R10": "Minimum Heating set point",
     "R11": "Maximum Heating set point",
     "U02": "Pulse",
-    "T01": "Inlet water temp.",
-    "T02": "Outlet water temp",
-    "T03": "Coil 1 temperature",
-    "T04": "Coil 2 temperature",
+    "T01": "Suction temperature",
+    "T02": "Inlet water temp.",
+    "T03": "Outlet water temp",
+    "T04": "Coil temperature",
     "T05": "Ambient temperature",
     "T06": "Antifreeze 1 temperature",
     "T07": "Antifreeze 2 temperature",
@@ -134,7 +139,7 @@ PROTOCOL_CODES = {
 }
 
 BINARY_SENSOR_CONFIG = {
-    "Power": {
+    PROTOCOL_CODE_POWER: {
         "value": "1",
         "name": "Power",
         "device_class": BinarySensorDeviceClass.POWER,

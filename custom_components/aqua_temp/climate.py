@@ -13,12 +13,12 @@ from homeassistant.components.climate.const import (
     HVACMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
 from .common.consts import (
+    BINARY_SENSOR_CONFIG,
     DOMAIN,
     FAN_MODE_MAPPING,
     HVAC_MODE_MAPPING,
@@ -27,6 +27,10 @@ from .common.consts import (
     HVAC_PC_MAPPING,
     MANUAL_MUTE_MAPPING,
     POWER_MODE_MAPPING,
+    PROTOCOL_CODE_CURRENT_TEMP,
+    PROTOCOL_CODE_FAN_MODE,
+    PROTOCOL_CODE_HVAC_MODE,
+    PROTOCOL_CODE_POWER,
 )
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -159,12 +163,15 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
     def _handle_coordinator_update(self) -> None:
         """Fetch new state data for the sensor."""
-        mode = self._api_data.get("Mode")
-        power = self._api_data.get("Power")
-        manual_mute = self._api_data.get("Manual-mute")
-        current_temperature = self._api_data.get("T02")
+        mode = self._api_data.get(PROTOCOL_CODE_HVAC_MODE)
+        power = self._api_data.get(PROTOCOL_CODE_POWER)
+        manual_mute = self._api_data.get(PROTOCOL_CODE_FAN_MODE)
+        current_temperature = self._api_data.get(PROTOCOL_CODE_CURRENT_TEMP)
 
-        is_power_on = power == STATE_ON
+        power_config = BINARY_SENSOR_CONFIG.get(PROTOCOL_CODE_POWER)
+        power_on_value = power_config.get("value")
+
+        is_power_on = power == power_on_value
 
         power_mode = POWER_MODE_MAPPING.get(power)
         hvac_mode = HVAC_PC_MAPPING.get(mode) if is_power_on else HVAC_MODE_OFF
