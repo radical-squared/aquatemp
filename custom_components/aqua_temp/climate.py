@@ -56,8 +56,6 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
     """Representation of a climate entity."""
 
     _attributes: dict
-    _inlet_temp: float | None
-    _outlet_temp: float | None
 
     def __init__(self, device_code: str, coordinator: AquaTempCoordinator):
         """Initialize the climate entity."""
@@ -81,9 +79,6 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
         self._device_code = device_code
 
-        self._inlet_temp = None
-        self._outlet_temp = None
-
         self._attributes = {}
 
         self._attr_device_info = device_info
@@ -102,16 +97,6 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
     def extra_state_attributes(self):
         """Return entity specific state attributes."""
         return self._attributes
-
-    @property
-    def inlet_temp(self):
-        """Returns the inlet temperature."""
-        return self._inlet_temp
-
-    @property
-    def outlet_temp(self):
-        """Returns the outlet temperature."""
-        return self._outlet_temp
 
     @property
     def device_state_attributes(self):
