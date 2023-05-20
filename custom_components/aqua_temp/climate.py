@@ -7,7 +7,6 @@ from homeassistant.components.climate import ClimateEntity, ClimateEntityDescrip
 from homeassistant.components.climate.const import (
     DOMAIN as CLIMATE_DOMAIN,
     FAN_AUTO,
-    HVAC_MODE_OFF,
     SUPPORT_FAN_MODE,
     SUPPORT_TARGET_TEMPERATURE,
     HVACMode,
@@ -26,7 +25,6 @@ from .common.consts import (
     HVAC_MODE_MIN_TEMP,
     HVAC_PC_MAPPING,
     MANUAL_MUTE_MAPPING,
-    POWER_MODE_MAPPING,
     PROTOCOL_CODE_CURRENT_TEMP,
     PROTOCOL_CODE_FAN_MODE,
     PROTOCOL_CODE_HVAC_MODE,
