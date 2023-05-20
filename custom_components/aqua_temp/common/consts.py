@@ -37,16 +37,9 @@ HVAC_MODE_MAPPING = {
 }
 
 HVAC_PC_MAPPING = {
-    HVAC_PC_COOL: MODE_SET_TEMPERATURE_COOL,
-    HVAC_PC_HEAT: MODE_SET_TEMPERATURE_HEAT,
-    HVAC_PC_AUTO: MODE_SET_TEMPERATURE_AUTO,
-}
-
-HVAC_MODE_POWER_MAPPING = {
-    HVACMode.OFF: STATE_OFF,
-    HVACMode.COOL: STATE_ON,
-    HVACMode.HEAT: STATE_ON,
-    HVACMode.AUTO: STATE_ON,
+    HVAC_PC_COOL: HVACMode.COOL,
+    HVAC_PC_HEAT: HVACMode.HEAT,
+    HVAC_PC_AUTO: HVACMode.AUTO,
 }
 
 HVAC_MODE_MIN_TEMP = {HVACMode.COOL: "R08", HVACMode.HEAT: "R10"}
@@ -139,15 +132,23 @@ PROTOCOL_CODES = {
 }
 
 BINARY_SENSOR_CONFIG = {
-    PROTOCOL_CODE_POWER: {
+    "Power": {
         "value": "1",
         "name": "Power",
         "device_class": BinarySensorDeviceClass.POWER,
+        "attributes": None,
     },
     "device_status": {
         "value": "ONLINE",
         "name": "Status",
         "device_class": BinarySensorDeviceClass.CONNECTIVITY,
+        "attributes": None,
+    },
+    "is_fault": {
+        "value": True,
+        "name": "Fault",
+        "device_class": BinarySensorDeviceClass.PROBLEM,
+        "attributes": ["fault"],
     },
 }
 
