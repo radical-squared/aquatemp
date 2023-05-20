@@ -1,0 +1,4 @@
+homeassistant~=2023.5.3
+aiohttp~=3.8.4
+
+voluptuous~=0.13.1

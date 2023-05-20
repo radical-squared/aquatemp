@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Aqua Temp integration",
+        "description": "Set up your Aqua Temp credentials",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_credentials": "Invalid credentials"
+    }
+  }
+}
