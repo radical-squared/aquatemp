@@ -7,8 +7,8 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.device_registry import DeviceEntry
 
 from .common.consts import DOMAIN
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_get_config_entry_diagnostics(
-        hass: HomeAssistant, entry: ConfigEntry
+    hass: HomeAssistant, entry: ConfigEntry
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
     _LOGGER.debug("Starting diagnostic tool")
@@ -28,7 +28,7 @@ async def async_get_config_entry_diagnostics(
 
 
 async def async_get_device_diagnostics(
-        hass: HomeAssistant, entry: ConfigEntry, device: DeviceEntry
+    hass: HomeAssistant, entry: ConfigEntry, device: DeviceEntry
 ) -> dict[str, Any]:
     """Return diagnostics for a device entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
@@ -38,10 +38,10 @@ async def async_get_device_diagnostics(
 
 @callback
 def _async_get_diagnostics(
-        hass: HomeAssistant,
-        coordinator: AquaTempCoordinator,
-        entry: ConfigEntry,
-        device: DeviceEntry | None = None,
+    hass: HomeAssistant,
+    coordinator: AquaTempCoordinator,
+    entry: ConfigEntry,
+    device: DeviceEntry | None = None,
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
     _LOGGER.debug("Getting diagnostic information")
@@ -57,7 +57,7 @@ def _async_get_diagnostics(
     data = {
         "config": clean_config,
         "disabled_by": entry.disabled_by,
-        "disabled_polling": entry.pref_disable_polling
+        "disabled_polling": entry.pref_disable_polling,
     }
 
     if device:
