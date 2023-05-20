@@ -65,6 +65,7 @@ class AquaTempConfigManager:
     async def _save(self):
         data = {}
         for key in CONFIG_FIELDS:
-            data[key] = self.data[key]
+            if key not in [CONF_PASSWORD, CONF_PASSWORD]:
+                data[key] = self.data[key]
 
         await self._store.async_save(self.data)
