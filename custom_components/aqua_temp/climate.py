@@ -158,8 +158,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
         is_power_on = power == power_on_value
 
-        power_mode = POWER_MODE_MAPPING.get(power)
-        hvac_mode = HVAC_PC_MAPPING.get(mode) if is_power_on else HVAC_MODE_OFF
+        hvac_mode = HVAC_PC_MAPPING.get(mode) if is_power_on else HVACMode.OFF
 
         min_temp_key = HVAC_MODE_MIN_TEMP.get(hvac_mode)
         max_temp_key = HVAC_MODE_MAX_TEMP.get(hvac_mode)
@@ -175,15 +174,25 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         if is_power_on and hvac_mode_temperature_value is not None:
             target_temperature = float(hvac_mode_temperature_value)
 
-        self._attributes["power"] = power_mode
-
         self._attr_hvac_mode = hvac_mode
-        self._attr_target_temperature = target_temperature
         self._attr_fan_mode = MANUAL_MUTE_MAPPING.get(manual_mute)
-        self._attr_min_temp = min_temp
-        self._attr_max_temp = max_temp
+        self._attr_target_temperature = float(str(target_temperature))
+        self._attr_min_temp = float(str(min_temp))
+        self._attr_max_temp = float(str(max_temp))
 
         if current_temperature is not None:
-            self._attr_current_temperature = float(current_temperature)
+            self._attr_current_temperature = float(str(current_temperature))
+
+        _LOGGER.debug(f"{PROTOCOL_CODE_HVAC_MODE}: {mode}")
+        _LOGGER.debug(f"{PROTOCOL_CODE_POWER}: {power}")
+        _LOGGER.debug(f"{PROTOCOL_CODE_FAN_MODE}: {manual_mute}")
+        _LOGGER.debug(f"{PROTOCOL_CODE_CURRENT_TEMP}: {current_temperature}")
+        _LOGGER.debug(f"is_power_on: {is_power_on}")
+
+        _LOGGER.debug(f"_attr_hvac_mode: {self._attr_hvac_mode}")
+        _LOGGER.debug(f"_attr_target_temperature: {self._attr_target_temperature}")
+        _LOGGER.debug(f"_attr_fan_mode: {self._attr_fan_mode}")
+        _LOGGER.debug(f"_attr_min_temp: {self._attr_min_temp}")
+        _LOGGER.debug(f"_attr_max_temp: {self._attr_max_temp}")
 
         self.async_write_ha_state()
