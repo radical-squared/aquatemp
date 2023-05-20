@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from homeassistant.components.binary_sensor import (
     DOMAIN as BINARY_SENSOR_DOMAIN,
@@ -50,6 +51,8 @@ class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
 
         entity_type_name = entity_configuration.get("name")
         device_class = entity_configuration.get("device_class")
+        attributes_keys = entity_configuration.get("attributes")
+        on_value = entity_configuration.get("value")
 
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
@@ -70,7 +73,19 @@ class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
         self._attr_name = entity_name
         self._attr_unique_id = slugify_uid
         self._attr_device_class = device_class
-        self._on_value = entity_configuration.get("value")
+        self._on_value = on_value
+        self._attributes_keys = attributes_keys
+
+    @property
+    def state_attributes(self) -> dict[str, Any] | None:
+        attributes = {}
+        if self._attributes_keys is not None:
+            for attribute_key in self._attributes_keys:
+                value = self._api_data.get(attribute_key)
+
+                attributes[attribute_key] = value
+
+        return attributes
 
     @property
     def is_on(self) -> bool | None:
