@@ -19,7 +19,7 @@ class AquaTempEntityDescription(EntityDescription):
 class AquaTempClimateEntityDescription(
     ClimateEntityDescription, AquaTempEntityDescription
 ):
-    platform = Platform.CLIMATE
+    platform: Platform | None = Platform.CLIMATE
     power_key: str | None = None
     fan_mode_key: str | None = None
     current_temperature_key: str | None = None
@@ -33,7 +33,7 @@ class AquaTempClimateEntityDescription(
 class AquaTempBinarySensorEntityDescription(
     BinarySensorEntityDescription, AquaTempEntityDescription
 ):
-    platform = Platform.BINARY_SENSOR
+    platform: Platform | None = Platform.BINARY_SENSOR
     on_value: str | bool | None = None
     attributes: list[str] | None = None
 
@@ -42,11 +42,11 @@ class AquaTempBinarySensorEntityDescription(
 class AquaTempSensorEntityDescription(
     SensorEntityDescription, AquaTempEntityDescription
 ):
-    platform = Platform.SENSOR
+    platform: Platform | None = Platform.SENSOR
 
 
 @dataclass(slots=True)
 class AquaTempSelectEntityDescription(
     SelectEntityDescription, AquaTempEntityDescription
 ):
-    platform = Platform.SELECT
+    platform: Platform | None = Platform.SELECT
