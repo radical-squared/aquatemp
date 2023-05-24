@@ -10,6 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from ..common.consts import (
+    ALL_ENTITIES,
     CONTROL_PATH,
     DEVICELIST_PATH,
     FAN_MODE_MAPPING,
@@ -22,7 +23,6 @@ from ..common.consts import (
     MODE_SET_TEMPERATURE_HEAT,
     POWER_MODE_OFF,
     POWER_MODE_ON,
-    PROTOCOL_CODES,
     SERVER_URL,
 )
 from ..common.exceptions import LoginError, OperationFailedException
@@ -52,6 +52,7 @@ class AquaTempAPI:
         self._hass = hass
         self._headers = HEADERS
         self._config_manager = config_manager
+        self.protocol_codes = []
 
     @property
     def is_connected(self):
@@ -62,6 +63,13 @@ class AquaTempAPI:
     async def initialize(self):
         try:
             if not self.is_connected:
+                for entity_description in ALL_ENTITIES:
+                    if (
+                        entity_description.key not in self.protocol_codes
+                        and entity_description.is_protocol_code
+                    ):
+                        self.protocol_codes.append(entity_description.key)
+
                 if self._hass is None:
                     self._session = ClientSession()
                 else:
@@ -162,7 +170,7 @@ class AquaTempAPI:
             raise OperationFailedException(operation, value, error_msg)
 
     async def _fetch_data(self, device_code: str):
-        data = self._get_request_params(device_code, list(PROTOCOL_CODES.keys()))
+        data = self._get_request_params(device_code, self.protocol_codes)
         data_response = await self._post_request(GETDATABYCODE_PATH, data)
         object_result_items = data_response.get("object_result", [])
 
