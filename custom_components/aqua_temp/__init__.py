@@ -4,7 +4,7 @@ import sys
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .common.consts import DOMAIN, PLATFORMS
+from .common.consts import ALL_ENTITIES, DOMAIN
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
@@ -35,7 +35,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         _LOGGER.info("Finished loading integration")
 
-        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        platforms = []
+        for entity_description in ALL_ENTITIES:
+            if entity_description.platform not in platforms:
+                platforms.append(entity_description.platform)
+
+        await hass.config_entries.async_forward_entry_setups(entry, platforms)
 
         _LOGGER.info("Finished loading components")
 
