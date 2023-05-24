@@ -4,7 +4,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-from ..common.consts import CONF_TEMPERATURE_UNIT, CONFIG_FIELDS, DOMAIN
+from ..common.consts import CONF_TEMPERATURE_UNIT, DOMAIN
 
 
 class AquaTempConfigManager:
@@ -64,8 +64,7 @@ class AquaTempConfigManager:
 
     async def _save(self):
         data = {}
-        for key in CONFIG_FIELDS:
-            if key not in [CONF_PASSWORD, CONF_PASSWORD]:
-                data[key] = self.data[key]
+        for key in [CONF_TEMPERATURE_UNIT]:
+            data[key] = self.data[key]
 
         await self._store.async_save(self.data)

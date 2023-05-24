@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 
+from custom_components.aqua_temp.common.consts import ALL_ENTITIES
 from custom_components.aqua_temp.managers.aqua_temp_api import AquaTempAPI
 from custom_components.aqua_temp.managers.aqua_temp_config_manager import (
     AquaTempConfigManager,
@@ -30,7 +31,31 @@ class Test:
         config_manager.update_credentials("elad.bar@hotmail.com", "Amit0807!")
         self._api = AquaTempAPI(None, config_manager)
 
-    async def initialize(self):
+    async def parameters_list(self):
+        await self._api.initialize()
+
+        _LOGGER.debug(self._api.protocol_codes)
+
+    async def parameters_details(self):
+        await self.parameters_list()
+
+        await self._api.update()
+
+        print(self._api.data)
+
+        for device_code in self._api.data:
+            device_data = self._api.data[device_code]
+
+            for entity_description in ALL_ENTITIES:
+                value = device_data.get(entity_description.key)
+                _LOGGER.debug(
+                    f"{entity_description.key}::"
+                    f"{entity_description.name} "
+                    f"[{entity_description.category}] = "
+                    f"{value}"
+                )
+
+    async def api_test(self):
         await self._api.initialize()
 
         for i in range(1, 10):
@@ -46,7 +71,7 @@ loop = asyncio.new_event_loop()
 instance = Test()
 
 try:
-    loop.run_until_complete(instance.initialize())
+    loop.run_until_complete(instance.parameters_details())
 
 except KeyboardInterrupt:
     _LOGGER.info("Aborted")
