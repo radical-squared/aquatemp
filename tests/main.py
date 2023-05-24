@@ -36,6 +36,34 @@ class Test:
 
         _LOGGER.debug(self._api.protocol_codes)
 
+    async def protocol_code_mapping(self):
+        protocol_categories = {}
+
+        for entity_description in ALL_ENTITIES:
+            if entity_description.is_protocol_code:
+                if entity_description.category not in protocol_categories:
+                    protocol_categories[entity_description.category] = []
+
+                protocol_categories[entity_description.category].append(entity_description)
+
+        for protocol_category in protocol_categories:
+            entity_descriptions = protocol_categories[protocol_category]
+            print(f"### {protocol_category}")
+
+            print(f"| Parameter | Description           |")
+            print(f"| --------- | --------------------- |")
+
+            for entity_description in entity_descriptions:
+                print(f"| {entity_description.key} | {entity_description.name} |")
+
+    async def entities_mapping(self):
+        print("| Entity Name | Parameter | Platform | Protocol Code? |")
+        print("| ----------- | --------- | -------- | -------------- |")
+
+        for entity_description in ALL_ENTITIES:
+            if entity_description.platform is not None:
+                print(f"| {{HA Device Name}} {entity_description.name} | {entity_description.key} | {entity_description.platform} | {entity_description.is_protocol_code} |")
+
     async def parameters_details(self):
         await self.parameters_list()
 
@@ -71,7 +99,7 @@ loop = asyncio.new_event_loop()
 instance = Test()
 
 try:
-    loop.run_until_complete(instance.parameters_details())
+    loop.run_until_complete(instance.entities_mapping())
 
 except KeyboardInterrupt:
     _LOGGER.info("Aborted")

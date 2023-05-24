@@ -1,10 +1,15 @@
 from homeassistant.config_entries import STORAGE_VERSION, ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, UnitOfTemperature
+from homeassistant.const import (
+    CONF_PASSWORD,
+    CONF_TEMPERATURE_UNIT,
+    CONF_USERNAME,
+    UnitOfTemperature,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-from ..common.consts import CONF_TEMPERATURE_UNIT, DOMAIN
+from ..common.consts import DOMAIN
 
 
 class AquaTempConfigManager:
