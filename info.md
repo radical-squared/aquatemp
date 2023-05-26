@@ -51,115 +51,37 @@ Device scheme is according to data from the API
 
 Per device the following components will be generated:
 
-| Entity Name                               | Type          | Source              | Parameter        | Description                                                                                       |
-| ----------------------------------------- | ------------- | ------------------- | ---------------- | ------------------------------------------------------------------------------------------------- |
-| {HA Device Name} Status                   | Binary Sensor | Devices list        | device_status    | Represents whether device is online or not                                                        |
-| {HA Device Name} Fault                    | Binary Sensor | Devices status      | is_fault         | Represents whether device has an issue, in case it has, attribute `fault` will hold the details   |
-| {HA Device Name} Power                    | Binary Sensor | Protocol Codes      | Power            | Represents whether device is on or off                                                            |
-| {HA Device Name} Power                    | Climate       | Protocol Codes      | Power            | Controls heat pump - HVAC Modes (Off, Cool, Heat, Auto), Fan Mode (Low, Auto), Target temperature |
-| {HA Device Name} Suction temperature      | Sensor        | Protocol Codes      | T01              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Inlet water temp.        | Sensor        | Protocol Codes      | T02              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Outlet water temp        | Sensor        | Protocol Codes      | T03              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Coil temperature         | Sensor        | Protocol Codes      | T04              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Ambient temperature      | Sensor        | Protocol Codes      | T05              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Antifreeze 1 temperature | Sensor        | Protocol Codes      | T06              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Antifreeze 2 temperature | Sensor        | Protocol Codes      | T07              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Suction 1 temperature    | Sensor        | Protocol Codes      | T08              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Suction 2 temperature    | Sensor        | Protocol Codes      | T08              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Exhaust 1 temperature    | Sensor        | Protocol Codes      | T09              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Exhaust 1 temperature    | Sensor        | Protocol Codes      | T10              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Hot water temperature    | Sensor        | Protocol Codes      | T12              | Represents the temperature according to the name of the component                                 |
-| {HA Device Name} Temperature Unit         | Select        | Local configuration | temperature_unit | Controls the unit of temperature to match the one configured in the Aqua Temp device              |
+| Entity Name                                                | Parameter        | Platform      | Protocol Code? |
+| ---------------------------------------------------------- | ---------------- | ------------- | -------------- |
+| {HA Device Name} Temperature Unit                          | temperature_unit | select        | False          |
+| {HA Device Name} Fault                                     | is_fault         | binary_sensor | False          |
+| {HA Device Name} Status                                    | device_status    | binary_sensor | False          |
+| {HA Device Name} Power                                     | Power            | binary_sensor | True           |
+| {HA Device Name} HVAC Mode                                 | Mode             | climate       | True           |
+| {HA Device Name} Inlet water setting temperature (cooling) | R01              | sensor        | True           |
+| {HA Device Name} Inlet water setting temperature (Heating) | R02              | sensor        | True           |
+| {HA Device Name} Target setting temperature (Auto mode)    | R03              | sensor        | True           |
+| {HA Device Name} Minimum set point in Cooling              | R08              | sensor        | True           |
+| {HA Device Name} Maximum Cooling set point                 | R09              | sensor        | True           |
+| {HA Device Name} Minimum Heating set point                 | R10              | sensor        | True           |
+| {HA Device Name} Maximum Heating set point                 | R11              | sensor        | True           |
+| {HA Device Name} Suction temperature                       | T01              | sensor        | True           |
+| {HA Device Name} Inlet water temp.                         | T02              | sensor        | True           |
+| {HA Device Name} Outlet water temp                         | T03              | sensor        | True           |
+| {HA Device Name} Coil temperature                          | T04              | sensor        | True           |
+| {HA Device Name} Ambient temperature                       | T05              | sensor        | True           |
+| {HA Device Name} Antifreeze 1 temperature                  | T06              | sensor        | True           |
+| {HA Device Name} Antifreeze 2 temperature                  | T07              | sensor        | True           |
+| {HA Device Name} Suction 1 temperature                     | T08              | sensor        | True           |
+| {HA Device Name} Suction 2 temperature                     | T09              | sensor        | True           |
+| {HA Device Name} Exhaust 1 temperature                     | T10              | sensor        | True           |
+| {HA Device Name} Exhaust 2 temperature                     | T11              | sensor        | True           |
+| {HA Device Name} Hot water temperature                     | T12              | sensor        | True           |
+| {HA Device Name} 4-way valve output                        | O06              | sensor        | True           |
+| {HA Device Name} Electronic Expansion valve 1 output       | O10              | sensor        | True           |
+| {HA Device Name} Electronic Expansion valve 2 output       | O11              | sensor        | True           |
 
-## Protocol Codes
-
-Protocol Codes first character represent a category, below are the categories:
-
-| Character | Description           | Parameters |
-| --------- | --------------------- | ---------- |
-| /         | Hardware parameter    | /01-/28    |
-| A         | Protection parameter  | A01-A09    |
-| C         | Compressor parameter  | C01-C04    |
-| D         | Defrost parameter     | D01-D08    |
-| E         | EEV parameter         | E01-E11    |
-| F         | Fan parameter         | F01-F11    |
-| H         | System parameter      | H01-H13    |
-| P         | Water pump parameter  | P01-P09    |
-| R         | Temp parameter        | R01-R28    |
-| U         | Water flow parameter  | U01-U04    |
-| S         | Switch state checking | S01-S13    |
-| T         | Temp. checking        | T01-T12    |
-| O         | Load output           | O01-O11    |
-
-Integration is collecting the following
-
-```json
-{
-    "Power": "0 - Off or 1 - On",
-    "Mode": "HVAC mode (Off, Cool, Heat, Auto)",
-    "Manual-mode": "Fan speed (Low, Auto)",
-    "2074": "Unknown",
-    "2075": "Unknown",
-    "2076": "Unknown",
-    "2077": "Unknown",
-    "Set_Temp": "Set Target temperature",
-    "1158": "Unknown",
-    "1159": "Unknown",
-    "D01": "Start defrosting temperature",
-    "D02": "End defrost temperature",
-    "D03": "defrosting cycle",
-    "D04": "Maximum defrosting time",
-    "D05": "Minimum defrosting time",
-    "D06": "Defrost mode",
-    "D07": "Defrost heater control",
-    "D08": "Defrost AUTO set",
-    "E01": "EEV 1 mode",
-    "E02": "Super heat 1",
-    "E03": "Initial place 1",
-    "E04": "EEV 2 mode",
-    "E05": "Super heat 2",
-    "E06": "Initial place 2",
-    "E07": "Minimum place",
-    "E08": "Defrost place",
-    "E09": "Cooling place",
-    "E10": "Low exhaust",
-    "E11": "High exhaust",
-    "F01": "Fan parameter",
-    "F02": "Coil temperature in high speed fan mode (Cooling)",
-    "F03": "Coil temperature in low speed fan mode (Cooling)",
-    "F04": "Coil temperature when the fan stop (Cooling)",
-    "F05": "Coil temperature in high speed fan mode (Heating)",
-    "F06": "Coil temperature in low speed fan mode (Heating)",
-    "F07": "Coil temperature when the fan stop (Heating)",
-    "F08": "Fan start low speed running time",
-    "F09": "Fan stop low speed running time",
-    "F10": "Fan quantity",
-    "F11": "Fan speed control temp."
-    "H02": "System quantity",
-    "H03": "4-way valve polarity",
-    "H04": "4-way valve control",
-    "R01": "Inlet water setting temperature (cooling)",
-    "R02": "Inlet water setting temperature (Heating)",
-    "R03": "Target setting temperature (Auto mode)",
-    "R08": "Minimum set point in Cooling",
-    "R09": "Maximum Cooling set point",
-    "R10": "Minimum Heating set point",
-    "R11": "Maximum Heating set point",
-    "U02": "Pulse",
-    "T01": "Suction temperature",
-    "T02": "Inlet water temp.",
-    "T03": "Outlet water temp",
-    "T04": "Coil temperature",
-    "T05": "Ambient temperature",
-    "T06": "Antifreeze 1 temperature",
-    "T07": "Antifreeze 2 temperature",
-    "T08": "Suction 1 temperature",
-    "T09": "Suction 2 temperature",
-    "T10": "Exhaust 1 temperature",
-    "T11": "Exhaust 2 temperature",
-    "T12": "Hot water temperature"
-}
-```
+[Protocol Codes](https://github.com/radical-squared/aquatemp/blob/master/PROTOCOL_CODES.md)
 
 ## Run API over CLI
 
