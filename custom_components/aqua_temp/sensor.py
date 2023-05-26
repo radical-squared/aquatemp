@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -44,9 +44,7 @@ async def async_setup_entry(
         exc_type, exc_obj, tb = sys.exc_info()
         line_number = tb.tb_lineno
 
-        _LOGGER.error(
-            f"Failed to initialize sensor, Error: {ex}, Line: {line_number}"
-        )
+        _LOGGER.error(f"Failed to initialize sensor, Error: {ex}, Line: {line_number}")
 
 
 class AquaTempSensorEntity(CoordinatorEntity, SensorEntity):
@@ -82,7 +80,9 @@ class AquaTempSensorEntity(CoordinatorEntity, SensorEntity):
         self._attr_device_class = entity_description.device_class
 
         if entity_description.device_class == SensorDeviceClass.TEMPERATURE:
-            self._attr_native_unit_of_measurement = self.coordinator.get_temperature_unit(device_code)
+            self._attr_native_unit_of_measurement = (
+                self.coordinator.get_temperature_unit(device_code)
+            )
 
     @property
     def native_value(self) -> float | int | str | None:

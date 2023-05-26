@@ -39,7 +39,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         platforms = []
         for entity_description in ALL_ENTITIES:
-            if entity_description.platform not in platforms and entity_description.platform is not None:
+            if (
+                entity_description.platform not in platforms
+                and entity_description.platform is not None
+            ):
                 platforms.append(entity_description.platform)
 
         _LOGGER.debug(f"Loading platforms: {platforms}")
