@@ -33,23 +33,31 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities
 ):
     """Set up the climate platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = []
-    entity_descriptions = []
+    try:
+        coordinator = hass.data[DOMAIN][entry.entry_id]
+        entities = []
+        entity_descriptions = []
 
-    for entity_description in ALL_ENTITIES:
-        if entity_description.platform == Platform.CLIMATE:
-            entity_descriptions.append(entity_description)
+        for entity_description in ALL_ENTITIES:
+            if entity_description.platform == Platform.CLIMATE:
+                entity_descriptions.append(entity_description)
 
-    for device_code in coordinator.api_data:
-        for entity_description in entity_descriptions:
-            entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
+        for device_code in coordinator.api_data:
+            for entity_description in entity_descriptions:
+                entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
 
-            entities.append(entity)
+                entities.append(entity)
 
-    _LOGGER.debug(f"Setting up climate entities: {entities}")
+        _LOGGER.debug(f"Setting up climate entities: {entities}")
 
-    async_add_entities(entities, True)
+        async_add_entities(entities, True)
+    except Exception as ex:
+        exc_type, exc_obj, tb = sys.exc_info()
+        line_number = tb.tb_lineno
+
+        _LOGGER.error(
+            f"Failed to initialize climate, Error: {ex}, Line: {line_number}"
+        )
 
 
 class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
