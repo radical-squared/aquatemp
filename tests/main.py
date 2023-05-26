@@ -8,6 +8,7 @@ from custom_components.aqua_temp.managers.aqua_temp_api import AquaTempAPI
 from custom_components.aqua_temp.managers.aqua_temp_config_manager import (
     AquaTempConfigManager,
 )
+from homeassistant.const import Platform
 
 DEBUG = str(os.environ.get("DEBUG", False)).lower() == str(True).lower()
 
@@ -35,6 +36,28 @@ class Test:
         await self._api.initialize()
 
         _LOGGER.debug(self._api.protocol_codes)
+
+    async def list_data(self):
+        await self._api.initialize()
+
+        await self._api.update()
+
+        print(f"| Parameter | Device Code | Value | Description           |")
+        print(f"| --------- | ----------- | ----- | --------------------- |")
+
+        for device_code in self._api.data:
+            device_data = self._api.data[device_code]
+
+            for entity_description in ALL_ENTITIES:
+                value = device_data.get(entity_description.key)
+
+                if entity_description.platform == Platform.BINARY_SENSOR:
+                    value = value == entity_description.on_value
+
+                if value is not None and value != "":
+                    print(f"| {entity_description.key} | {device_code} | {value} | {entity_description.name} |")
+
+        await self._api.terminate()
 
     async def protocol_code_mapping(self):
         protocol_categories = {}
@@ -93,13 +116,16 @@ class Test:
 
             await asyncio.sleep(30)
 
+    async def terminate(self):
+        await self._api.terminate()
+
 
 loop = asyncio.new_event_loop()
 
 instance = Test()
 
 try:
-    loop.run_until_complete(instance.entities_mapping())
+    loop.run_until_complete(instance.list_data())
 
 except KeyboardInterrupt:
     _LOGGER.info("Aborted")

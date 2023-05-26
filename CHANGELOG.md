@@ -6,6 +6,7 @@
 - Mapped all protocol codes to `EntityDescription`
 - Add more entities (updated list in README)
 - Create [Protocol Codes](https://github.com/radical-squared/aquatemp/blob/master/PROTOCOL_CODES.md) document
+- Fix `climate` HVAC Modes
 
 ## v3.0.0
 
