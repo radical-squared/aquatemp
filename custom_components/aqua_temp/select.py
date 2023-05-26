@@ -1,19 +1,17 @@
 from abc import ABC
 import logging
+import sys
 
-from homeassistant.components.select import (
-    DOMAIN as SELECT_DOMAIN,
-    SelectEntity,
-    SelectEntityDescription,
-)
+from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory, UnitOfTemperature
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import DOMAIN
+from .common.consts import ALL_ENTITIES, DOMAIN
+from .common.entity_descriptions import AquaTempSelectEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -23,23 +21,42 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up the sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = []
+    try:
+        coordinator = hass.data[DOMAIN][entry.entry_id]
+        entities = []
+        entity_descriptions = []
 
-    for device_code in coordinator.api_data:
-        entity = AquaTempSelectEntity(device_code, coordinator)
+        for entity_description in ALL_ENTITIES:
+            if entity_description.platform == Platform.SELECT:
+                entity_descriptions.append(entity_description)
 
-        entities.append(entity)
+        for device_code in coordinator.api_data:
+            for entity_description in entity_descriptions:
+                entity = AquaTempSelectEntity(
+                    device_code, entity_description, coordinator
+                )
 
-    _LOGGER.debug(f"Setting up sensor entities: {entities}")
+                entities.append(entity)
 
-    async_add_entities(entities, True)
+        _LOGGER.debug(f"Setting up sensor entities: {entities}")
+
+        async_add_entities(entities, True)
+    except Exception as ex:
+        exc_type, exc_obj, tb = sys.exc_info()
+        line_number = tb.tb_lineno
+
+        _LOGGER.error(f"Failed to initialize select, Error: {ex}, Line: {line_number}")
 
 
 class AquaTempSelectEntity(CoordinatorEntity, SelectEntity, ABC):
     """Representation of a sensor."""
 
-    def __init__(self, device_code: str, coordinator: AquaTempCoordinator):
+    def __init__(
+        self,
+        device_code: str,
+        entity_description: AquaTempSelectEntityDescription,
+        coordinator: AquaTempCoordinator,
+    ):
         super().__init__(coordinator)
 
         self._device_code = device_code
@@ -49,23 +66,18 @@ class AquaTempSelectEntity(CoordinatorEntity, SelectEntity, ABC):
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
 
-        entity_name = f"{device_name} Temperature Unit"
+        entity_name = f"{device_name} {entity_description.name}"
+
+        slugify_name = slugify(entity_name)
 
         device_id = self._api_data.get("device_id")
-        slugify_uid = slugify(f"{SELECT_DOMAIN}_temp_unit_{device_id}")
+        unique_id = slugify(f"{entity_description.platform}_{slugify_name}_{device_id}")
 
-        entity_description = SelectEntityDescription(slugify_uid)
-        entity_description.name = entity_name
-        entity_description.entity_category = EntityCategory.CONFIG
-        entity_description.options = [
-            UnitOfTemperature.CELSIUS,
-            UnitOfTemperature.FAHRENHEIT,
-        ]
+        self.entity_description: AquaTempSelectEntityDescription = entity_description
 
-        self.entity_description = entity_description
         self._attr_device_info = device_info
         self._attr_name = entity_name
-        self._attr_unique_id = slugify_uid
+        self._attr_unique_id = unique_id
 
     @property
     def current_option(self) -> str | None:
