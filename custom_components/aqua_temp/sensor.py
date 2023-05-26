@@ -1,6 +1,7 @@
 import logging
+import sys
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -19,28 +20,36 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ):
     """Set up the sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = []
-    entity_descriptions = []
+    try:
+        coordinator = hass.data[DOMAIN][entry.entry_id]
+        entities = []
+        entity_descriptions = []
 
-    for entity_description in ALL_ENTITIES:
-        if entity_description.platform == Platform.SENSOR:
-            entity_descriptions.append(entity_description)
+        for entity_description in ALL_ENTITIES:
+            if entity_description.platform == Platform.SENSOR:
+                entity_descriptions.append(entity_description)
 
-    for device_code in coordinator.api_data:
-        for entity_description in entity_descriptions:
-            entity = AquaTempTemperatureEntity(
-                device_code, entity_description, coordinator
-            )
+        for device_code in coordinator.api_data:
+            for entity_description in entity_descriptions:
+                entity = AquaTempSensorEntity(
+                    device_code, entity_description, coordinator
+                )
 
-            entities.append(entity)
+                entities.append(entity)
 
-    _LOGGER.debug(f"Setting up sensor entities: {entities}")
+        _LOGGER.debug(f"Setting up sensor entities: {entities}")
 
-    async_add_entities(entities, True)
+        async_add_entities(entities, True)
+    except Exception as ex:
+        exc_type, exc_obj, tb = sys.exc_info()
+        line_number = tb.tb_lineno
+
+        _LOGGER.error(
+            f"Failed to initialize sensor, Error: {ex}, Line: {line_number}"
+        )
 
 
-class AquaTempTemperatureEntity(CoordinatorEntity, SensorEntity):
+class AquaTempSensorEntity(CoordinatorEntity, SensorEntity):
     """Representation of a sensor."""
 
     def __init__(
@@ -70,6 +79,10 @@ class AquaTempTemperatureEntity(CoordinatorEntity, SensorEntity):
         self._attr_device_info = device_info
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
+        self._attr_device_class = entity_description.device_class
+
+        if entity_description.device_class == SensorDeviceClass.TEMPERATURE:
+            self._attr_native_unit_of_measurement = self.coordinator.get_temperature_unit(device_code)
 
     @property
     def native_value(self) -> float | int | str | None:
