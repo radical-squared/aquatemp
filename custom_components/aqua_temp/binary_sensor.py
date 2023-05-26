@@ -45,9 +45,8 @@ async def async_setup_entry(
         exc_type, exc_obj, tb = sys.exc_info()
         line_number = tb.tb_lineno
 
-        _LOGGER.error(
-            f"Failed to initialize select, Error: {ex}, Line: {line_number}"
-        )
+        _LOGGER.error(f"Failed to initialize select, Error: {ex}, Line: {line_number}")
+
 
 class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
     """Representation of a sensor."""
