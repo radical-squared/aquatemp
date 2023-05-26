@@ -72,7 +72,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
 
-        entity_name = f"{device_name} {entity_description.name}"
+        entity_name = f"{device_name}"
 
         slugify_name = slugify(entity_name)
 
