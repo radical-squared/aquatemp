@@ -4,7 +4,7 @@ import sys
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .common.consts import DOMAIN, PLATFORMS
+from .common.consts import ALL_ENTITIES, DOMAIN
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
@@ -27,6 +27,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         api = AquaTempAPI(hass, config_manager)
         await api.initialize()
 
+        await api.update()
+
         coordinator = AquaTempCoordinator(hass, api, config_manager)
 
         hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
@@ -35,7 +37,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         _LOGGER.info("Finished loading integration")
 
-        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        platforms = []
+        for entity_description in ALL_ENTITIES:
+            if (
+                entity_description.platform not in platforms
+                and entity_description.platform is not None
+            ):
+                platforms.append(entity_description.platform)
+
+        _LOGGER.debug(f"Loading platforms: {platforms}")
+
+        await hass.config_entries.async_forward_entry_setups(entry, platforms)
 
         _LOGGER.info("Finished loading components")
 

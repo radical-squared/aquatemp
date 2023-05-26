@@ -4,12 +4,13 @@ import sys
 
 from aiohttp import ClientSession
 
-from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import HVAC_MODE_OFF, HVACMode
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from ..common.consts import (
+    ALL_ENTITIES,
     CONTROL_PATH,
     DEVICELIST_PATH,
     FAN_MODE_MAPPING,
@@ -19,10 +20,8 @@ from ..common.consts import (
     HEADERS,
     HVAC_MODE_MAPPING,
     LOGIN_PATH,
-    MODE_SET_TEMPERATURE_HEAT,
     POWER_MODE_OFF,
     POWER_MODE_ON,
-    PROTOCOL_CODES,
     SERVER_URL,
 )
 from ..common.exceptions import LoginError, OperationFailedException
@@ -52,6 +51,7 @@ class AquaTempAPI:
         self._hass = hass
         self._headers = HEADERS
         self._config_manager = config_manager
+        self.protocol_codes = []
 
     @property
     def is_connected(self):
@@ -62,6 +62,13 @@ class AquaTempAPI:
     async def initialize(self):
         try:
             if not self.is_connected:
+                for entity_description in ALL_ENTITIES:
+                    if (
+                        entity_description.key not in self.protocol_codes
+                        and entity_description.is_protocol_code
+                    ):
+                        self.protocol_codes.append(entity_description.key)
+
                 if self._hass is None:
                     self._session = ClientSession()
                 else:
@@ -76,6 +83,10 @@ class AquaTempAPI:
             _LOGGER.warning(
                 f"Failed to initialize session, Error: {ex}, Line: {line_number}"
             )
+
+    async def terminate(self):
+        if self._hass is None:
+            await self._session.close()
 
     async def validate(self):
         await self.initialize()
@@ -100,20 +111,25 @@ class AquaTempAPI:
             _LOGGER.error(f"Error fetching data. Reconnecting, Error: {ex}")
 
     async def set_hvac_mode(self, device_code: str, hvac_mode):
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             await self._set_power_mode(device_code, POWER_MODE_OFF)
 
         else:
-            is_on = False
+            device_data = self.data.get(device_code)
+            current_power = device_data.get("Power")
+
+            is_on = current_power == POWER_MODE_ON
 
             if not is_on:
                 await self._set_power_mode(device_code, POWER_MODE_ON)
 
-            await self._set_hvac_mode(device_code, hvac_mode)
+            pc_hvac_mode = HVAC_MODE_MAPPING.get(hvac_mode)
+
+            await self._set_hvac_mode(device_code, pc_hvac_mode)
 
     async def set_temperature(self, device_code: str, hvac_mode, temperature):
         """Set new target temperature."""
-        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode, MODE_SET_TEMPERATURE_HEAT)
+        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode)
         mode = f"R0{hvac_mode_mapping}"
 
         request_data = {mode: temperature, "Set_Temp": temperature}
@@ -162,7 +178,7 @@ class AquaTempAPI:
             raise OperationFailedException(operation, value, error_msg)
 
     async def _fetch_data(self, device_code: str):
-        data = self._get_request_params(device_code, list(PROTOCOL_CODES.keys()))
+        data = self._get_request_params(device_code, self.protocol_codes)
         data_response = await self._post_request(GETDATABYCODE_PATH, data)
         object_result_items = data_response.get("object_result", [])
 
