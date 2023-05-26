@@ -20,7 +20,6 @@ from .common.consts import (
     ALL_ENTITIES,
     DOMAIN,
     HVAC_MODE_MAPPING,
-    HVAC_PC_MAPPING,
     MANUAL_MUTE_MAPPING,
     POWER_MODE_ON,
 )
@@ -116,6 +115,8 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
         try:
+            _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
+
             await self.coordinator.set_hvac_mode(self._device_code, hvac_mode)
 
             await self.coordinator.async_request_refresh()
@@ -129,6 +130,8 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
     async def async_set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
         try:
+            _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
+
             await self.coordinator.set_fan_mode(self._device_code, fan_mode)
 
             await self.coordinator.async_request_refresh()
@@ -151,8 +154,14 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         )
 
         is_power_on = power == POWER_MODE_ON
+        hvac_mode = HVACMode.OFF
 
-        hvac_mode = HVAC_PC_MAPPING.get(mode) if is_power_on else HVACMode.OFF
+        if is_power_on:
+            for key in HVAC_MODE_MAPPING:
+                pc_hvac_mode = HVAC_MODE_MAPPING[key]
+                if pc_hvac_mode == mode:
+                    hvac_mode = key
+                    break
 
         if entity_description.minimum_temperature_keys is not None:
             min_temp_key = entity_description.minimum_temperature_keys.get(hvac_mode)
@@ -176,7 +185,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
         self._attr_hvac_mode = hvac_mode
         self._attr_fan_mode = MANUAL_MUTE_MAPPING.get(manual_mute)
-        self._attr_target_temperature = float(str(target_temperature))
+        self._attr_target_temperature = target_temperature
 
         if current_temperature is not None:
             self._attr_current_temperature = float(str(current_temperature))

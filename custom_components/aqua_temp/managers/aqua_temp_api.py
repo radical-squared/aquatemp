@@ -4,7 +4,7 @@ import sys
 
 from aiohttp import ClientSession
 
-from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import HVAC_MODE_OFF, HVACMode
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
@@ -20,7 +20,6 @@ from ..common.consts import (
     HEADERS,
     HVAC_MODE_MAPPING,
     LOGIN_PATH,
-    MODE_SET_TEMPERATURE_HEAT,
     POWER_MODE_OFF,
     POWER_MODE_ON,
     SERVER_URL,
@@ -85,6 +84,10 @@ class AquaTempAPI:
                 f"Failed to initialize session, Error: {ex}, Line: {line_number}"
             )
 
+    async def terminate(self):
+        if self._hass is None:
+            await self._session.close()
+
     async def validate(self):
         await self.initialize()
 
@@ -108,20 +111,25 @@ class AquaTempAPI:
             _LOGGER.error(f"Error fetching data. Reconnecting, Error: {ex}")
 
     async def set_hvac_mode(self, device_code: str, hvac_mode):
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             await self._set_power_mode(device_code, POWER_MODE_OFF)
 
         else:
-            is_on = False
+            device_data = self.data.get(device_code)
+            current_power = device_data.get("Power")
+
+            is_on = current_power == POWER_MODE_ON
 
             if not is_on:
                 await self._set_power_mode(device_code, POWER_MODE_ON)
 
-            await self._set_hvac_mode(device_code, hvac_mode)
+            pc_hvac_mode = HVAC_MODE_MAPPING.get(hvac_mode)
+
+            await self._set_hvac_mode(device_code, pc_hvac_mode)
 
     async def set_temperature(self, device_code: str, hvac_mode, temperature):
         """Set new target temperature."""
-        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode, MODE_SET_TEMPERATURE_HEAT)
+        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode)
         mode = f"R0{hvac_mode_mapping}"
 
         request_data = {mode: temperature, "Set_Temp": temperature}
