@@ -44,7 +44,9 @@ async def async_setup_entry(
 
         for device_code in coordinator.api_data:
             for entity_description in entity_descriptions:
-                entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
+                entity = AquaTempClimateEntity(
+                    device_code, entity_description, coordinator
+                )
 
                 entities.append(entity)
 
@@ -55,9 +57,7 @@ async def async_setup_entry(
         exc_type, exc_obj, tb = sys.exc_info()
         line_number = tb.tb_lineno
 
-        _LOGGER.error(
-            f"Failed to initialize climate, Error: {ex}, Line: {line_number}"
-        )
+        _LOGGER.error(f"Failed to initialize climate, Error: {ex}, Line: {line_number}")
 
 
 class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
