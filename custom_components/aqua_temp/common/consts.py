@@ -22,6 +22,11 @@ GETDEVICESTATUS_PATH = "/cloudservice/api/app/device/getDeviceStatus.json"
 CONTROL_PATH = "/cloudservice/api/app/device/control.json"
 GETFAULT_PATH = "/cloudservice/api/app/device/getFaultDataByDeviceCode.json"
 
+PRODUCT_IDS = [
+    "1132174963097280512", # App: AquaTemp, Product: Pool Heat Pump?
+    "1245226668902080512", # App: HiTemp, Product: EvoHeat 270
+]
+
 MODE_TEMPERATURE_OFF = "0"
 MODE_TEMPERATURE_COOL = "1"
 MODE_TEMPERATURE_HEAT = "2"

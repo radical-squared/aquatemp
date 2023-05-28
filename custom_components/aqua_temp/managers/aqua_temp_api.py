@@ -17,6 +17,7 @@ from ..common.consts import (
     GETDATABYCODE_PATH,
     GETDEVICESTATUS_PATH,
     GETFAULT_PATH,
+    PRODUCT_IDS,
     HEADERS,
     HVAC_MODE_MAPPING,
     LOGIN_PATH,
@@ -233,16 +234,26 @@ class AquaTempAPI:
 
     async def _update_device_code(self):
         data = {}
-        device_code_response = await self._post_request(DEVICELIST_PATH)
 
+        # Try getting devices without specific product IDs
+        device_code_response = await self._post_request(DEVICELIST_PATH)
         object_results = device_code_response.get("object_result", [])
 
-        for object_result in object_results:
+        # Try getting devices with known product IDs
+        product_id_data = {'product_ids': PRODUCT_IDS}
+        device_code_response_wids = await self._post_request(DEVICELIST_PATH, product_id_data)
+        object_results_wids = device_code_response_wids.get("object_result", [])
+
+        # Merge results
+        all_object_results = list(set(object_results) + set(object_results_wids))
+
+        for object_result in all_object_results:
             device_code = object_result.get("device_code")
 
             _LOGGER.debug(f"Discover device: {device_code}, Data: {object_result}")
 
             data[device_code] = object_result
+
 
         self.data = data
 
