@@ -241,13 +241,15 @@ class AquaTempAPI:
 
         # Try getting devices with known product IDs
         product_id_data = {'product_ids': PRODUCT_IDS}
-        device_code_response_wids = await self._post_request(DEVICELIST_PATH, product_id_data)
+        device_code_response_wids = await self._post_request(DEVICELIST_PATH, data=product_id_data)
         object_results_wids = device_code_response_wids.get("object_result", [])
 
-        # Merge results
-        all_object_results = list(set(object_results) + set(object_results_wids))
+        # Merge results (convert to dicts by ID then merge via update)
+        object_results_dict = {result['device_code']:result for result in object_results}
+        object_results_wids_dict = {result['device_code']:result for result in object_results_wids}
+        object_results_dict.update(object_results_wids_dict)
 
-        for object_result in all_object_results:
+        for object_result in object_results_dict.values():
             device_code = object_result.get("device_code")
 
             _LOGGER.debug(f"Discover device: {device_code}, Data: {object_result}")
