@@ -72,4 +72,4 @@ class AquaTempConfigManager:
         for key in [CONF_TEMPERATURE_UNIT]:
             data[key] = self.data[key]
 
-        await self._store.async_save(self.data)
+        await self._store.async_save(data)
