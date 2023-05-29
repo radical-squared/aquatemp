@@ -1,8 +1,6 @@
 from datetime import timedelta
 import logging
 
-import async_timeout
-
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -58,13 +56,12 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         so entities can quickly look up their data.
         """
         try:
-            async with async_timeout.timeout(10):
-                await self._api.update()
+            await self._api.update()
 
-                return {
-                    DATA_ITEM_API: self._api.data,
-                    DATA_ITEM_CONFIG: self._config_manager.data,
-                }
+            return {
+                DATA_ITEM_API: self._api.data,
+                DATA_ITEM_CONFIG: self._config_manager.data,
+            }
 
         except Exception as err:
             raise UpdateFailed(f"Error communicating with API: {err}")
