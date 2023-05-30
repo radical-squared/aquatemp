@@ -19,6 +19,7 @@ from ..common.consts import (
     GETFAULT_PATH,
     HEADERS,
     HTTP_HEADER_X_TOKEN,
+    HVAC_MODE_ACTION,
     HVAC_MODE_MAPPING,
     LOGIN_PATH,
     POWER_MODE_OFF,
@@ -103,12 +104,14 @@ class AquaTempAPI:
             if not self.is_connected:
                 await self.initialize()
 
-            for device_code in self.data:
-                _LOGGER.debug(f"Starting to update device: {device_code}")
+            if self.is_connected:
+                for device_code in self.data:
+                    _LOGGER.debug(f"Starting to update device: {device_code}")
 
-                await self._fetch_data(device_code)
+                    await self._fetch_data(device_code)
 
-                await self._fetch_errors(device_code)
+                    await self._fetch_errors(device_code)
+
         except Exception as ex:
             self.set_token()
 
@@ -160,7 +163,7 @@ class AquaTempAPI:
         if hvac_mode == HVAC_MODE_OFF:
             return
 
-        value = HVAC_MODE_MAPPING.get(device_code, hvac_mode)
+        value = HVAC_MODE_ACTION.get(device_code, hvac_mode)
 
         request_data = {"mode": value}
 
@@ -233,17 +236,23 @@ class AquaTempAPI:
 
         data = {"user_name": username, "password": password, "type": "2"}
 
-        login_response = await self._post_request(LOGIN_PATH, data)
-        object_result = login_response.get("object_result", {})
+        try:
+            login_response = await self._post_request(LOGIN_PATH, data)
+            object_result = login_response.get("object_result", {})
 
-        for key in object_result:
-            self.data[key] = object_result[key]
+            for key in object_result:
+                self.data[key] = object_result[key]
 
-        token = object_result.get(HTTP_HEADER_X_TOKEN)
+            token = object_result.get(HTTP_HEADER_X_TOKEN)
 
-        self.set_token(token)
+            self.set_token(token)
 
-        await self._update_device_code()
+            await self._update_device_code()
+
+        except Exception as ex:
+            self.set_token()
+
+            _LOGGER.error(f"Failed to login, Error: {ex}")
 
     async def _update_device_code(self):
         data = {}
