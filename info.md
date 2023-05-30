@@ -13,6 +13,10 @@ AquaTemp's cloud protocol is based on dst6se's https://github.com/dst6se/aquatem
 
 - Account for AquaTemp
 
+#### Switching from 1.x/2.x to 3.x
+
+Requires complete deletion of integration and reinstall after restart HA
+
 #### Installations via HACS [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
 - In HACS, look for "Aqua Temp" and install and restart

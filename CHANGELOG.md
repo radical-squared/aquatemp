@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.0.2
+
+- Fix configuration saving, without credentials
+- Fix socket timeouts
+- Add `suggested_unit_of_measurement=UnitOfElectricPotential.VOLT` to sensors of `SensorDeviceClass.VOLTAGE`
+- Fix token clean-up
+- Code clean up for entities
+
 ## v3.0.1
 
 - Refactor entity's creation (using EntityDescription)
