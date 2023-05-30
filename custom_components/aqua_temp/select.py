@@ -87,6 +87,8 @@ class AquaTempSelectEntity(CoordinatorEntity, SelectEntity, ABC):
 
     def _handle_coordinator_update(self) -> None:
         """Fetch new state data for the sensor."""
-        self._attr_current_option = self.coordinator.get_temperature_unit(self._device_code)
+        self._attr_current_option = self.coordinator.get_temperature_unit(
+            self._device_code
+        )
 
         self.async_write_ha_state()
