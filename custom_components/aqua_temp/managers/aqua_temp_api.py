@@ -18,6 +18,7 @@ from ..common.consts import (
     GETDEVICESTATUS_PATH,
     GETFAULT_PATH,
     HEADERS,
+    HTTP_HEADER_X_TOKEN,
     HVAC_MODE_MAPPING,
     LOGIN_PATH,
     POWER_MODE_OFF,
@@ -62,6 +63,8 @@ class AquaTempAPI:
     async def initialize(self):
         try:
             if not self.is_connected:
+                self.protocol_codes.clear()
+
                 for entity_description in ALL_ENTITIES:
                     if (
                         entity_description.key not in self.protocol_codes
@@ -107,8 +110,18 @@ class AquaTempAPI:
 
                 await self._fetch_errors(device_code)
         except Exception as ex:
-            self._token = None
+            self.set_token()
+
             _LOGGER.error(f"Error fetching data. Reconnecting, Error: {ex}")
+
+    def set_token(self, token: str | None = None):
+        self._token = token
+
+        if token is None:
+            if HTTP_HEADER_X_TOKEN in self._headers:
+                self._headers.pop(HTTP_HEADER_X_TOKEN)
+        else:
+            self._headers[HTTP_HEADER_X_TOKEN] = token
 
     async def set_hvac_mode(self, device_code: str, hvac_mode):
         if hvac_mode == HVACMode.OFF:
@@ -226,8 +239,9 @@ class AquaTempAPI:
         for key in object_result:
             self.data[key] = object_result[key]
 
-        self._token = object_result.get("x-token")
-        self._headers["x-token"] = self._token
+        token = object_result.get(HTTP_HEADER_X_TOKEN)
+
+        self.set_token(token)
 
         await self._update_device_code()
 
