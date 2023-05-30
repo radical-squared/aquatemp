@@ -18,6 +18,8 @@ from .entity_descriptions import (
 DOMAIN = "aqua_temp"
 DEFAULT_NAME = "Aqua Temp"
 
+HTTP_HEADER_X_TOKEN = "x-token"
+
 SERVER_URL = "https://cloud.linked-go.com"
 LOGIN_PATH = "/cloudservice/api/app/user/login.json"
 DEVICELIST_PATH = "/cloudservice/api/app/device/deviceList.json"
@@ -683,7 +685,7 @@ ALL_ENTITIES = [
         name="4-way valve output",
         category="Load output",
         device_class=SensorDeviceClass.VOLTAGE,
-        suggested_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     AquaTempEntityDescription(
@@ -698,7 +700,7 @@ ALL_ENTITIES = [
         name="Electronic Expansion valve 1 output",
         category="Load output",
         device_class=SensorDeviceClass.VOLTAGE,
-        suggested_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     AquaTempSensorEntityDescription(
@@ -706,7 +708,7 @@ ALL_ENTITIES = [
         name="Electronic Expansion valve 2 output",
         category="Load output",
         device_class=SensorDeviceClass.VOLTAGE,
-        suggested_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
 ]
