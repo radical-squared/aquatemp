@@ -5,6 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .common.consts import ALL_ENTITIES, DOMAIN
+from .common.exceptions import LoginError
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
@@ -25,9 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await config_manager.initialize()
 
         api = AquaTempAPI(hass, config_manager)
-        await api.initialize()
-
-        await api.update()
+        await api.validate()
 
         coordinator = AquaTempCoordinator(hass, api, config_manager)
 
@@ -52,6 +51,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.info("Finished loading components")
 
         initialized = True
+
+    except LoginError:
+        _LOGGER.error(
+            "Failed to login Aqua Temp API, Correct credentials and try again"
+        )
 
     except Exception as ex:
         exc_type, exc_obj, tb = sys.exc_info()

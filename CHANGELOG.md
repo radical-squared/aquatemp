@@ -7,6 +7,8 @@
 - Add `suggested_unit_of_measurement=UnitOfElectricPotential.VOLT` to sensors of `SensorDeviceClass.VOLTAGE`
 - Fix token clean-up
 - Code clean up for entities
+- HVAC Mode Mapping in v3.0.1 is mixed up [#29](https://github.com/radical-squared/aquatemp/issues/29)
+- Block API operations if initial login failed
 
 ## v3.0.1
 
