@@ -82,8 +82,10 @@ class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
         self._attr_unique_id = unique_id
         self._attr_device_class = entity_description.device_class
 
-    @property
-    def state_attributes(self) -> dict[str, Any] | None:
+    def _handle_coordinator_update(self) -> None:
+        """Fetch new state data for the sensor."""
+        status = self._api_data.get(self.entity_description.key)
+
         attributes = {}
         if self.entity_description.attributes is not None:
             for attribute_key in self.entity_description.attributes:
@@ -91,13 +93,7 @@ class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
 
                 attributes[attribute_key] = value
 
-        return attributes
+        self._attr_is_on = status == self.entity_description.on_value
+        self._attr_extra_state_attributes = attributes
 
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if the binary sensor is on."""
-        status = self._api_data.get(self.entity_description.key)
-
-        is_on = status == self.entity_description.on_value
-
-        return is_on
+        self.async_write_ha_state()

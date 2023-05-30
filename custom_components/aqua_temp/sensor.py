@@ -78,15 +78,15 @@ class AquaTempSensorEntity(CoordinatorEntity, SensorEntity):
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
         self._attr_device_class = entity_description.device_class
+        self._attr_native_unit_of_measurement = entity_description.native_unit_of_measurement
 
         if entity_description.device_class == SensorDeviceClass.TEMPERATURE:
             self._attr_native_unit_of_measurement = (
                 self.coordinator.get_temperature_unit(device_code)
             )
 
-    @property
-    def native_value(self) -> float | int | str | None:
-        """Return current state."""
+    def _handle_coordinator_update(self) -> None:
+        """Fetch new state data for the sensor."""
         state: float | int | str | None = self._api_data.get(
             self.entity_description.key
         )
@@ -94,4 +94,6 @@ class AquaTempSensorEntity(CoordinatorEntity, SensorEntity):
         if isinstance(state, str):
             state = float(state)
 
-        return state
+        self._attr_native_value = state
+
+        self.async_write_ha_state()
