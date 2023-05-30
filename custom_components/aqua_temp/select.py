@@ -79,15 +79,16 @@ class AquaTempSelectEntity(CoordinatorEntity, SelectEntity, ABC):
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
 
-    @property
-    def current_option(self) -> str | None:
-        """Return the selected entity option to represent the entity state."""
-        temperature_unit = self.coordinator.get_temperature_unit(self._device_code)
-
-        return temperature_unit
-
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         await self.coordinator.set_temperature_unit(self._device_code, option)
 
         await self.coordinator.async_request_refresh()
+
+    def _handle_coordinator_update(self) -> None:
+        """Fetch new state data for the sensor."""
+        self._attr_current_option = self.coordinator.get_temperature_unit(
+            self._device_code
+        )
+
+        self.async_write_ha_state()
