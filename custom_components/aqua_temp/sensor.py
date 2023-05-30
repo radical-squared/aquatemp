@@ -78,7 +78,9 @@ class AquaTempSensorEntity(CoordinatorEntity, SensorEntity):
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
         self._attr_device_class = entity_description.device_class
-        self._attr_native_unit_of_measurement = entity_description.native_unit_of_measurement
+        self._attr_native_unit_of_measurement = (
+            entity_description.native_unit_of_measurement
+        )
 
         if entity_description.device_class == SensorDeviceClass.TEMPERATURE:
             self._attr_native_unit_of_measurement = (
