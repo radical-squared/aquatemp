@@ -21,9 +21,7 @@ from ..common.consts import (
     FAN_MODE_MAPPING,
     HEADERS,
     HTTP_HEADER_X_TOKEN,
-    HVAC_MODE_ACTION,
     HVAC_MODE_MAPPING,
-    MANUAL_MUTE_MAPPING,
     POWER_MODE_OFF,
     POWER_MODE_ON,
     PROTOCAL_CODES,
@@ -63,6 +61,10 @@ class AquaTempAPI:
 
         self._reverse_hvac_mode_mapping = {
             HVAC_MODE_MAPPING[key]: key for key in HVAC_MODE_MAPPING
+        }
+
+        self._reverse_fan_mode_mapping = {
+            FAN_MODE_MAPPING[key]: key for key in FAN_MODE_MAPPING
         }
 
     @property
@@ -119,18 +121,21 @@ class AquaTempAPI:
 
             if self.is_connected:
                 for device_code in self.data:
-                    _LOGGER.debug(f"Starting to update device: {device_code}")
-
-                    await self._send_passthrough_instruction(device_code)
-
-                    await self._fetch_data(device_code)
-
-                    await self._fetch_errors(device_code)
+                    await self._update_device(device_code)
 
         except Exception as ex:
             self.set_token()
 
             _LOGGER.error(f"Error fetching data. Reconnecting, Error: {ex}")
+
+    async def _update_device(self, device_code: str):
+        _LOGGER.debug(f"Starting to update device: {device_code}")
+
+        await self._send_passthrough_instruction(device_code)
+
+        await self._fetch_data(device_code)
+
+        await self._fetch_errors(device_code)
 
     def set_token(self, token: str | None = None):
         self._token = token
@@ -146,13 +151,12 @@ class AquaTempAPI:
             await self._set_power_mode(device_code, POWER_MODE_OFF)
 
         else:
-            device_data = self.data.get(device_code)
-            current_power = device_data.get("Power")
-
-            is_on = current_power == POWER_MODE_ON
+            is_on = self.get_device_power(device_code)
 
             if not is_on:
                 await self._set_power_mode(device_code, POWER_MODE_ON)
+
+                await self._update_device(device_code)
 
             pc_hvac_mode = HVAC_MODE_MAPPING.get(hvac_mode)
 
@@ -199,7 +203,7 @@ class AquaTempAPI:
         if hvac_mode == HVAC_MODE_OFF:
             return
 
-        device_mode = HVAC_MODE_ACTION.get(device_code, hvac_mode)
+        device_mode = HVAC_MODE_MAPPING.get(hvac_mode)
 
         target_temperature = self.get_device_target_temperature(device_code)
 
@@ -404,14 +408,14 @@ class AquaTempAPI:
     def get_device_hvac_mode(self, device_code: str) -> HVACMode:
         device_data = self.get_device_data(device_code)
         device_mode = device_data.get(ProtocolCode.MODE)
-        hvac_mode = self._reverse_hvac_mode_mapping[device_mode]
+        hvac_mode = self._reverse_hvac_mode_mapping.get(device_mode, HVACMode.OFF)
 
         return hvac_mode
 
     def get_device_fan_mode(self, device_code: str) -> str:
         device_data = self.get_device_data(device_code)
         manual_mute = device_data.get(ProtocolCode.MANUAL_MUTE)
-        fan_mode = MANUAL_MUTE_MAPPING.get(manual_mute)
+        fan_mode = self._reverse_fan_mode_mapping.get(manual_mute)
 
         return fan_mode
 

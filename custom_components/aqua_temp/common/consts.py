@@ -66,22 +66,14 @@ DEVICE_LISTS = {
     ],
 }
 
-MODE_TEMPERATURE_OFF = "0"
-MODE_TEMPERATURE_COOL = "1"
-MODE_TEMPERATURE_HEAT = "2"
-MODE_TEMPERATURE_AUTO = "3"
+MODE_TEMPERATURE_COOL = "0"
+MODE_TEMPERATURE_HEAT = "1"
+MODE_TEMPERATURE_AUTO = "2"
 
 HVAC_MODE_MAPPING = {
-    HVACMode.OFF: MODE_TEMPERATURE_OFF,
     HVACMode.COOL: MODE_TEMPERATURE_COOL,
     HVACMode.HEAT: MODE_TEMPERATURE_HEAT,
     HVACMode.AUTO: MODE_TEMPERATURE_AUTO,
-}
-
-HVAC_MODE_ACTION = {
-    HVACMode.COOL: "0",
-    HVACMode.HEAT: "1",
-    HVACMode.AUTO: "2",
 }
 
 MANUAL_MUTE_AUTO = "0"
@@ -91,8 +83,6 @@ FAN_MODE_MAPPING = {FAN_AUTO: MANUAL_MUTE_AUTO, FAN_LOW: MANUAL_MUTE_LOW}
 
 POWER_MODE_OFF = "0"
 POWER_MODE_ON = "1"
-
-MANUAL_MUTE_MAPPING = {MANUAL_MUTE_AUTO: FAN_AUTO, MANUAL_MUTE_LOW: FAN_LOW}
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
@@ -136,9 +126,6 @@ ALL_ENTITIES = [
         key="Mode",
         name="HVAC Mode",
         category="Control parameters",
-        fan_mode_key="Manual-mute",
-        current_temperature_key="T02",
-        power_key="Power",
         fan_modes=list(FAN_MODE_MAPPING.keys()),
         hvac_modes=list(HVAC_MODE_MAPPING.keys()),
         minimum_temperature_keys={HVACMode.COOL: "R08", HVACMode.HEAT: "R10"},
