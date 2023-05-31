@@ -1,9 +1,12 @@
+from typing import Any
+
+
 class OperationFailedException(Exception):
     operation: str
     error: str | dict
     value: str
 
-    def __init__(self, operation: str, value: str, error: str | dict):
+    def __init__(self, operation: str, value: Any, error: str | dict):
         self.operation = operation
         self.error = error
         self.value = value

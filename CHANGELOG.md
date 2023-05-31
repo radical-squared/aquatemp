@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.0.3
+
+- Fix setting HVAC mode
+- Support shared devices
+- Support multiple product IDs
+
 ## v3.0.2
 
 - Fix configuration saving, without credentials

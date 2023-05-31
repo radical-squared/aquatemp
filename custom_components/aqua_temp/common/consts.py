@@ -7,6 +7,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
+from .endpoints import Endpoints
 from .entity_descriptions import (
     AquaTempBinarySensorEntityDescription,
     AquaTempClimateEntityDescription,
@@ -20,13 +21,54 @@ DEFAULT_NAME = "Aqua Temp"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 
-SERVER_URL = "https://cloud.linked-go.com"
-LOGIN_PATH = "/cloudservice/api/app/user/login.json"
-DEVICELIST_PATH = "/cloudservice/api/app/device/deviceList.json"
-GETDATABYCODE_PATH = "/cloudservice/api/app/device/getDataByCode.json"
-GETDEVICESTATUS_PATH = "/cloudservice/api/app/device/getDeviceStatus.json"
-CONTROL_PATH = "/cloudservice/api/app/device/control.json"
-GETFAULT_PATH = "/cloudservice/api/app/device/getFaultDataByDeviceCode.json"
+SUPPORTED_PRODUCT_ID = [
+    "1132174963097280512",
+    "1186904563333062656",
+    "1158905952238313472",
+    "1442284873216843776",
+    "1548963836789501952",
+]
+
+DEVICE_REQUEST_PRODUCT_IDS = "product_ids"
+DEVICE_REQUEST_PAGE_INDEX = "page_index"
+DEVICE_REQUEST_PAGE_SIZE = "page_size"
+DEVICE_REQUEST_TO_USER = "to_user"
+
+DEVICE_CODE = "device_code"
+PROTOCAL_CODES = "protocal_codes"
+
+DEVICE_CONTROL_PARAM = "param"
+DEVICE_CONTROL_MODE = "Mode"
+DEVICE_CONTROL_POWER = "power"
+DEVICE_CONTROL_SET_TEMPERATURE = "Set_Temp"
+DEVICE_CONTROL_MANUAL_MUTE = "Manual-mute"
+
+DEVICE_CONTROL_PROTOCOL_CODE = "protocol_code"
+DEVICE_CONTROL_VALUE = "value"
+
+DEVICE_REQUEST_PARAMETERS = {
+    DEVICE_REQUEST_PRODUCT_IDS: SUPPORTED_PRODUCT_ID,
+    DEVICE_REQUEST_PAGE_INDEX: 1,
+    DEVICE_REQUEST_PAGE_SIZE: 999,
+}
+
+DEVICE_LISTS = {
+    Endpoints.LIST_REGISTERED_DEVICES: [
+        DEVICE_REQUEST_PRODUCT_IDS,
+        DEVICE_REQUEST_PAGE_INDEX,
+        DEVICE_REQUEST_PAGE_SIZE,
+    ],
+    Endpoints.LIST_SHARED_TOBE_DEVICES: [
+        DEVICE_REQUEST_PRODUCT_IDS,
+        DEVICE_REQUEST_TO_USER,
+    ],
+    Endpoints.LIST_SHARED_APPECT_DEVICES: [
+        DEVICE_REQUEST_PRODUCT_IDS,
+        DEVICE_REQUEST_TO_USER,
+        DEVICE_REQUEST_PAGE_INDEX,
+        DEVICE_REQUEST_PAGE_SIZE,
+    ],
+}
 
 MODE_TEMPERATURE_OFF = "0"
 MODE_TEMPERATURE_COOL = "1"

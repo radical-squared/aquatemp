@@ -1,0 +1,12 @@
+class Endpoints:
+    BASE_URL = "https://cloud.linked-go.com/cloudservice/api/app"
+    LOGIN = "user/login.json"
+    USER_INFO = "user/getUserInfo.json"
+    LIST_REGISTERED_DEVICES = "device/deviceList.json"
+    LIST_SHARED_APPECT_DEVICES = "device/getMyAppectDeviceShareDataList.json"
+    LIST_SHARED_TOBE_DEVICES = "device/getMyTobeDeviceShareDataList.json"
+    DEVICE_STATUS = "device/getDeviceStatus.json"
+    DEVICE_CONTROL = "device/control.json"
+    DEVICE_FAULT = "device/getFaultDataByDeviceCode.json"
+    DEVICE_DATA = "device/getDataByCode.json"
+    DEVICE_PASSTHROUGH_INSTRUCTION = "device/sendDevicePassthroughInstruction.json"

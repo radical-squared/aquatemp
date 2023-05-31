@@ -26,7 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await config_manager.initialize()
 
         api = AquaTempAPI(hass, config_manager)
-        await api.validate()
+        await api.initialize()
 
         coordinator = AquaTempCoordinator(hass, api, config_manager)
 
@@ -53,9 +53,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         initialized = True
 
     except LoginError:
-        _LOGGER.error(
-            "Failed to login Aqua Temp API, Correct credentials and try again"
-        )
+        _LOGGER.info("Failed to login Aqua Temp API, cannot log integration")
 
     except Exception as ex:
         exc_type, exc_obj, tb = sys.exc_info()
