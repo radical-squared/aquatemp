@@ -1,6 +1,7 @@
 from datetime import timedelta
 import logging
 
+from homeassistant.components.climate import HVACMode
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -34,6 +35,11 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     @property
     def config_data(self):
         return self.data.get(DATA_ITEM_CONFIG)
+
+    def get_target_temperature_protocol_code(self, hvac_mode: HVACMode):
+        result = self._api.get_target_temperature_protocol_code(hvac_mode)
+
+        return result
 
     def get_device(self, device_code: str) -> DeviceInfo:
         device_data = self.api_data.get(device_code)
@@ -69,14 +75,44 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     def get_temperature_unit(self, device_code: str):
         return self._config_manager.get_temperature_unit(device_code)
 
-    async def set_hvac_mode(self, device_code: str, hvac_mode):
+    async def set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         await self._api.set_hvac_mode(device_code, hvac_mode)
 
-    async def set_temperature(self, device_code: str, hvac_mode, temperature):
-        await self._api.set_temperature(device_code, hvac_mode, temperature)
+    async def set_temperature(self, device_code: str, temperature: float):
+        await self._api.set_temperature(device_code, temperature)
 
     async def set_fan_mode(self, device_code: str, fan_mode):
         await self._api.set_fan_mode(device_code, fan_mode)
 
     async def set_temperature_unit(self, device_code: str, option: str):
         await self._config_manager.update_temperature_unit(device_code, option)
+
+    def get_device_data(self, device_code: str) -> dict | None:
+        device_data = self._api.get_device_data(device_code)
+
+        return device_data
+
+    def get_device_target_temperature(self, device_code: str) -> float:
+        target_temperature = self._api.get_device_target_temperature(device_code)
+
+        return target_temperature
+
+    def get_device_current_temperature(self, device_code: str) -> float:
+        current_temperature = self._api.get_device_current_temperature(device_code)
+
+        return current_temperature
+
+    def get_device_hvac_mode(self, device_code: str) -> HVACMode:
+        hvac_mode = self._api.get_device_hvac_mode(device_code)
+
+        return hvac_mode
+
+    def get_device_fan_mode(self, device_code: str) -> str:
+        fan_mode = self._api.get_device_fan_mode(device_code)
+
+        return fan_mode
+
+    def get_device_power(self, device_code: str) -> bool:
+        power = self._api.get_device_power(device_code)
+
+        return power
