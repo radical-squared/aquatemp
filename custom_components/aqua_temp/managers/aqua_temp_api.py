@@ -277,8 +277,7 @@ class AquaTempAPI:
         data_response = await self._post_request(
             Endpoints.DEVICE_PASSTHROUGH_INSTRUCTION, data
         )
-        object_result = data_response.get("object_result", {})
-        error_msg = object_result.get("error_msg")
+        error_msg = data_response.get("error_msg")
 
         if error_msg != "Success":
             _LOGGER.error(f"Failed to send passthrough instruction, Error: {error_msg}")
