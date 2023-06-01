@@ -20,9 +20,6 @@ class AquaTempClimateEntityDescription(
     ClimateEntityDescription, AquaTempEntityDescription
 ):
     platform: Platform | None = Platform.CLIMATE
-    power_key: str | None = None
-    fan_mode_key: str | None = None
-    current_temperature_key: str | None = None
     fan_modes: list[str] | None = None
     hvac_modes: list[HVACMode] | list[str] = None
     minimum_temperature_keys: dict[HVACMode, str] | None = None

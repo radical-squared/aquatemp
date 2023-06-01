@@ -7,6 +7,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
+from .endpoints import Endpoints
 from .entity_descriptions import (
     AquaTempBinarySensorEntityDescription,
     AquaTempClimateEntityDescription,
@@ -20,30 +21,60 @@ DEFAULT_NAME = "Aqua Temp"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 
-SERVER_URL = "https://cloud.linked-go.com"
-LOGIN_PATH = "/cloudservice/api/app/user/login.json"
-DEVICELIST_PATH = "/cloudservice/api/app/device/deviceList.json"
-GETDATABYCODE_PATH = "/cloudservice/api/app/device/getDataByCode.json"
-GETDEVICESTATUS_PATH = "/cloudservice/api/app/device/getDeviceStatus.json"
-CONTROL_PATH = "/cloudservice/api/app/device/control.json"
-GETFAULT_PATH = "/cloudservice/api/app/device/getFaultDataByDeviceCode.json"
+SUPPORTED_PRODUCT_ID = [
+    "1132174963097280512",
+    "1186904563333062656",
+    "1158905952238313472",
+    "1442284873216843776",
+    "1548963836789501952",
+]
 
-MODE_TEMPERATURE_OFF = "0"
-MODE_TEMPERATURE_COOL = "1"
-MODE_TEMPERATURE_HEAT = "2"
-MODE_TEMPERATURE_AUTO = "3"
+DEVICE_REQUEST_PRODUCT_IDS = "product_ids"
+DEVICE_REQUEST_PAGE_INDEX = "page_index"
+DEVICE_REQUEST_PAGE_SIZE = "page_size"
+DEVICE_REQUEST_TO_USER = "to_user"
+
+DEVICE_CODE = "device_code"
+PROTOCAL_CODES = "protocal_codes"
+
+DEVICE_CONTROL_PARAM = "param"
+
+DEVICE_CONTROL_PROTOCOL_CODE = "protocol_code"
+DEVICE_CONTROL_VALUE = "value"
+
+DEVICE_REQUEST_PARAMETERS = {
+    DEVICE_REQUEST_PRODUCT_IDS: SUPPORTED_PRODUCT_ID,
+    DEVICE_REQUEST_PAGE_INDEX: 1,
+    DEVICE_REQUEST_PAGE_SIZE: 999,
+}
+
+DEVICE_LISTS = {
+    Endpoints.LIST_REGISTERED_DEVICES: [
+        DEVICE_REQUEST_PRODUCT_IDS,
+        DEVICE_REQUEST_PAGE_INDEX,
+        DEVICE_REQUEST_PAGE_SIZE,
+    ],
+    Endpoints.LIST_SHARED_TOBE_DEVICES: [
+        DEVICE_REQUEST_PRODUCT_IDS,
+        DEVICE_REQUEST_TO_USER,
+    ],
+    Endpoints.LIST_SHARED_APPECT_DEVICES: [
+        DEVICE_REQUEST_PRODUCT_IDS,
+        DEVICE_REQUEST_TO_USER,
+        DEVICE_REQUEST_PAGE_INDEX,
+        DEVICE_REQUEST_PAGE_SIZE,
+    ],
+}
+
+MODE_TEMPERATURE_COOL = "0"
+MODE_TEMPERATURE_HEAT = "1"
+MODE_TEMPERATURE_AUTO = "2"
 
 HVAC_MODE_MAPPING = {
-    HVACMode.OFF: MODE_TEMPERATURE_OFF,
+    HVACMode.OFF: None,
     HVACMode.COOL: MODE_TEMPERATURE_COOL,
     HVACMode.HEAT: MODE_TEMPERATURE_HEAT,
     HVACMode.AUTO: MODE_TEMPERATURE_AUTO,
-}
-
-HVAC_MODE_ACTION = {
-    HVACMode.COOL: "0",
-    HVACMode.HEAT: "1",
-    HVACMode.AUTO: "2",
 }
 
 MANUAL_MUTE_AUTO = "0"
@@ -53,8 +84,6 @@ FAN_MODE_MAPPING = {FAN_AUTO: MANUAL_MUTE_AUTO, FAN_LOW: MANUAL_MUTE_LOW}
 
 POWER_MODE_OFF = "0"
 POWER_MODE_ON = "1"
-
-MANUAL_MUTE_MAPPING = {MANUAL_MUTE_AUTO: FAN_AUTO, MANUAL_MUTE_LOW: FAN_LOW}
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
@@ -98,9 +127,6 @@ ALL_ENTITIES = [
         key="Mode",
         name="HVAC Mode",
         category="Control parameters",
-        fan_mode_key="Manual-mute",
-        current_temperature_key="T02",
-        power_key="Power",
         fan_modes=list(FAN_MODE_MAPPING.keys()),
         hvac_modes=list(HVAC_MODE_MAPPING.keys()),
         minimum_temperature_keys={HVACMode.COOL: "R08", HVACMode.HEAT: "R10"},

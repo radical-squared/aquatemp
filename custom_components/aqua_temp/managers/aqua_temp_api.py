@@ -4,29 +4,31 @@ import sys
 
 from aiohttp import ClientSession
 
-from homeassistant.components.climate.const import HVAC_MODE_OFF, HVACMode
+from homeassistant.components.climate.const import HVACMode
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from ..common.consts import (
     ALL_ENTITIES,
-    CONTROL_PATH,
-    DEVICELIST_PATH,
+    DEVICE_CODE,
+    DEVICE_CONTROL_PARAM,
+    DEVICE_CONTROL_PROTOCOL_CODE,
+    DEVICE_CONTROL_VALUE,
+    DEVICE_LISTS,
+    DEVICE_REQUEST_PARAMETERS,
+    DEVICE_REQUEST_TO_USER,
     FAN_MODE_MAPPING,
-    GETDATABYCODE_PATH,
-    GETDEVICESTATUS_PATH,
-    GETFAULT_PATH,
     HEADERS,
     HTTP_HEADER_X_TOKEN,
-    HVAC_MODE_ACTION,
     HVAC_MODE_MAPPING,
-    LOGIN_PATH,
     POWER_MODE_OFF,
     POWER_MODE_ON,
-    SERVER_URL,
+    PROTOCAL_CODES,
 )
+from ..common.endpoints import Endpoints
 from ..common.exceptions import LoginError, OperationFailedException
+from ..common.protocol_codes import ProtocolCode
 from .aqua_temp_config_manager import AquaTempConfigManager
 
 _LOGGER = logging.getLogger(__name__)
@@ -38,6 +40,7 @@ class AquaTempAPI:
     _session: ClientSession | None
     _config_manager: AquaTempConfigManager
     _token: str | None
+    _user_id: str | None
     _hass: HomeAssistant | None
 
     def __init__(
@@ -54,6 +57,15 @@ class AquaTempAPI:
         self._headers = HEADERS
         self._config_manager = config_manager
         self.protocol_codes = []
+        self._user_id = None
+
+        self._reverse_hvac_mode_mapping = {
+            HVAC_MODE_MAPPING[key]: key for key in HVAC_MODE_MAPPING
+        }
+
+        self._reverse_fan_mode_mapping = {
+            FAN_MODE_MAPPING[key]: key for key in FAN_MODE_MAPPING
+        }
 
     @property
     def is_connected(self):
@@ -61,7 +73,7 @@ class AquaTempAPI:
 
         return result
 
-    async def initialize(self):
+    async def initialize(self, throw_error: bool = False):
         try:
             if not self.is_connected:
                 self.protocol_codes.clear()
@@ -80,6 +92,15 @@ class AquaTempAPI:
 
                 await self._login()
 
+                await self._load_user_info()
+                await self._load_devices()
+
+        except LoginError as lex:
+            _LOGGER.error("Failed to login, Please update credentials and try again")
+
+            if throw_error:
+                raise lex
+
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
@@ -92,12 +113,6 @@ class AquaTempAPI:
         if self._hass is None:
             await self._session.close()
 
-    async def validate(self):
-        await self.initialize()
-
-        if self._token is None:
-            raise LoginError()
-
     async def update(self):
         """Fetch new state data for the sensor."""
         try:
@@ -106,16 +121,21 @@ class AquaTempAPI:
 
             if self.is_connected:
                 for device_code in self.data:
-                    _LOGGER.debug(f"Starting to update device: {device_code}")
-
-                    await self._fetch_data(device_code)
-
-                    await self._fetch_errors(device_code)
+                    await self._update_device(device_code)
 
         except Exception as ex:
             self.set_token()
 
             _LOGGER.error(f"Error fetching data. Reconnecting, Error: {ex}")
+
+    async def _update_device(self, device_code: str):
+        _LOGGER.debug(f"Starting to update device: {device_code}")
+
+        await self._send_passthrough_instruction(device_code)
+
+        await self._fetch_data(device_code)
+
+        await self._fetch_errors(device_code)
 
     def set_token(self, token: str | None = None):
         self._token = token
@@ -126,76 +146,120 @@ class AquaTempAPI:
         else:
             self._headers[HTTP_HEADER_X_TOKEN] = token
 
-    async def set_hvac_mode(self, device_code: str, hvac_mode):
+    async def set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         if hvac_mode == HVACMode.OFF:
             await self._set_power_mode(device_code, POWER_MODE_OFF)
 
         else:
-            device_data = self.data.get(device_code)
-            current_power = device_data.get("Power")
-
-            is_on = current_power == POWER_MODE_ON
+            is_on = self.get_device_power(device_code)
 
             if not is_on:
                 await self._set_power_mode(device_code, POWER_MODE_ON)
 
-            pc_hvac_mode = HVAC_MODE_MAPPING.get(hvac_mode)
+                await self._update_device(device_code)
 
-            await self._set_hvac_mode(device_code, pc_hvac_mode)
+            await self._set_hvac_mode(device_code, hvac_mode)
 
-    async def set_temperature(self, device_code: str, hvac_mode, temperature):
+    async def set_temperature(self, device_code: str, temperature: float):
         """Set new target temperature."""
-        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode)
-        mode = f"R0{hvac_mode_mapping}"
+        hvac_mode = self.get_device_hvac_mode(device_code)
+        temp_protocol_code = self.get_target_temperature_protocol_code(hvac_mode)
 
-        request_data = {mode: temperature, "Set_Temp": temperature}
+        request_data = {
+            DEVICE_CONTROL_PARAM: [
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: temp_protocol_code,
+                    DEVICE_CONTROL_VALUE: temperature,
+                },
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.SET_TEMP,
+                    DEVICE_CONTROL_VALUE: temperature,
+                },
+            ]
+        }
 
-        await self._perform_action(device_code, request_data)
+        await self._perform_action(request_data, ProtocolCode.SET_TEMP)
 
     async def _set_power_mode(self, device_code: str, value):
         """Set new target power mode."""
-        request_data = {"power": value}
+        request_data = {
+            DEVICE_CONTROL_PARAM: [
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.POWER.lower(),
+                    DEVICE_CONTROL_VALUE: value,
+                }
+            ]
+        }
 
-        await self._perform_action(device_code, request_data)
+        await self._perform_action(request_data, ProtocolCode.POWER)
 
-    async def _set_hvac_mode(self, device_code: str, hvac_mode):
+    async def _set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         """Set new target hvac mode."""
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             return
 
-        value = HVAC_MODE_ACTION.get(device_code, hvac_mode)
+        device_mode = HVAC_MODE_MAPPING.get(hvac_mode)
 
-        request_data = {"mode": value}
+        target_temperature = self.get_device_target_temperature(device_code)
 
-        await self._perform_action(device_code, request_data)
+        _LOGGER.info(
+            f"Set HVAC Mode: {hvac_mode}, PC Mode: {device_mode}, Target temperature: {target_temperature}"
+        )
+
+        request_data = {
+            DEVICE_CONTROL_PARAM: [
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.MODE,
+                    DEVICE_CONTROL_VALUE: device_mode,
+                },
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.SET_TEMP,
+                    DEVICE_CONTROL_VALUE: target_temperature,
+                },
+            ]
+        }
+
+        await self._perform_action(request_data, ProtocolCode.MODE)
 
     async def set_fan_mode(self, device_code: str, fan_mode):
         """Set new target fan mode."""
 
         value = FAN_MODE_MAPPING.get(fan_mode)
 
-        request_data = {"Manual-mute": value}
+        request_data = {
+            DEVICE_CONTROL_PARAM: [
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.MANUAL_MUTE,
+                    DEVICE_CONTROL_VALUE: value,
+                }
+            ]
+        }
 
-        await self._perform_action(device_code, request_data)
+        await self._perform_action(request_data, ProtocolCode.MANUAL_MUTE)
 
-    async def _perform_action(self, device_code: str, request_data: dict):
-        params = self._get_request_params(device_code, request_data)
-
-        data = {"param": params}
-
-        operation_response = await self._post_request(CONTROL_PATH, data)
+    async def _perform_action(self, request_data: dict, operation: str):
+        operation_response = await self._post_request(
+            Endpoints.DEVICE_CONTROL, request_data
+        )
 
         error_msg = operation_response.get("error_msg")
 
         if error_msg != "Success":
-            operation = list(data.keys())[0]
-            value = data[operation]
-
-            raise OperationFailedException(operation, value, error_msg)
+            raise OperationFailedException(operation, request_data, error_msg)
 
     async def _fetch_data(self, device_code: str):
-        data = self._get_request_params(device_code, self.protocol_codes)
-        data_response = await self._post_request(GETDATABYCODE_PATH, data)
+        data = {
+            DEVICE_CODE: device_code,
+            PROTOCAL_CODES: self.protocol_codes,
+        }
+
+        data_response = await self._post_request(Endpoints.DEVICE_DATA, data)
         object_result_items = data_response.get("object_result", [])
 
         for object_result_item in object_result_items:
@@ -209,19 +273,32 @@ class AquaTempAPI:
         if error_msg != "Success":
             _LOGGER.error(f"Failed to fetch data, Error: {error_msg}")
 
+    async def _send_passthrough_instruction(self, device_code: str):
+        data = {"device_code": device_code, "query_instruction": "630300040001CD89"}
+
+        data_response = await self._post_request(
+            Endpoints.DEVICE_PASSTHROUGH_INSTRUCTION, data
+        )
+        error_msg = data_response.get("error_msg")
+
+        if error_msg != "Success":
+            _LOGGER.error(f"Failed to send passthrough instruction, Error: {error_msg}")
+
     async def _fetch_errors(self, device_code: str):
         if "fault" in self.data:
             self.data.pop("fault")
 
         data = {"device_code": device_code}
 
-        device_status_response = await self._post_request(GETDEVICESTATUS_PATH, data)
+        device_status_response = await self._post_request(Endpoints.DEVICE_STATUS, data)
         object_result = device_status_response.get("object_result", {})
 
         is_fault = object_result.get("is_fault", str(False))
 
         if bool(is_fault):
-            device_fault_response = await self._post_request(GETFAULT_PATH, data)
+            device_fault_response = await self._post_request(
+                Endpoints.DEVICE_FAULT, data
+            )
             object_results = device_fault_response.get("object_result", [])
 
             if len(object_results) > 0:
@@ -237,7 +314,7 @@ class AquaTempAPI:
         data = {"user_name": username, "password": password, "type": "2"}
 
         try:
-            login_response = await self._post_request(LOGIN_PATH, data)
+            login_response = await self._post_request(Endpoints.LOGIN, data)
             object_result = login_response.get("object_result", {})
 
             for key in object_result:
@@ -247,32 +324,55 @@ class AquaTempAPI:
 
             self.set_token(token)
 
-            await self._update_device_code()
-
         except Exception as ex:
             self.set_token()
 
             _LOGGER.error(f"Failed to login, Error: {ex}")
 
-    async def _update_device_code(self):
+        if self._token is None:
+            raise LoginError()
+
+    async def _load_user_info(self):
+        user_info_response = await self._post_request(Endpoints.USER_INFO)
+
+        object_result = user_info_response.get("object_result", {})
+        self._user_id = object_result.get("user_id")
+
+    async def _load_devices(self):
         data = {}
-        device_code_response = await self._post_request(DEVICELIST_PATH)
+        for device_list_url in DEVICE_LISTS:
+            request_data = {}
+            request_data_keys = DEVICE_LISTS[device_list_url]
 
-        object_results = device_code_response.get("object_result", [])
+            for request_data_key in request_data_keys:
+                if request_data_key == DEVICE_REQUEST_TO_USER:
+                    value = self._user_id
+                else:
+                    value = DEVICE_REQUEST_PARAMETERS.get(request_data_key)
 
-        for object_result in object_results:
-            device_code = object_result.get("device_code")
+                request_data[request_data_key] = value
 
-            _LOGGER.debug(f"Discover device: {device_code}, Data: {object_result}")
+            device_code_response = await self._post_request(
+                device_list_url, request_data
+            )
 
-            data[device_code] = object_result
+            object_results = device_code_response.get("object_result", [])
+
+            for object_result in object_results:
+                device_code = object_result.get("device_code")
+
+                _LOGGER.debug(
+                    f"Discover device: {device_code} by {device_list_url}, Data: {object_result}"
+                )
+
+                data[device_code] = object_result
 
         self.data = data
 
         _LOGGER.debug(f"Finished discovering devices, Data: {self.data}")
 
     async def _post_request(self, endpoint, data: dict | list | None = None) -> dict:
-        url = f"{SERVER_URL}{endpoint}"
+        url = f"{Endpoints.BASE_URL}/{endpoint}"
 
         async with self._session.post(
             url, headers=self._headers, json=data, ssl=False
@@ -284,26 +384,52 @@ class AquaTempAPI:
 
         return result
 
+    def get_device_data(self, device_code: str) -> dict | None:
+        device_data = self.data.get(device_code)
+
+        return device_data
+
+    def get_device_target_temperature(self, device_code: str) -> float:
+        hvac_mode = self.get_device_hvac_mode(device_code)
+        target_temperature_protocol_code = self.get_target_temperature_protocol_code(
+            hvac_mode
+        )
+
+        device_data = self.get_device_data(device_code)
+        target_temperature = device_data.get(target_temperature_protocol_code)
+
+        return target_temperature
+
+    def get_device_current_temperature(self, device_code: str) -> float:
+        device_data = self.get_device_data(device_code)
+        current_temperature = device_data.get(ProtocolCode.CURRENT_TEMPERATURE)
+
+        return current_temperature
+
+    def get_device_hvac_mode(self, device_code: str) -> HVACMode:
+        device_data = self.get_device_data(device_code)
+        device_mode = device_data.get(ProtocolCode.MODE)
+        hvac_mode = self._reverse_hvac_mode_mapping.get(device_mode, HVACMode.OFF)
+
+        return hvac_mode
+
+    def get_device_fan_mode(self, device_code: str) -> str:
+        device_data = self.get_device_data(device_code)
+        manual_mute = device_data.get(ProtocolCode.MANUAL_MUTE)
+        fan_mode = self._reverse_fan_mode_mapping.get(manual_mute)
+
+        return fan_mode
+
+    def get_device_power(self, device_code: str) -> bool:
+        device_data = self.get_device_data(device_code)
+        power = device_data.get(ProtocolCode.POWER)
+        is_on = power == POWER_MODE_ON
+
+        return is_on
+
     @staticmethod
-    def _get_request_params(
-        device_code: str, protocol_codes: list[str] | dict[str, str]
-    ) -> list[dict]:
-        if isinstance(protocol_codes, dict):
-            result = []
-            for protocol_code in protocol_codes:
-                value = protocol_codes.get(protocol_code)
+    def get_target_temperature_protocol_code(hvac_mode: HVACMode):
+        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode)
+        temp_protocol_code = f"R0{hvac_mode_mapping}"
 
-                data = {
-                    "device_code": device_code,
-                    "protocol_code": protocol_code,
-                    "value": value,
-                }
-
-                result.append(data)
-        else:
-            result = {
-                "device_code": device_code,
-                "protocal_codes": protocol_codes,
-            }
-
-        return result
+        return temp_protocol_code

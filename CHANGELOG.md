@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.0.3
+
+- Fix setting HVAC mode
+- Support shared devices
+- Support multiple product IDs, Solution provided by [sjtrny](https://github.com/sjtrny) for issue [#25](https://github.com/radical-squared/aquatemp/issues/25)
+
 ## v3.0.2
 
 - Fix configuration saving, without credentials

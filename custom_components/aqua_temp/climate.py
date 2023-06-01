@@ -16,13 +16,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import (
-    ALL_ENTITIES,
-    DOMAIN,
-    HVAC_MODE_MAPPING,
-    MANUAL_MUTE_MAPPING,
-    POWER_MODE_ON,
-)
+from .common.consts import ALL_ENTITIES, DOMAIN
 from .common.entity_descriptions import AquaTempClimateEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -74,6 +68,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Initialize the climate entity."""
         super().__init__(coordinator)
 
+        self._api = coordinator.api_data
         self._api_data = coordinator.api_data[device_code]
         self._config_data = coordinator.config_data
 
@@ -108,9 +103,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         temperature = kwargs.get("temperature")
 
         try:
-            await self.coordinator.set_temperature(
-                self._device_code, self.hvac_mode, temperature
-            )
+            await self.coordinator.set_temperature(self._device_code, temperature)
 
             await self.coordinator.async_request_refresh()
 
@@ -154,22 +147,18 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Fetch new state data for the sensor."""
         entity_description = self.entity_description
 
-        mode = self._api_data.get(entity_description.key)
-        power = self._api_data.get(entity_description.power_key)
-        manual_mute = self._api_data.get(entity_description.fan_mode_key)
-        current_temperature = self._api_data.get(
-            entity_description.current_temperature_key
-        )
+        coordinator = self.coordinator
+        device_code = self._device_code
 
-        is_power_on = power == POWER_MODE_ON
-        hvac_mode = HVACMode.OFF
+        hvac_mode = coordinator.get_device_hvac_mode(device_code)
+        is_power_on = coordinator.get_device_power(device_code)
+        fan_mode = coordinator.get_device_fan_mode(device_code)
+        current_temperature = coordinator.get_device_current_temperature(device_code)
+        target_temperature = coordinator.get_device_target_temperature(device_code)
 
-        if is_power_on:
-            for key in HVAC_MODE_MAPPING:
-                pc_hvac_mode = HVAC_MODE_MAPPING[key]
-                if pc_hvac_mode == mode:
-                    hvac_mode = key
-                    break
+        if not is_power_on:
+            hvac_mode = HVACMode.OFF
+            target_temperature = None
 
         if entity_description.minimum_temperature_keys is not None:
             min_temp_key = entity_description.minimum_temperature_keys.get(hvac_mode)
@@ -183,28 +172,14 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
             self._attr_max_temp = float(str(max_temp))
 
-        hvac_mode_code = HVAC_MODE_MAPPING.get(hvac_mode)
-        hvac_mode_param = f"R0{hvac_mode_code}"
-        hvac_mode_temperature_value = self._api_data.get(hvac_mode_param)
-
-        target_temperature = None
-        if is_power_on and hvac_mode_temperature_value is not None:
-            target_temperature = float(hvac_mode_temperature_value)
-
         self._attr_hvac_mode = hvac_mode
-        self._attr_fan_mode = MANUAL_MUTE_MAPPING.get(manual_mute)
-        self._attr_target_temperature = target_temperature
+        self._attr_fan_mode = fan_mode
+
+        if target_temperature is not None:
+            self._attr_target_temperature = float(str(target_temperature))
 
         if current_temperature is not None:
             self._attr_current_temperature = float(str(current_temperature))
-
-        _LOGGER.debug(f"{entity_description.key}: {mode}")
-        _LOGGER.debug(f"{entity_description.power_key}: {power}")
-        _LOGGER.debug(f"{entity_description.fan_mode_key}: {manual_mute}")
-        _LOGGER.debug(
-            f"{entity_description.current_temperature_key}: {current_temperature}"
-        )
-        _LOGGER.debug(f"is_power_on: {is_power_on}")
 
         _LOGGER.debug(f"_attr_hvac_mode: {self._attr_hvac_mode}")
         _LOGGER.debug(f"_attr_target_temperature: {self._attr_target_temperature}")

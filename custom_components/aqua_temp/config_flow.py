@@ -41,7 +41,7 @@ class DomainFlowHandler(config_entries.ConfigFlow):
                 config_manager.update_credentials(username, password)
 
                 api = AquaTempAPI(self.hass, config_manager)
-                await api.validate()
+                await api.initialize()
 
                 _LOGGER.debug("User inputs are valid")
 
