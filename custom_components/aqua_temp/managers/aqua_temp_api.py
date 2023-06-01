@@ -4,7 +4,7 @@ import sys
 
 from aiohttp import ClientSession
 
-from homeassistant.components.climate.const import HVAC_MODE_OFF, HVACMode
+from homeassistant.components.climate.const import HVACMode
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
@@ -158,9 +158,7 @@ class AquaTempAPI:
 
                 await self._update_device(device_code)
 
-            pc_hvac_mode = HVAC_MODE_MAPPING.get(hvac_mode)
-
-            await self._set_hvac_mode(device_code, pc_hvac_mode)
+            await self._set_hvac_mode(device_code, hvac_mode)
 
     async def set_temperature(self, device_code: str, temperature: float):
         """Set new target temperature."""
@@ -200,12 +198,16 @@ class AquaTempAPI:
 
     async def _set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         """Set new target hvac mode."""
-        if hvac_mode == HVAC_MODE_OFF:
+        if hvac_mode == HVACMode.OFF:
             return
 
         device_mode = HVAC_MODE_MAPPING.get(hvac_mode)
 
         target_temperature = self.get_device_target_temperature(device_code)
+
+        _LOGGER.info(
+            f"Set HVAC Mode: {hvac_mode}, PC Mode: {device_mode}, Target temperature: {target_temperature}"
+        )
 
         request_data = {
             DEVICE_CONTROL_PARAM: [

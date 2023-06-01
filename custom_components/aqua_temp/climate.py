@@ -147,13 +147,14 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Fetch new state data for the sensor."""
         entity_description = self.entity_description
 
-        hvac_mode = self.coordinator.get_device_hvac_mode(self._device_code)
-        is_power_on = self.coordinator.get_device_power(self._device_code)
-        fan_mode = self.coordinator.get_device_fan_mode(self._device_code)
-        current_temperature = self.coordinator.get_current_temperature(
-            self._device_code
-        )
-        target_temperature = self.coordinator.get_target_temperature(self._device_code)
+        coordinator = self.coordinator
+        device_code = self._device_code
+
+        hvac_mode = coordinator.get_device_hvac_mode(device_code)
+        is_power_on = coordinator.get_device_power(device_code)
+        fan_mode = coordinator.get_device_fan_mode(device_code)
+        current_temperature = coordinator.get_device_current_temperature(device_code)
+        target_temperature = coordinator.get_device_target_temperature(device_code)
 
         if not is_power_on:
             hvac_mode = HVACMode.OFF
@@ -173,7 +174,9 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
         self._attr_hvac_mode = hvac_mode
         self._attr_fan_mode = fan_mode
-        self._attr_target_temperature = target_temperature
+
+        if target_temperature is not None:
+            self._attr_target_temperature = float(str(target_temperature))
 
         if current_temperature is not None:
             self._attr_current_temperature = float(str(current_temperature))
