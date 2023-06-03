@@ -75,25 +75,13 @@ class AquaTempAPI:
 
     async def initialize(self, throw_error: bool = False):
         try:
-            if not self.is_connected:
-                self.protocol_codes.clear()
-
-                for entity_description in ALL_ENTITIES:
-                    if (
-                        entity_description.key not in self.protocol_codes
-                        and entity_description.is_protocol_code
-                    ):
-                        self.protocol_codes.append(entity_description.key)
-
+            if self._session is None:
                 if self._hass is None:
                     self._session = ClientSession()
                 else:
                     self._session = async_create_clientsession(hass=self._hass)
 
-                await self._login()
-
-                await self._load_user_info()
-                await self._load_devices()
+                await self._connect()
 
         except LoginError as lex:
             _LOGGER.error("Failed to login, Please update credentials and try again")
@@ -109,6 +97,22 @@ class AquaTempAPI:
                 f"Failed to initialize session, Error: {ex}, Line: {line_number}"
             )
 
+    async def _connect(self):
+        if self._token is None:
+            self.protocol_codes.clear()
+
+            await self._login()
+
+            for entity_description in ALL_ENTITIES:
+                if (
+                    entity_description.key not in self.protocol_codes
+                    and entity_description.is_protocol_code
+                ):
+                    self.protocol_codes.append(entity_description.key)
+
+            await self._load_user_info()
+            await self._load_devices()
+
     async def terminate(self):
         if self._hass is None:
             await self._session.close()
@@ -116,15 +120,14 @@ class AquaTempAPI:
     async def update(self):
         """Fetch new state data for the sensor."""
         try:
-            if not self.is_connected:
-                await self.initialize()
-
             if self.is_connected:
                 for device_code in self.data:
                     await self._update_device(device_code)
 
         except Exception as ex:
             self.set_token()
+
+            await self.initialize()
 
             _LOGGER.error(f"Error fetching data. Reconnecting, Error: {ex}")
 
@@ -371,16 +374,31 @@ class AquaTempAPI:
 
         _LOGGER.debug(f"Finished discovering devices, Data: {self.data}")
 
-    async def _post_request(self, endpoint, data: dict | list | None = None) -> dict:
+    async def _post_request(
+        self, endpoint: Endpoints, data: dict | list | None = None
+    ) -> dict | None:
         url = f"{Endpoints.BASE_URL}/{endpoint}"
 
         async with self._session.post(
             url, headers=self._headers, json=data, ssl=False
         ) as response:
-            response.raise_for_status()
+            if endpoint == Endpoints.LOGIN:
+                response.raise_for_status()
 
-            result = await response.json()
-            _LOGGER.debug(f"Request to {endpoint}, Result: {result}")
+            if response.ok:
+                result = await response.json()
+                _LOGGER.debug(f"Request to {endpoint}, Result: {result}")
+
+            else:
+                error_message = (
+                    f"HTTP request to {endpoint}, "
+                    f"Status: {response.status}, "
+                    f"Message: {response.reason}"
+                )
+
+                result = {"error_msg": error_message}
+
+                _LOGGER.warning(error_message)
 
         return result
 

@@ -69,20 +69,20 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         super().__init__(coordinator)
 
         self._api = coordinator.api_data
-        self._api_data = coordinator.api_data[device_code]
         self._config_data = coordinator.config_data
 
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
+        device_data = coordinator.get_device_data(device_code)
 
         entity_name = f"{device_name}"
 
         slugify_name = slugify(entity_name)
 
-        device_id = self._api_data.get("device_id")
+        device_id = device_data.get("device_id")
         unique_id = slugify(f"{entity_description.platform}_{slugify_name}_{device_id}")
 
-        self.entity_description: AquaTempClimateEntityDescription = entity_description
+        self.entity_description = entity_description
 
         self._device_code = device_code
 
@@ -94,18 +94,27 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         self._attr_hvac_mode = HVACMode.OFF
         self._attr_fan_mode = FAN_AUTO
 
-        self._attr_temperature_unit = self.coordinator.get_temperature_unit(device_code)
+        self._attr_temperature_unit = coordinator.get_temperature_unit(device_code)
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
+
+        self._minimum_temperature_keys = entity_description.minimum_temperature_keys
+        self._maximum_temperature_keys = entity_description.maximum_temperature_keys
+
+    @property
+    def _local_coordinator(self) -> AquaTempCoordinator:
+        return self.coordinator
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get("temperature")
 
         try:
-            await self.coordinator.set_temperature(self._device_code, temperature)
+            await self._local_coordinator.set_temperature(
+                self._device_code, temperature
+            )
 
-            await self.coordinator.async_request_refresh()
+            await self._local_coordinator.async_request_refresh()
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -118,9 +127,9 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         try:
             _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
 
-            await self.coordinator.set_hvac_mode(self._device_code, hvac_mode)
+            await self._local_coordinator.set_hvac_mode(self._device_code, hvac_mode)
 
-            await self.coordinator.async_request_refresh()
+            await self._local_coordinator.async_request_refresh()
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -133,9 +142,9 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         try:
             _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
 
-            await self.coordinator.set_fan_mode(self._device_code, fan_mode)
+            await self._local_coordinator.set_fan_mode(self._device_code, fan_mode)
 
-            await self.coordinator.async_request_refresh()
+            await self._local_coordinator.async_request_refresh()
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -145,10 +154,9 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
 
     def _handle_coordinator_update(self) -> None:
         """Fetch new state data for the sensor."""
-        entity_description = self.entity_description
-
-        coordinator = self.coordinator
+        coordinator = self._local_coordinator
         device_code = self._device_code
+        device_data = coordinator.get_device_data(device_code)
 
         hvac_mode = coordinator.get_device_hvac_mode(device_code)
         is_power_on = coordinator.get_device_power(device_code)
@@ -160,15 +168,15 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
             hvac_mode = HVACMode.OFF
             target_temperature = None
 
-        if entity_description.minimum_temperature_keys is not None:
-            min_temp_key = entity_description.minimum_temperature_keys.get(hvac_mode)
-            min_temp = self._api_data.get(min_temp_key, 0)
+        if self._minimum_temperature_keys is not None:
+            min_temp_key = self._minimum_temperature_keys.get(hvac_mode)
+            min_temp = device_data.get(min_temp_key, 0)
 
             self._attr_min_temp = float(str(min_temp))
 
-        if entity_description.maximum_temperature_keys is not None:
-            max_temp_key = entity_description.maximum_temperature_keys.get(hvac_mode)
-            max_temp = self._api_data.get(max_temp_key, 0)
+        if self._maximum_temperature_keys is not None:
+            max_temp_key = self._maximum_temperature_keys.get(hvac_mode)
+            max_temp = device_data.get(max_temp_key, 0)
 
             self._attr_max_temp = float(str(max_temp))
 

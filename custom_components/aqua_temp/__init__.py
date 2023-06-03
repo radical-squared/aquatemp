@@ -66,6 +66,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
+    platforms = []
+
+    for entity_description in ALL_ENTITIES:
+        if (
+            entity_description.platform not in platforms
+            and entity_description.platform is not None
+        ):
+            platforms.append(entity_description.platform)
+
+    for platform in platforms:
+        await hass.config_entries.async_forward_entry_unload(entry, platform)
+
     del hass.data[DOMAIN][entry.entry_id]
 
     return True

@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.0.4
+
+- Fix integration reload issue
+- Entities code clean up
+- API stabilization after timeout
+
 ## v3.0.3
 
 - Fix setting HVAC mode
