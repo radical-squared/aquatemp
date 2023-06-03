@@ -18,6 +18,7 @@ from .entity_descriptions import (
 
 DOMAIN = "aqua_temp"
 DEFAULT_NAME = "Aqua Temp"
+SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 

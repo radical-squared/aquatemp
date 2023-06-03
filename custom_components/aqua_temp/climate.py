@@ -12,11 +12,16 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import ALL_ENTITIES, DOMAIN
+from .common.consts import DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
+from .common.device_discovery import (
+    async_handle_discovered_device,
+    find_entity_description,
+)
 from .common.entity_descriptions import AquaTempClimateEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -26,32 +31,33 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities
 ):
-    """Set up the climate platform."""
-    try:
+    def _create(
+        device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
+    ) -> AquaTempClimateEntity:
+        entity_description = find_entity_description(
+            entity_description_key, Platform.CLIMATE
+        )
+
+        entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
+
+        return entity
+
+    @callback
+    def _async_device_new(device_code):
         coordinator = hass.data[DOMAIN][entry.entry_id]
-        entities = []
-        entity_descriptions = []
 
-        for entity_description in ALL_ENTITIES:
-            if entity_description.platform == Platform.CLIMATE:
-                entity_descriptions.append(entity_description)
+        async_handle_discovered_device(
+            device_code,
+            coordinator,
+            Platform.CLIMATE,
+            _create,
+            async_add_entities,
+        )
 
-        for device_code in coordinator.api_data:
-            for entity_description in entity_descriptions:
-                entity = AquaTempClimateEntity(
-                    device_code, entity_description, coordinator
-                )
-
-                entities.append(entity)
-
-        _LOGGER.debug(f"Setting up climate entities: {entities}")
-
-        async_add_entities(entities, True)
-    except Exception as ex:
-        exc_type, exc_obj, tb = sys.exc_info()
-        line_number = tb.tb_lineno
-
-        _LOGGER.error(f"Failed to initialize climate, Error: {ex}, Line: {line_number}")
+    """Set up the binary sensor platform."""
+    entry.async_on_unload(
+        async_dispatcher_connect(hass, SIGNAL_AQUA_TEMP_DEVICE_NEW, _async_device_new)
+    )
 
 
 class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):

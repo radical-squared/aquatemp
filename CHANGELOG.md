@@ -2,6 +2,7 @@
 
 ## v3.0.4
 
+- Add device discovery for new devices without need to reload integration
 - Fix integration reload issue
 - Entities code clean up
 - API stabilization after timeout

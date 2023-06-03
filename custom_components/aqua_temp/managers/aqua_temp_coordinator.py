@@ -30,11 +30,11 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
     @property
     def api_data(self):
-        return self.data.get(DATA_ITEM_API)
+        return self._api.data
 
     @property
     def config_data(self):
-        return self.data.get(DATA_ITEM_CONFIG)
+        return self._config_manager.data
 
     def get_target_temperature_protocol_code(self, hvac_mode: HVACMode):
         result = self._api.get_target_temperature_protocol_code(hvac_mode)
@@ -65,8 +65,8 @@ class AquaTempCoordinator(DataUpdateCoordinator):
             await self._api.update()
 
             return {
-                DATA_ITEM_API: self._api.data,
-                DATA_ITEM_CONFIG: self._config_manager.data,
+                DATA_ITEM_API: self.api_data,
+                DATA_ITEM_CONFIG: self.config_data,
             }
 
         except Exception as err:

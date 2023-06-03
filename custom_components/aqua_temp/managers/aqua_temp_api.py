@@ -8,6 +8,7 @@ from homeassistant.components.climate.const import HVACMode
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from ..common.consts import (
     ALL_ENTITIES,
@@ -25,6 +26,7 @@ from ..common.consts import (
     POWER_MODE_OFF,
     POWER_MODE_ON,
     PROTOCAL_CODES,
+    SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
 from ..common.exceptions import LoginError, OperationFailedException
@@ -66,6 +68,8 @@ class AquaTempAPI:
         self._reverse_fan_mode_mapping = {
             FAN_MODE_MAPPING[key]: key for key in FAN_MODE_MAPPING
         }
+
+        self._dispatched_devices = []
 
     @property
     def is_connected(self):
@@ -123,6 +127,15 @@ class AquaTempAPI:
             if self.is_connected:
                 for device_code in self.data:
                     await self._update_device(device_code)
+
+                    if device_code not in self._dispatched_devices:
+                        self._dispatched_devices.append(device_code)
+
+                        async_dispatcher_send(
+                            self._hass,
+                            SIGNAL_AQUA_TEMP_DEVICE_NEW,
+                            device_code,
+                        )
 
         except Exception as ex:
             self.set_token()
