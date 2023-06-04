@@ -1,7 +1,6 @@
 """Platform for climate integration."""
 from abc import ABC
 import logging
-import sys
 
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
@@ -74,7 +73,6 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Initialize the climate entity."""
         super().__init__(coordinator)
 
-        self._api = coordinator.api_data
         self._config_data = coordinator.config_data
 
         device_info = coordinator.get_device(device_code)
@@ -114,49 +112,21 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get("temperature")
+        _LOGGER.debug(f"Set target temperature to: {temperature}")
 
-        try:
-            await self._local_coordinator.set_temperature(
-                self._device_code, temperature
-            )
-
-            await self._local_coordinator.async_request_refresh()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.warning(f"{ex}, Line: {line_number}")
+        await self._local_coordinator.set_temperature(self._device_code, temperature)
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
-        try:
-            _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
+        _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
 
-            await self._local_coordinator.set_hvac_mode(self._device_code, hvac_mode)
-
-            await self._local_coordinator.async_request_refresh()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.warning(f"{ex}, Line: {line_number}")
+        await self._local_coordinator.set_hvac_mode(self._device_code, hvac_mode)
 
     async def async_set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
-        try:
-            _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
+        _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
 
-            await self._local_coordinator.set_fan_mode(self._device_code, fan_mode)
-
-            await self._local_coordinator.async_request_refresh()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.warning(f"{ex}, Line: {line_number}")
+        await self._local_coordinator.set_fan_mode(self._device_code, fan_mode)
 
     def _handle_coordinator_update(self) -> None:
         """Fetch new state data for the sensor."""

@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntry
 
-from .common.consts import DOMAIN
+from .common.consts import DATA_ITEM_CONFIG, DATA_ITEM_LOGIN_DETAILS, DOMAIN
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,8 +46,8 @@ def _async_get_diagnostics(
     """Return diagnostics for a config entry."""
     _LOGGER.debug("Getting diagnostic information")
 
-    api_data = coordinator.api_data
     config_data = coordinator.config_data
+    devices = coordinator.devices
 
     clean_config = {}
     for config_item_key in config_data:
@@ -55,7 +55,8 @@ def _async_get_diagnostics(
             clean_config[config_item_key] = config_data[config_item_key]
 
     data = {
-        "config": clean_config,
+        DATA_ITEM_LOGIN_DETAILS: coordinator.login_details,
+        DATA_ITEM_CONFIG: clean_config,
         "disabled_by": entry.disabled_by,
         "disabled_polling": entry.pref_disable_polling,
     }
@@ -63,8 +64,8 @@ def _async_get_diagnostics(
     if device:
         device_id = next(iter(device.identifiers))[1]
 
-        for device_code in api_data:
-            device_details = api_data[device_code]
+        for device_code in devices:
+            device_details = devices[device_code]
             if device_details.get("device_id") == device_id:
                 data |= _async_device_as_dict(hass, device_details)
 
@@ -73,8 +74,8 @@ def _async_get_diagnostics(
 
         data.update(
             devices=[
-                _async_device_as_dict(hass, api_data[device_code])
-                for device_code in api_data
+                _async_device_as_dict(hass, devices[device_code])
+                for device_code in devices
             ]
         )
 

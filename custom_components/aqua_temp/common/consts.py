@@ -95,7 +95,8 @@ POWER_MODE_ON = "1"
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
-DATA_ITEM_API = "data"
+DATA_ITEM_DEVICES = "device"
+DATA_ITEM_LOGIN_DETAILS = "login-details"
 DATA_ITEM_CONFIG = "configuration"
 
 ALL_ENTITIES = [

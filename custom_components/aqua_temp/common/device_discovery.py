@@ -37,7 +37,7 @@ def async_handle_discovered_device(
 
             entities.append(entity)
 
-        _LOGGER.debug(f"Setting up binary {platform} entities: {entities}")
+        _LOGGER.debug(f"Setting up {platform} entities: {entities}")
 
         async_add_entities(entities, True)
 

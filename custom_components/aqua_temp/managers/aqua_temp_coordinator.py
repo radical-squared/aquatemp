@@ -5,7 +5,12 @@ from homeassistant.components.climate import HVACMode
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from ..common.consts import DATA_ITEM_API, DATA_ITEM_CONFIG, DOMAIN
+from ..common.consts import (
+    DATA_ITEM_CONFIG,
+    DATA_ITEM_DEVICES,
+    DATA_ITEM_LOGIN_DETAILS,
+    DOMAIN,
+)
 from .aqua_temp_api import AquaTempAPI
 from .aqua_temp_config_manager import AquaTempConfigManager
 
@@ -29,8 +34,12 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         self._config_manager = config_manager
 
     @property
-    def api_data(self):
-        return self._api.data
+    def devices(self):
+        return self._api.devices
+
+    @property
+    def login_details(self):
+        return self._api.login_details
 
     @property
     def config_data(self):
@@ -42,7 +51,7 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         return result
 
     def get_device(self, device_code: str) -> DeviceInfo:
-        device_data = self.api_data.get(device_code)
+        device_data = self.get_device_data(device_code)
         device_nickname = device_data.get("device_nick_name", device_code)
         device_type = device_data.get("device_type")
         device_id = device_data.get("device_id")
@@ -65,7 +74,8 @@ class AquaTempCoordinator(DataUpdateCoordinator):
             await self._api.update()
 
             return {
-                DATA_ITEM_API: self.api_data,
+                DATA_ITEM_DEVICES: self._api.devices,
+                DATA_ITEM_LOGIN_DETAILS: self._api.login_details,
                 DATA_ITEM_CONFIG: self.config_data,
             }
 
@@ -78,14 +88,22 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     async def set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         await self._api.set_hvac_mode(device_code, hvac_mode)
 
+        await self.async_request_refresh()
+
     async def set_temperature(self, device_code: str, temperature: float):
         await self._api.set_temperature(device_code, temperature)
+
+        await self.async_request_refresh()
 
     async def set_fan_mode(self, device_code: str, fan_mode):
         await self._api.set_fan_mode(device_code, fan_mode)
 
+        await self.async_request_refresh()
+
     async def set_temperature_unit(self, device_code: str, option: str):
         await self._config_manager.update_temperature_unit(device_code, option)
+
+        await self.async_request_refresh()
 
     def get_device_data(self, device_code: str) -> dict | None:
         device_data = self._api.get_device_data(device_code)
