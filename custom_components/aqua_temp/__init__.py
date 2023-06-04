@@ -22,6 +22,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     initialized = False
 
     try:
+        platforms = _get_platforms()
+
         config_manager = AquaTempConfigManager(hass, entry)
         await config_manager.initialize()
 
@@ -32,23 +34,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
+        await hass.config_entries.async_forward_entry_setups(entry, platforms)
+
+        _LOGGER.info(f"Start loading {DOMAIN} integration, Entry ID: {entry.entry_id}")
+
         await coordinator.async_config_entry_first_refresh()
 
         _LOGGER.info("Finished loading integration")
-
-        platforms = []
-        for entity_description in ALL_ENTITIES:
-            if (
-                entity_description.platform not in platforms
-                and entity_description.platform is not None
-            ):
-                platforms.append(entity_description.platform)
-
-        _LOGGER.debug(f"Loading platforms: {platforms}")
-
-        await hass.config_entries.async_forward_entry_setups(entry, platforms)
-
-        _LOGGER.info("Finished loading components")
 
         initialized = True
 
@@ -66,6 +58,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
+    _LOGGER.info(f"Unloading {DOMAIN} integration, Entry ID: {entry.entry_id}")
+
+    platforms = _get_platforms()
+
+    for platform in platforms:
+        await hass.config_entries.async_forward_entry_unload(entry, platform)
+
     del hass.data[DOMAIN][entry.entry_id]
 
     return True
+
+
+def _get_platforms():
+    platforms = []
+    for entity_description in ALL_ENTITIES:
+        if (
+            entity_description.platform not in platforms
+            and entity_description.platform is not None
+        ):
+            platforms.append(entity_description.platform)
+
+    return platforms

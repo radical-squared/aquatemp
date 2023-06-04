@@ -18,6 +18,7 @@ from .entity_descriptions import (
 
 DOMAIN = "aqua_temp"
 DEFAULT_NAME = "Aqua Temp"
+SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 
@@ -77,6 +78,13 @@ HVAC_MODE_MAPPING = {
     HVACMode.AUTO: MODE_TEMPERATURE_AUTO,
 }
 
+HVAC_MODE_TARGET_TEMPERATURE = {
+    HVACMode.OFF: None,
+    HVACMode.COOL: "R01",
+    HVACMode.HEAT: "R02",
+    HVACMode.AUTO: "R03",
+}
+
 MANUAL_MUTE_AUTO = "0"
 MANUAL_MUTE_LOW = "1"
 
@@ -87,7 +95,8 @@ POWER_MODE_ON = "1"
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
-DATA_ITEM_API = "data"
+DATA_ITEM_DEVICES = "device"
+DATA_ITEM_LOGIN_DETAILS = "login-details"
 DATA_ITEM_CONFIG = "configuration"
 
 ALL_ENTITIES = [
@@ -423,7 +432,7 @@ ALL_ENTITIES = [
     ),
     AquaTempEntityDescription(key="H13", name="Stop bit", category="System parameter"),
     AquaTempEntityDescription(
-        key="R01", name="Water pump mode", category="Water pump parameter"
+        key="P01", name="Water pump mode", category="Water pump parameter"
     ),
     AquaTempEntityDescription(
         key="P02", name="Water pump running cycle", category="Water pump parameter"

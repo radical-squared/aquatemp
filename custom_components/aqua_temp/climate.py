@@ -1,7 +1,6 @@
 """Platform for climate integration."""
 from abc import ABC
 import logging
-import sys
 
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
@@ -12,11 +11,16 @@ from homeassistant.components.climate.const import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import ALL_ENTITIES, DOMAIN
+from .common.consts import DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
+from .common.device_discovery import (
+    async_handle_discovered_device,
+    find_entity_description,
+)
 from .common.entity_descriptions import AquaTempClimateEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -26,32 +30,33 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities
 ):
-    """Set up the climate platform."""
-    try:
+    def _create(
+        device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
+    ) -> AquaTempClimateEntity:
+        entity_description = find_entity_description(
+            entity_description_key, Platform.CLIMATE
+        )
+
+        entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
+
+        return entity
+
+    @callback
+    def _async_device_new(device_code):
         coordinator = hass.data[DOMAIN][entry.entry_id]
-        entities = []
-        entity_descriptions = []
 
-        for entity_description in ALL_ENTITIES:
-            if entity_description.platform == Platform.CLIMATE:
-                entity_descriptions.append(entity_description)
+        async_handle_discovered_device(
+            device_code,
+            coordinator,
+            Platform.CLIMATE,
+            _create,
+            async_add_entities,
+        )
 
-        for device_code in coordinator.api_data:
-            for entity_description in entity_descriptions:
-                entity = AquaTempClimateEntity(
-                    device_code, entity_description, coordinator
-                )
-
-                entities.append(entity)
-
-        _LOGGER.debug(f"Setting up climate entities: {entities}")
-
-        async_add_entities(entities, True)
-    except Exception as ex:
-        exc_type, exc_obj, tb = sys.exc_info()
-        line_number = tb.tb_lineno
-
-        _LOGGER.error(f"Failed to initialize climate, Error: {ex}, Line: {line_number}")
+    """Set up the binary sensor platform."""
+    entry.async_on_unload(
+        async_dispatcher_connect(hass, SIGNAL_AQUA_TEMP_DEVICE_NEW, _async_device_new)
+    )
 
 
 class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
@@ -68,21 +73,20 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Initialize the climate entity."""
         super().__init__(coordinator)
 
-        self._api = coordinator.api_data
-        self._api_data = coordinator.api_data[device_code]
         self._config_data = coordinator.config_data
 
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
+        device_data = coordinator.get_device_data(device_code)
 
         entity_name = f"{device_name}"
 
         slugify_name = slugify(entity_name)
 
-        device_id = self._api_data.get("device_id")
+        device_id = device_data.get("device_id")
         unique_id = slugify(f"{entity_description.platform}_{slugify_name}_{device_id}")
 
-        self.entity_description: AquaTempClimateEntityDescription = entity_description
+        self.entity_description = entity_description
 
         self._device_code = device_code
 
@@ -94,61 +98,41 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         self._attr_hvac_mode = HVACMode.OFF
         self._attr_fan_mode = FAN_AUTO
 
-        self._attr_temperature_unit = self.coordinator.get_temperature_unit(device_code)
+        self._attr_temperature_unit = coordinator.get_temperature_unit(device_code)
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
+
+        self._minimum_temperature_keys = entity_description.minimum_temperature_keys
+        self._maximum_temperature_keys = entity_description.maximum_temperature_keys
+
+    @property
+    def _local_coordinator(self) -> AquaTempCoordinator:
+        return self.coordinator
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get("temperature")
+        _LOGGER.debug(f"Set target temperature to: {temperature}")
 
-        try:
-            await self.coordinator.set_temperature(self._device_code, temperature)
-
-            await self.coordinator.async_request_refresh()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.warning(f"{ex}, Line: {line_number}")
+        await self._local_coordinator.set_temperature(self._device_code, temperature)
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
-        try:
-            _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
+        _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
 
-            await self.coordinator.set_hvac_mode(self._device_code, hvac_mode)
-
-            await self.coordinator.async_request_refresh()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.warning(f"{ex}, Line: {line_number}")
+        await self._local_coordinator.set_hvac_mode(self._device_code, hvac_mode)
 
     async def async_set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
-        try:
-            _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
+        _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
 
-            await self.coordinator.set_fan_mode(self._device_code, fan_mode)
-
-            await self.coordinator.async_request_refresh()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.warning(f"{ex}, Line: {line_number}")
+        await self._local_coordinator.set_fan_mode(self._device_code, fan_mode)
 
     def _handle_coordinator_update(self) -> None:
         """Fetch new state data for the sensor."""
-        entity_description = self.entity_description
-
-        coordinator = self.coordinator
+        coordinator = self._local_coordinator
         device_code = self._device_code
+        device_data = coordinator.get_device_data(device_code)
 
         hvac_mode = coordinator.get_device_hvac_mode(device_code)
         is_power_on = coordinator.get_device_power(device_code)
@@ -160,15 +144,15 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
             hvac_mode = HVACMode.OFF
             target_temperature = None
 
-        if entity_description.minimum_temperature_keys is not None:
-            min_temp_key = entity_description.minimum_temperature_keys.get(hvac_mode)
-            min_temp = self._api_data.get(min_temp_key, 0)
+        if self._minimum_temperature_keys is not None:
+            min_temp_key = self._minimum_temperature_keys.get(hvac_mode)
+            min_temp = device_data.get(min_temp_key, 0)
 
             self._attr_min_temp = float(str(min_temp))
 
-        if entity_description.maximum_temperature_keys is not None:
-            max_temp_key = entity_description.maximum_temperature_keys.get(hvac_mode)
-            max_temp = self._api_data.get(max_temp_key, 0)
+        if self._maximum_temperature_keys is not None:
+            max_temp_key = self._maximum_temperature_keys.get(hvac_mode)
+            max_temp = device_data.get(max_temp_key, 0)
 
             self._attr_max_temp = float(str(max_temp))
 
