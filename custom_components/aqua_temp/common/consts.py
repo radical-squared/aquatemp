@@ -78,6 +78,13 @@ HVAC_MODE_MAPPING = {
     HVACMode.AUTO: MODE_TEMPERATURE_AUTO,
 }
 
+HVAC_MODE_TARGET_TEMPERATURE = {
+    HVACMode.OFF: None,
+    HVACMode.COOL: "R01",
+    HVACMode.HEAT: "R02",
+    HVACMode.AUTO: "R03",
+}
+
 MANUAL_MUTE_AUTO = "0"
 MANUAL_MUTE_LOW = "1"
 
@@ -424,7 +431,7 @@ ALL_ENTITIES = [
     ),
     AquaTempEntityDescription(key="H13", name="Stop bit", category="System parameter"),
     AquaTempEntityDescription(
-        key="R01", name="Water pump mode", category="Water pump parameter"
+        key="P01", name="Water pump mode", category="Water pump parameter"
     ),
     AquaTempEntityDescription(
         key="P02", name="Water pump running cycle", category="Water pump parameter"

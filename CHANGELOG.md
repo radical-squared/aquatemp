@@ -6,6 +6,8 @@
 - Fix integration reload issue
 - Entities code clean up
 - API stabilization after timeout
+- Fix target temperature parameter mapping (Heat, Cool and Auto)
+- Fix parameter mapping for P01 (Water pump mode)
 
 ## v3.0.3
 

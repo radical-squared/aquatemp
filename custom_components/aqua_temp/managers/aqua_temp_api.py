@@ -23,6 +23,7 @@ from ..common.consts import (
     HEADERS,
     HTTP_HEADER_X_TOKEN,
     HVAC_MODE_MAPPING,
+    HVAC_MODE_TARGET_TEMPERATURE,
     POWER_MODE_OFF,
     POWER_MODE_ON,
     PROTOCAL_CODES,
@@ -124,18 +125,11 @@ class AquaTempAPI:
     async def update(self):
         """Fetch new state data for the sensor."""
         try:
-            if self.is_connected:
-                for device_code in self.data:
-                    await self._update_device(device_code)
+            if self._token is None:
+                await self._login()
 
-                    if device_code not in self._dispatched_devices:
-                        self._dispatched_devices.append(device_code)
-
-                        async_dispatcher_send(
-                            self._hass,
-                            SIGNAL_AQUA_TEMP_DEVICE_NEW,
-                            device_code,
-                        )
+            for device_code in self.data:
+                await self._update_device(device_code)
 
         except Exception as ex:
             self.set_token()
@@ -152,6 +146,15 @@ class AquaTempAPI:
         await self._fetch_data(device_code)
 
         await self._fetch_errors(device_code)
+
+        if device_code not in self._dispatched_devices:
+            self._dispatched_devices.append(device_code)
+
+            async_dispatcher_send(
+                self._hass,
+                SIGNAL_AQUA_TEMP_DEVICE_NEW,
+                device_code,
+            )
 
     def set_token(self, token: str | None = None):
         self._token = token
@@ -290,7 +293,7 @@ class AquaTempAPI:
             _LOGGER.error(f"Failed to fetch data, Error: {error_msg}")
 
     async def _send_passthrough_instruction(self, device_code: str):
-        data = {"device_code": device_code, "query_instruction": "630300040001CD89"}
+        data = {DEVICE_CODE: device_code, "query_instruction": "630300040001CD89"}
 
         data_response = await self._post_request(
             Endpoints.DEVICE_PASSTHROUGH_INSTRUCTION, data
@@ -304,7 +307,7 @@ class AquaTempAPI:
         if "fault" in self.data:
             self.data.pop("fault")
 
-        data = {"device_code": device_code}
+        data = {DEVICE_CODE: device_code}
 
         device_status_response = await self._post_request(Endpoints.DEVICE_STATUS, data)
         object_result = device_status_response.get("object_result", {})
@@ -375,7 +378,7 @@ class AquaTempAPI:
             object_results = device_code_response.get("object_result", [])
 
             for object_result in object_results:
-                device_code = object_result.get("device_code")
+                device_code = object_result.get(DEVICE_CODE)
 
                 _LOGGER.debug(
                     f"Discover device: {device_code} by {device_list_url}, Data: {object_result}"
@@ -391,6 +394,9 @@ class AquaTempAPI:
         self, endpoint: Endpoints, data: dict | list | None = None
     ) -> dict | None:
         url = f"{Endpoints.BASE_URL}/{endpoint}"
+
+        if endpoint == Endpoints.DEVICE_CONTROL:
+            _LOGGER.info(f"Sending request to control device, Data: {data}")
 
         async with self._session.post(
             url, headers=self._headers, json=data, ssl=False
@@ -460,7 +466,10 @@ class AquaTempAPI:
 
     @staticmethod
     def get_target_temperature_protocol_code(hvac_mode: HVACMode):
-        hvac_mode_mapping = HVAC_MODE_MAPPING.get(hvac_mode)
-        temp_protocol_code = f"R0{hvac_mode_mapping}"
+        target_temperature_protocol_code = HVAC_MODE_TARGET_TEMPERATURE.get(hvac_mode)
 
-        return temp_protocol_code
+        _LOGGER.debug(
+            f"Target temp PC {target_temperature_protocol_code}, HA Mode: {hvac_mode}"
+        )
+
+        return target_temperature_protocol_code
