@@ -294,6 +294,9 @@ class AquaTempAPI:
             code = object_result_item.get("code")
             value = object_result_item.get("value")
 
+            if value is not None and isinstance(value, str) and value == "":
+                value = None
+
             self._devices[device_code][code] = value
 
         error_msg = data_response.get("error_msg")
@@ -404,11 +407,7 @@ class AquaTempAPI:
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
                 )
 
-                device_data = {
-                    key: (None if device[key] == "" else device[key]) for key in device
-                }
-
-                self._devices[device_code] = device_data
+                self._devices[device_code] = device
 
         _LOGGER.debug(f"Finished discovering devices, Data: {self._devices}")
 
