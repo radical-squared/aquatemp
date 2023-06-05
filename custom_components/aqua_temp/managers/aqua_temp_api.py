@@ -404,7 +404,11 @@ class AquaTempAPI:
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
                 )
 
-                self._devices[device_code] = device
+                device_data = {
+                    key: (None if device[key] == "" else device[key]) for key in device
+                }
+
+                self._devices[device_code] = device_data
 
         _LOGGER.debug(f"Finished discovering devices, Data: {self._devices}")
 

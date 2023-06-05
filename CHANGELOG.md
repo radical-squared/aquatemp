@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.5
+
+- Set device's empty values as `None`
+
 ## v3.0.4
 
 - Add device discovery for new devices without need to reload integration
