@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.6
+
+- Fix device's empty values as `None` handling
+
 ## v3.0.5
 
 - Set device's empty values as `None`
