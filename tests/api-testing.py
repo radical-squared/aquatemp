@@ -3,7 +3,8 @@ import logging
 import os
 import sys
 
-from custom_components.aqua_temp.common.consts import ALL_ENTITIES
+from custom_components.aqua_temp.common.consts import PROTOCAL_CODES
+from custom_components.aqua_temp.common.entity_descriptions import ALL_ENTITIES
 from custom_components.aqua_temp.managers.aqua_temp_api import AquaTempAPI
 from custom_components.aqua_temp.managers.aqua_temp_config_manager import (
     AquaTempConfigManager,
@@ -37,8 +38,6 @@ class Test:
     async def parameters_list(self):
         await self._api.initialize()
 
-        _LOGGER.debug(self._api.protocol_codes)
-
     async def list_data(self):
         await self._api.initialize()
 
@@ -47,10 +46,11 @@ class Test:
         print(f"| Parameter | Device Code | Value | Description           |")
         print(f"| --------- | ----------- | ----- | --------------------- |")
 
-        for device_code in self._api.data:
-            device_data = self._api.data[device_code]
+        for device_code in self._api.devices:
+            device_data = self._api.get_device_data(device_code)
+            device_entities = device_data.get(PROTOCAL_CODES)
 
-            for entity_description in ALL_ENTITIES:
+            for entity_description in device_entities:
                 value = device_data.get(entity_description.key)
 
                 if entity_description.platform == Platform.BINARY_SENSOR:
@@ -61,7 +61,8 @@ class Test:
 
         await self._api.terminate()
 
-    async def protocol_code_mapping(self):
+    @staticmethod
+    async def protocol_code_mapping():
         protocol_categories = {}
 
         for entity_description in ALL_ENTITIES:
@@ -81,23 +82,30 @@ class Test:
             for entity_description in entity_descriptions:
                 print(f"| {entity_description.key} | {entity_description.name} |")
 
-    async def entities_mapping(self):
+    @staticmethod
+    async def entities_mapping():
         print("| Entity Name | Parameter | Platform | Protocol Code? |")
         print("| ----------- | --------- | -------- | -------------- |")
 
         for entity_description in ALL_ENTITIES:
             if entity_description.platform is not None:
-                print(f"| {{HA Device Name}} {entity_description.name} | {entity_description.key} | {entity_description.platform} | {entity_description.is_protocol_code} |")
+                print(
+                    f"| {{HA Device Name}} "
+                    f"{entity_description.name} | "
+                    f"{entity_description.key} | "
+                    f"{entity_description.platform} | "
+                    f"{entity_description.is_protocol_code} |"
+                )
 
     async def parameters_details(self):
         await self.parameters_list()
 
         await self._api.update()
 
-        print(self._api.data)
+        print(self._api.devices)
 
-        for device_code in self._api.data:
-            device_data = self._api.data[device_code]
+        for device_code in self._api.devices:
+            device_data = self._api.devices[device_code]
 
             for entity_description in ALL_ENTITIES:
                 value = device_data.get(entity_description.key)
@@ -114,7 +122,7 @@ class Test:
         for i in range(1, 10):
             await self._api.update()
 
-            _LOGGER.info(self._api.data)
+            _LOGGER.info(self._api.devices)
 
             await asyncio.sleep(30)
 
@@ -127,7 +135,9 @@ loop = asyncio.new_event_loop()
 instance = Test()
 
 try:
-    loop.run_until_complete(instance.list_data())
+    loop.create_task(instance.list_data())
+    loop.run_forever()
+
 
 except KeyboardInterrupt:
     _LOGGER.info("Aborted")

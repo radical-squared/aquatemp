@@ -65,7 +65,6 @@ class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
         super().__init__(coordinator)
 
         self._device_code = device_code
-        self._config_data = coordinator.config_data
 
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")

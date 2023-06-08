@@ -4,7 +4,8 @@ import sys
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .common.consts import ALL_ENTITIES, DOMAIN
+from .common.consts import DOMAIN
+from .common.entity_descriptions import ALL_ENTITIES
 from .common.exceptions import LoginError
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager

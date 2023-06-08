@@ -73,8 +73,6 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Initialize the climate entity."""
         super().__init__(coordinator)
 
-        self._config_data = coordinator.config_data
-
         device_info = coordinator.get_device(device_code)
         device_name = device_info.get("name")
         device_data = coordinator.get_device_data(device_code)
@@ -101,9 +99,6 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         self._attr_temperature_unit = coordinator.get_temperature_unit(device_code)
         self._attr_name = entity_name
         self._attr_unique_id = unique_id
-
-        self._minimum_temperature_keys = entity_description.minimum_temperature_keys
-        self._maximum_temperature_keys = entity_description.maximum_temperature_keys
 
     @property
     def _local_coordinator(self) -> AquaTempCoordinator:
@@ -132,38 +127,25 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         """Fetch new state data for the sensor."""
         coordinator = self._local_coordinator
         device_code = self._device_code
-        device_data = coordinator.get_device_data(device_code)
 
         hvac_mode = coordinator.get_device_hvac_mode(device_code)
         is_power_on = coordinator.get_device_power(device_code)
         fan_mode = coordinator.get_device_fan_mode(device_code)
         current_temperature = coordinator.get_device_current_temperature(device_code)
         target_temperature = coordinator.get_device_target_temperature(device_code)
+        minimum_temperature = coordinator.get_device_minimum_temperature(device_code)
+        maximum_temperature = coordinator.get_device_maximum_temperature(device_code)
 
         if not is_power_on:
             hvac_mode = HVACMode.OFF
             target_temperature = None
 
-        if self._minimum_temperature_keys is not None:
-            min_temp_key = self._minimum_temperature_keys.get(hvac_mode)
-            min_temp = device_data.get(min_temp_key, 0)
-
-            self._attr_min_temp = float(str(min_temp))
-
-        if self._maximum_temperature_keys is not None:
-            max_temp_key = self._maximum_temperature_keys.get(hvac_mode)
-            max_temp = device_data.get(max_temp_key, 0)
-
-            self._attr_max_temp = float(str(max_temp))
-
+        self._attr_min_temp = minimum_temperature
+        self._attr_max_temp = maximum_temperature
         self._attr_hvac_mode = hvac_mode
         self._attr_fan_mode = fan_mode
-
-        if target_temperature is not None:
-            self._attr_target_temperature = float(str(target_temperature))
-
-        if current_temperature is not None:
-            self._attr_current_temperature = float(str(current_temperature))
+        self._attr_target_temperature = target_temperature
+        self._attr_current_temperature = current_temperature
 
         _LOGGER.debug(f"_attr_hvac_mode: {self._attr_hvac_mode}")
         _LOGGER.debug(f"_attr_target_temperature: {self._attr_target_temperature}")

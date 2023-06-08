@@ -7,7 +7,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from ..managers.aqua_temp_coordinator import AquaTempCoordinator
-from .consts import ALL_ENTITIES
+from .entity_descriptions import ALL_ENTITIES
 
 _LOGGER = logging.getLogger(__name__)
 

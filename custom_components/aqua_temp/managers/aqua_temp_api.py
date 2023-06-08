@@ -1,4 +1,5 @@
 """Platform for climate integration."""
+from copy import copy
 import logging
 import sys
 
@@ -11,27 +12,32 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from ..common.consts import (
-    ALL_ENTITIES,
     DEVICE_CODE,
     DEVICE_CONTROL_PARAM,
     DEVICE_CONTROL_PROTOCOL_CODE,
     DEVICE_CONTROL_VALUE,
     DEVICE_LISTS,
+    DEVICE_PRODUCT_ID,
     DEVICE_REQUEST_PARAMETERS,
     DEVICE_REQUEST_TO_USER,
     FAN_MODE_MAPPING,
     HEADERS,
     HTTP_HEADER_X_TOKEN,
-    HVAC_MODE_MAPPING,
-    HVAC_MODE_TARGET_TEMPERATURE,
     POWER_MODE_OFF,
     POWER_MODE_ON,
     PROTOCAL_CODES,
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
+from ..common.entity_descriptions import ALL_ENTITIES
 from ..common.exceptions import LoginError, OperationFailedException
-from ..common.protocol_codes import ProtocolCode
+from ..common.hvac_mode_mapping import (
+    HVAC_MODE_MAPPING,
+    HVAC_MODE_MAXIMUM_TEMPERATURE,
+    HVAC_MODE_MINIMUM_TEMPERATURE,
+    HVAC_MODE_TARGET_TEMPERATURE,
+)
+from ..common.protocol_codes import PROTOCOL_CODE_OVERRIDES, ProtocolCode
 from .aqua_temp_config_manager import AquaTempConfigManager
 
 _LOGGER = logging.getLogger(__name__)
@@ -60,7 +66,6 @@ class AquaTempAPI:
         self._hass = hass
         self._headers = HEADERS
         self._config_manager = config_manager
-        self.protocol_codes = []
         self._dispatched_devices = []
         self._device_list_request_data = {}
 
@@ -116,16 +121,7 @@ class AquaTempAPI:
 
     async def _connect(self):
         if self._token is None:
-            self.protocol_codes.clear()
-
             await self._login()
-
-            for entity_description in ALL_ENTITIES:
-                if (
-                    entity_description.key not in self.protocol_codes
-                    and entity_description.is_protocol_code
-                ):
-                    self.protocol_codes.append(entity_description.key)
 
             await self._load_devices()
 
@@ -282,9 +278,16 @@ class AquaTempAPI:
             raise OperationFailedException(operation, request_data, error_msg)
 
     async def _fetch_data(self, device_code: str):
+        device_data = self.get_device_data(device_code)
+        device_protocal_codes = device_data.get(PROTOCAL_CODES)
+
+        protocal_codes = [
+            device_protocal_code.key for device_protocal_code in device_protocal_codes
+        ]
+
         data = {
             DEVICE_CODE: device_code,
-            PROTOCAL_CODES: self.protocol_codes,
+            PROTOCAL_CODES: protocal_codes,
         }
 
         data_response = await self._post_request(Endpoints.DEVICE_DATA, data)
@@ -402,14 +405,30 @@ class AquaTempAPI:
 
             for device in devices:
                 device_code = device.get(DEVICE_CODE)
+                device_product_id = device.get(DEVICE_PRODUCT_ID)
 
                 _LOGGER.debug(
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
                 )
 
+                protocol_code_overrides = PROTOCOL_CODE_OVERRIDES.get(device_product_id)
+                device_entities = copy(
+                    [entity for entity in ALL_ENTITIES if entity.is_protocol_code]
+                )
+
+                for entity in device_entities:
+                    if protocol_code_overrides is not None:
+                        for replace_key in protocol_code_overrides:
+                            replace_with = protocol_code_overrides[replace_key]
+                            key = entity.key.replace(replace_key, replace_with)
+
+                            entity.key = key
+
+                device[PROTOCAL_CODES] = device_entities
+
                 self._devices[device_code] = device
 
-        _LOGGER.debug(f"Finished discovering devices, Data: {self._devices}")
+                _LOGGER.info(f"Discovering device {device_code}")
 
     async def _post_request(
         self, endpoint: Endpoints, data: dict | list | None = None
@@ -447,7 +466,7 @@ class AquaTempAPI:
 
         return device_data
 
-    def get_device_target_temperature(self, device_code: str) -> float:
+    def get_device_target_temperature(self, device_code: str) -> float | None:
         hvac_mode = self.get_device_hvac_mode(device_code)
         target_temperature_protocol_code = self.get_target_temperature_protocol_code(
             hvac_mode
@@ -456,13 +475,57 @@ class AquaTempAPI:
         device_data = self.get_device_data(device_code)
         target_temperature = device_data.get(target_temperature_protocol_code)
 
+        if target_temperature == "":
+            target_temperature = None
+
+        if target_temperature is not None:
+            target_temperature = float(str(target_temperature))
+
         return target_temperature
 
-    def get_device_current_temperature(self, device_code: str) -> float:
+    def get_device_current_temperature(self, device_code: str) -> float | None:
         device_data = self.get_device_data(device_code)
         current_temperature = device_data.get(ProtocolCode.CURRENT_TEMPERATURE)
 
+        if current_temperature == "":
+            current_temperature = None
+
+        if current_temperature is not None:
+            current_temperature = float(str(current_temperature))
+
         return current_temperature
+
+    def get_device_minimum_temperature(self, device_code: str) -> float | None:
+        device_data = self.get_device_data(device_code)
+
+        hvac_mode = self.get_device_hvac_mode(device_code)
+        key = HVAC_MODE_MINIMUM_TEMPERATURE.get(hvac_mode)
+
+        temperature = device_data.get(key)
+
+        if temperature == "":
+            temperature = None
+
+        if temperature is not None:
+            temperature = float(str(temperature))
+
+        return temperature
+
+    def get_device_maximum_temperature(self, device_code: str) -> float | None:
+        device_data = self.get_device_data(device_code)
+
+        hvac_mode = self.get_device_hvac_mode(device_code)
+        key = HVAC_MODE_MAXIMUM_TEMPERATURE.get(hvac_mode)
+
+        temperature = device_data.get(key)
+
+        if temperature == "":
+            temperature = None
+
+        if temperature is not None:
+            temperature = float(str(temperature))
+
+        return temperature
 
     def get_device_hvac_mode(self, device_code: str) -> HVACMode:
         device_data = self.get_device_data(device_code)
