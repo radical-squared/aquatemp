@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.7
+
+- Improve support for devices of product ID `1442284873216843776`
+
 ## v3.0.6
 
 - Fix device's empty values as `None` handling

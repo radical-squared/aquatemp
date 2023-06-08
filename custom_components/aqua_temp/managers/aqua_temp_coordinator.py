@@ -110,15 +110,25 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
         return device_data
 
-    def get_device_target_temperature(self, device_code: str) -> float:
+    def get_device_target_temperature(self, device_code: str) -> float | None:
         target_temperature = self._api.get_device_target_temperature(device_code)
 
         return target_temperature
 
-    def get_device_current_temperature(self, device_code: str) -> float:
+    def get_device_current_temperature(self, device_code: str) -> float | None:
         current_temperature = self._api.get_device_current_temperature(device_code)
 
         return current_temperature
+
+    def get_device_minimum_temperature(self, device_code: str) -> float | None:
+        minimum_temperature = self._api.get_device_minimum_temperature(device_code)
+
+        return minimum_temperature
+
+    def get_device_maximum_temperature(self, device_code: str) -> float | None:
+        maximum_temperature = self._api.get_device_maximum_temperature(device_code)
+
+        return maximum_temperature
 
     def get_device_hvac_mode(self, device_code: str) -> HVACMode:
         hvac_mode = self._api.get_device_hvac_mode(device_code)
