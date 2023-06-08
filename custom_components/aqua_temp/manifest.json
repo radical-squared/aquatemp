@@ -8,5 +8,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/radical-squared/aquatemp/issues",
   "requirements": [],
-  "version": "3.0.7"
+  "version": "3.0.8"
 }

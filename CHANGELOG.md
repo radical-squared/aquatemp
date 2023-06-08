@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.8
+
+- Fix missing `Off` mode for climate
+
 ## v3.0.7
 
 - Improve support for devices of product ID `1442284873216843776`
