@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.9
+
+- Add support for product ID `1245226668902080512` [#25](https://github.com/radical-squared/aquatemp/issues/25)
+
 ## v3.0.8
 
 - Fix missing `Off` mode for climate
