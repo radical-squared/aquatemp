@@ -3,7 +3,7 @@ from copy import copy
 import logging
 import sys
 
-from aiohttp import ClientSession
+from aiohttp import ClientResponseError, ClientSession
 
 from homeassistant.components.climate.const import HVACMode
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
@@ -145,20 +145,32 @@ class AquaTempAPI:
     async def _update_device(self, device_code: str):
         _LOGGER.debug(f"Starting to update device: {device_code}")
 
-        await self._send_passthrough_instruction(device_code)
+        try:
+            await self._send_passthrough_instruction(device_code)
 
-        await self._fetch_data(device_code)
+            await self._fetch_data(device_code)
 
-        await self._fetch_errors(device_code)
+            await self._fetch_errors(device_code)
 
-        if device_code not in self._dispatched_devices:
-            self._dispatched_devices.append(device_code)
+            if device_code not in self._dispatched_devices:
+                self._dispatched_devices.append(device_code)
 
-            async_dispatcher_send(
-                self._hass,
-                SIGNAL_AQUA_TEMP_DEVICE_NEW,
-                device_code,
-            )
+                async_dispatcher_send(
+                    self._hass,
+                    SIGNAL_AQUA_TEMP_DEVICE_NEW,
+                    device_code,
+                )
+
+        except ClientResponseError as cre:
+            error_message = f"Error fetching data for device {device_code}, Error: "
+
+            if cre.status == 401:
+                _LOGGER.warning(f"{error_message}expired token")
+
+                self.set_token()
+
+            else:
+                _LOGGER.error(f"{error_message}{cre}")
 
     def set_token(self, token: str | None = None):
         self._device_list_request_data = {}
@@ -268,14 +280,21 @@ class AquaTempAPI:
         await self._perform_action(request_data, ProtocolCode.MANUAL_MUTE)
 
     async def _perform_action(self, request_data: dict, operation: str):
-        operation_response = await self._post_request(
-            Endpoints.DEVICE_CONTROL, request_data
-        )
+        try:
+            operation_response = await self._post_request(
+                Endpoints.DEVICE_CONTROL, request_data
+            )
 
-        error_msg = operation_response.get("error_msg")
+            error_msg = operation_response.get("error_msg")
 
-        if error_msg != "Success":
-            raise OperationFailedException(operation, request_data, error_msg)
+            if error_msg != "Success":
+                raise OperationFailedException(operation, request_data, error_msg)
+
+        except ClientResponseError as cre:
+            if cre.status == 401:
+                self.set_token()
+
+            raise cre
 
     async def _fetch_data(self, device_code: str):
         device_data = self.get_device_data(device_code)
@@ -441,23 +460,10 @@ class AquaTempAPI:
         async with self._session.post(
             url, headers=self._headers, json=data, ssl=False
         ) as response:
-            if endpoint == Endpoints.LOGIN:
-                response.raise_for_status()
+            response.raise_for_status()
 
-            if response.ok:
-                result = await response.json()
-                _LOGGER.debug(f"Request to {endpoint}, Result: {result}")
-
-            else:
-                error_message = (
-                    f"HTTP request to {endpoint}, "
-                    f"Status: {response.status}, "
-                    f"Message: {response.reason}"
-                )
-
-                result = {"error_msg": error_message}
-
-                _LOGGER.warning(error_message)
+            result = await response.json()
+            _LOGGER.debug(f"Request to {endpoint}, Result: {result}")
 
         return result
 
