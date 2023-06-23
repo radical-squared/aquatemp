@@ -5,7 +5,6 @@ from homeassistant.components.climate import HVACMode
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .. import ProductConfigurationManager
 from ..common.consts import (
     DATA_ITEM_CONFIG,
     DATA_ITEM_DEVICES,
@@ -14,6 +13,7 @@ from ..common.consts import (
 )
 from .aqua_temp_api import AquaTempAPI
 from .aqua_temp_config_manager import AquaTempConfigManager
+from .product_config_manager import ProductConfigurationManager
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -3,13 +3,10 @@ import json
 import logging
 import os
 import sys
-from typing import Callable
 
 from homeassistant.const import EntityCategory, Platform
-from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .. import AquaTempCoordinator
 from ..common.consts import DEVICE_PRODUCT_ID, PRODUCT_IDS
 from ..common.entity_descriptions import (
     DEFAULT_ENTITY_DESCRIPTIONS,
@@ -30,20 +27,33 @@ class ProductConfigurationManager:
         self.platforms = []
 
     def initialize(self):
-        self._load_product_configuration("default")
+        try:
+            self._load_product_configuration("default")
 
-        for product_id in PRODUCT_IDS:
-            has_dedicated_config = PRODUCT_IDS.get()
+            for product_id in PRODUCT_IDS:
+                has_dedicated_config = PRODUCT_IDS.get(product_id)
 
-            if has_dedicated_config:
-                self._load_product_configuration(product_id)
+                if has_dedicated_config:
+                    self._load_product_configuration(product_id)
+
+        except Exception as ex:
+            exc_type, exc_obj, tb = sys.exc_info()
+            line_number = tb.tb_lineno
+
+            _LOGGER.error(f"Failed to initialize, Error: {ex}, Line: {line_number}")
 
     def get_entity_descriptions(self, product_id):
+        if product_id not in self._entity_descriptions:
+            product_id = "default"
+
         result = self._entity_descriptions.get(product_id)
 
         return result
 
     def get_supported_protocal_codes(self, product_id) -> list[str]:
+        if product_id not in self._protocal_codes:
+            product_id = "default"
+
         result = self._protocal_codes.get(product_id)
 
         return result
@@ -51,12 +61,9 @@ class ProductConfigurationManager:
     def async_handle_discovered_device(
         self,
         device_code: str,
-        coordinator: AquaTempCoordinator,
+        coordinator,
         platform: Platform,
-        entity_initializer: Callable[
-            [str, str, AquaTempCoordinator],
-            Entity,
-        ],
+        entity_initializer,
         async_add_entities: AddEntitiesCallback,
     ):
         try:
@@ -99,7 +106,7 @@ class ProductConfigurationManager:
 
         return result
 
-    def _load_product_configuration(self, product_id: str = "default"):
+    def _load_product_configuration(self, product_id: str):
         entities = copy(DEFAULT_ENTITY_DESCRIPTIONS)
         file_path = os.path.join(
             os.path.dirname(__file__), f"../parameters/{product_id}.json"

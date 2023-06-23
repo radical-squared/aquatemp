@@ -10,7 +10,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
-from .. import ProductConfigurationManager
 from ..common.consts import (
     DEVICE_CODE,
     DEVICE_CONTROL_PARAM,
@@ -38,6 +37,7 @@ from ..common.hvac_mode_mapping import (
 )
 from ..common.protocol_codes import ProtocolCode
 from .aqua_temp_config_manager import AquaTempConfigManager
+from .product_config_manager import ProductConfigurationManager
 
 _LOGGER = logging.getLogger(__name__)
 
