@@ -5,6 +5,7 @@ from homeassistant.components.climate import HVACMode
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+from .. import ProductConfigurationManager
 from ..common.consts import (
     DATA_ITEM_CONFIG,
     DATA_ITEM_DEVICES,
@@ -20,7 +21,13 @@ _LOGGER = logging.getLogger(__name__)
 class AquaTempCoordinator(DataUpdateCoordinator):
     """My custom coordinator."""
 
-    def __init__(self, hass, api: AquaTempAPI, config_manager: AquaTempConfigManager):
+    def __init__(
+        self,
+        hass,
+        api: AquaTempAPI,
+        config_manager: AquaTempConfigManager,
+        product_configuration_manager: ProductConfigurationManager,
+    ):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -32,6 +39,11 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
         self._api = api
         self._config_manager = config_manager
+        self._product_configuration_manager = product_configuration_manager
+
+    @property
+    def product_configuration_manager(self):
+        return self._product_configuration_manager
 
     @property
     def devices(self):
@@ -65,10 +77,10 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         return device_info
 
     async def _async_update_data(self):
-        """Fetch data from API endpoint.
+        """Fetch parameters from API endpoint.
 
-        This is the place to pre-process the data to lookup tables
-        so entities can quickly look up their data.
+        This is the place to pre-process the parameters to lookup tables
+        so entities can quickly look up their parameters.
         """
         try:
             await self._api.update()

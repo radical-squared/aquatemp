@@ -8,11 +8,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
-from .common.device_discovery import (
-    async_handle_discovered_device,
-    find_entity_description,
-)
+from .common.consts import DEVICE_PRODUCT_ID, DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
 from .common.entity_descriptions import AquaTempBinarySensorEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -25,8 +21,13 @@ async def async_setup_entry(
     def _create(
         device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
     ) -> AquaTempBinarySensorEntity:
-        entity_description = find_entity_description(
-            entity_description_key, Platform.BINARY_SENSOR
+        product_configuration_manager = coordinator.product_configuration_manager
+
+        device_data = coordinator.get_device_data(device_code)
+        product_id = device_data.get(DEVICE_PRODUCT_ID)
+
+        entity_description = product_configuration_manager.find_entity_description(
+            product_id, entity_description_key, Platform.BINARY_SENSOR
         )
 
         entity = AquaTempBinarySensorEntity(
@@ -38,8 +39,9 @@ async def async_setup_entry(
     @callback
     def _async_device_new(device_code):
         coordinator = hass.data[DOMAIN][entry.entry_id]
+        product_configuration_manager = coordinator.product_configuration_manager
 
-        async_handle_discovered_device(
+        product_configuration_manager.async_handle_discovered_device(
             device_code,
             coordinator,
             Platform.BINARY_SENSOR,
@@ -91,7 +93,7 @@ class AquaTempBinarySensorEntity(CoordinatorEntity, BinarySensorEntity):
         return self.coordinator
 
     def _handle_coordinator_update(self) -> None:
-        """Fetch new state data for the sensor."""
+        """Fetch new state parameters for the sensor."""
         device_data = self._local_coordinator.get_device_data(self._device_code)
         status = device_data.get(self.entity_description.key)
 

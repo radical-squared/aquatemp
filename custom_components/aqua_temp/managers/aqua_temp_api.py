@@ -11,6 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
+from .. import ProductConfigurationManager
 from ..common.consts import (
     DEVICE_CODE,
     DEVICE_CONTROL_PARAM,
@@ -29,7 +30,6 @@ from ..common.consts import (
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
-from ..common.entity_descriptions import ALL_ENTITIES
 from ..common.exceptions import LoginError, OperationFailedException
 from ..common.hvac_mode_mapping import (
     HVAC_MODE_MAPPING,
@@ -37,7 +37,7 @@ from ..common.hvac_mode_mapping import (
     HVAC_MODE_MINIMUM_TEMPERATURE,
     HVAC_MODE_TARGET_TEMPERATURE,
 )
-from ..common.protocol_codes import PROTOCOL_CODE_OVERRIDES, ProtocolCode
+from ..common.protocol_codes import ProtocolCode
 from .aqua_temp_config_manager import AquaTempConfigManager
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +53,10 @@ class AquaTempAPI:
     _hass: HomeAssistant | None
 
     def __init__(
-        self, hass: HomeAssistant | None, config_manager: AquaTempConfigManager
+        self,
+        hass: HomeAssistant | None,
+        config_manager: AquaTempConfigManager,
+        product_configuration_manager: ProductConfigurationManager,
     ):
         """Initialize the climate entity."""
 
@@ -66,6 +69,8 @@ class AquaTempAPI:
         self._hass = hass
         self._headers = HEADERS
         self._config_manager = config_manager
+        self._product_configuration_manager = product_configuration_manager
+
         self._dispatched_devices = []
         self._device_list_request_data = {}
 
@@ -130,7 +135,7 @@ class AquaTempAPI:
             await self._session.close()
 
     async def update(self):
-        """Fetch new state data for the sensor."""
+        """Fetch new state parameters for the sensor."""
         try:
             if self._token is None:
                 await self._login()
@@ -140,7 +145,7 @@ class AquaTempAPI:
                 await self._update_device(device_code)
 
         except Exception as ex:
-            _LOGGER.error(f"Error fetching data, Error: {ex}")
+            _LOGGER.error(f"Error fetching parameters, Error: {ex}")
 
     async def _update_device(self, device_code: str):
         _LOGGER.debug(f"Starting to update device: {device_code}")
@@ -162,7 +167,9 @@ class AquaTempAPI:
                 )
 
         except ClientResponseError as cre:
-            error_message = f"Error fetching data for device {device_code}, Error: "
+            error_message = (
+                f"Error fetching parameters for device {device_code}, Error: "
+            )
 
             if cre.status == 401:
                 _LOGGER.warning(f"{error_message}expired token")
@@ -324,7 +331,7 @@ class AquaTempAPI:
         error_msg = data_response.get("error_msg")
 
         if error_msg != "Success":
-            _LOGGER.error(f"Failed to fetch data, Error: {error_msg}")
+            _LOGGER.error(f"Failed to fetch parameters, Error: {error_msg}")
 
     async def _send_passthrough_instruction(self, device_code: str):
         data = {DEVICE_CODE: device_code, "query_instruction": "630300040001CD89"}
@@ -425,23 +432,23 @@ class AquaTempAPI:
             for device in devices:
                 device_code = device.get(DEVICE_CODE)
                 device_product_id = device.get(DEVICE_PRODUCT_ID)
+                entity_descriptions = (
+                    self._product_configuration_manager.get_entity_descriptions(
+                        device_product_id
+                    )
+                )
 
                 _LOGGER.debug(
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
                 )
 
-                protocol_code_overrides = PROTOCOL_CODE_OVERRIDES.get(device_product_id)
                 device_entities = copy(
-                    [entity for entity in ALL_ENTITIES if entity.is_protocol_code]
+                    [
+                        entity
+                        for entity in entity_descriptions
+                        if entity.is_protocol_code
+                    ]
                 )
-
-                for entity in device_entities:
-                    if protocol_code_overrides is not None:
-                        for replace_key in protocol_code_overrides:
-                            replace_with = protocol_code_overrides[replace_key]
-                            key = entity.key.replace(replace_key, replace_with)
-
-                            entity.key = key
 
                 device[PROTOCAL_CODES] = device_entities
 

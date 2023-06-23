@@ -1,0 +1,1453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="C_O_1001_select">
+        <item>CLOSE</item>
+        <item>OPEN</item>
+    </array>
+    <array name="C_O_131_select">
+        <item>CLOSE</item>
+        <item>OPEN</item>
+    </array>
+    <array name="C_O_161_select">
+        <item>CLOSE</item>
+        <item>OPEN</item>
+    </array>
+    <array name="D06_1001_select">
+        <item>Nor.</item>
+        <item>Eco.</item>
+    </array>
+    <array name="D06_131_select">
+        <item>Nor.</item>
+        <item>Eco.</item>
+    </array>
+    <array name="D06_161_select">
+        <item>Nor.</item>
+    </array>
+    <array name="D06_array_select">
+        <item>Nor.</item>
+        <item>Eco.</item>
+    </array>
+    <array name="E01_1001_select">
+        <item>Manual</item>
+        <item>Auto.</item>
+    </array>
+    <array name="E01_131_select">
+        <item>Manual</item>
+        <item>Auto.</item>
+        <item>Auxiliary</item>
+    </array>
+    <array name="E01_161_select">
+        <item>Manual</item>
+        <item>Auto.</item>
+        <item>Auxiliary</item>
+    </array>
+    <array name="E01_array_select">
+        <item>Manual</item>
+        <item>Auto</item>
+        <item>Auxiliary</item>
+    </array>
+    <array name="E08_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="E11trouble">
+        <item>Measure the high pressure value when heat pump is running, if it’s higher than 42.0 bar, the heat pump have HP issues:\n1. Check EEV step, high pressure and discharge temp.\n2. Check if the inlet/outlet water temp is too high.\n3. Check the refrigerant system, especially for split unit the refrigerant filling could need adjustment depending on distance in-between the in- and outdoor unit\n4. Check the flow of pump and the speed of fan.\n5. Check the connection of cables.</item>
+    </array>
+    <array name="E12trouble">
+        <item>Measure the pressure value when heat pump is running, if it’s lower than 1.5 bar, it means heat pump has got really low pressure protection:\n1. Check EEV step, low pressure and suction temp.\n2. Check the inlet/outlet water temp/ambient temp\n3. Check the leakage in the refrigeration system.\n4. Check the connection of cables.</item>
+    </array>
+    <array name="E151trouble">
+        <item>1.Check that parameter H12 and H15 is set correct or not\n2.Check if the compressor is ok\n3.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="E21trouble">
+        <item>Measure the high pressure value when heat pump is running, if it’s higher than 42.0 bar, the heat pump have HP issues:\n1. Check EEV step, high pressure and discharge temp.\n2. Check if the inlet/outlet water temp is too high.\n3. Check the refrigerant system, especially for split unit the refrigerant filling could need adjustment depending on distance in-between the in- and outdoor unit\n4. Check the flow of pump and the speed of fan.\n5. Check the connection of cables.</item>
+    </array>
+    <array name="E22trouble">
+        <item>Measure the pressure value when heat pump is running, if it’s lower than 1.5 bar, it means heat pump has got really low pressure protection:\n1. Check EEV step, low pressure and suction temp.\n2. Check the inlet/outlet water temp/ambient temp\n3. Check the leakage in the refrigeration system.\n4. Check the connection of cables.</item>
+    </array>
+    <array name="E251trouble">
+        <item>1.Check that parameter H12 and H15 is set correct or not\n2.Check if the compressor is ok\n3.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="F01_131_select">
+        <item>High</item>
+        <item>Double</item>
+        <item>AC</item>
+        <item>DC-1(Inverter)</item>
+        <item>DC-2(Inverter)</item>
+        <item>EC</item>
+        <item>DC-1(MXL169)</item>
+        <item>DC-2(MXL169)</item>
+    </array>
+    <array name="F01_161_select">
+        <item>High</item>
+        <item>Double</item>
+        <item>-</item>
+        <item>-</item>
+        <item>-</item>
+        <item>-</item>
+        <item>-</item>
+        <item>DC</item>
+    </array>
+    <array name="F01_array1001_select">
+        <item>Low</item>
+        <item>High</item>
+        <item>Temp.</item>
+        <item>Time</item>
+        <item>Temp.+Time</item>
+    </array>
+    <array name="F01_array1006_select">
+        <item>Low</item>
+        <item>High</item>
+        <item>Ambient</item>
+        <item>Time</item>
+        <item>Ambient+Time</item>
+    </array>
+    <array name="F01_array_select">
+        <item>High</item>
+        <item>Double</item>
+        <item>AC</item>
+        <item>DC-1</item>
+        <item>DC-2</item>
+        <item>EC</item>
+        <item>DC-1（MXL169)</item>
+        <item>DC-2（MXL169)</item>
+    </array>
+    <array name="F10_131_select">
+        <item>Coil</item>
+        <item>Ambient</item>
+    </array>
+    <array name="F10_array1001_select">
+        <item>Coil</item>
+        <item>Ambient</item>
+    </array>
+    <array name="F10_array_select">
+        <item>Coil</item>
+        <item>Ambient</item>
+    </array>
+    <array name="F11_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="F20_array_select">
+        <item>PWM</item>
+        <item>Temp.</item>
+    </array>
+    <array name="H01_array1001_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="H01_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="H02_1001_select">
+        <item>Chiller</item>
+        <item>Heat pump</item>
+        <item>Heat only</item>
+    </array>
+    <array name="H02_131_select">
+        <item>Chiller</item>
+        <item>Heat pump</item>
+        <item>Heat only</item>
+    </array>
+    <array name="H02_161_select">
+        <item>Chiller</item>
+        <item>Heat pump</item>
+        <item>Heat only</item>
+    </array>
+    <array name="H02_array1001_select">
+        <item>Chiller</item>
+        <item>Heat pump</item>
+        <item>Heat only</item>
+    </array>
+    <array name="H02_array_select">
+        <item>Chiller</item>
+        <item>Heat pump</item>
+        <item>Heat only</item>
+    </array>
+    <array name="H03_1001_select">
+        <item>℃</item>
+        <item>℉</item>
+    </array>
+    <array name="H03_131_select">
+        <item>℃</item>
+        <item>℉</item>
+    </array>
+    <array name="H03_161_select">
+        <item>℃</item>
+        <item>℉</item>
+    </array>
+    <array name="H03_array1001_select">
+        <item>°C</item>
+        <item>°F</item>
+    </array>
+    <array name="H03_array_select">
+        <item>°C</item>
+        <item>°F</item>
+    </array>
+    <array name="H05_array1001_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="H05_array1006_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="H05_arraymini_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="H06_array1001_select">
+        <item>Heat only</item>
+        <item>Heat pump</item>
+        <item>Heat only(4-way valve)</item>
+    </array>
+    <array name="H06_array_select">
+        <item>Heat only</item>
+        <item>Heat pump</item>
+        <item>Heat only(4-way valve)</item>
+    </array>
+    <array name="H12_1001_select">
+        <item>[1]:TNB220FLHMC_TUV</item>
+        <item>[2]:SNB172FJGMC_TUV</item>
+        <item>[3]:MNB36FAAMC_TUV</item>
+        <item>[4]:TNB306FPGMC_TUV</item>
+        <item>[5]:TNB220FUEMC_UL</item>
+        <item>[6]:MNB36FAUMC-L_UL</item>
+        <item>[7]:TNB306FVPMC_UL</item>
+        <item>[8]:SNB150FGAMC</item>
+        <item>[9]:FNB140FCAM</item>
+        <item>[10]:MNB36FABMC</item>
+        <item>[11]:MNB42FFDMC</item>
+        <item>[12]:MNB42FCKMC-L</item>
+        <item>[13]:LNB53FCFMC</item>
+        <item>[14]:TNB306FPNMC</item>
+        <item>[15]:LNB53FCAMC</item>
+        <item>[28]:5RD198ZAA21/5RD160ZAA21</item>
+        <item>[37]:5RS102ZMC21</item>
+        <item>[36 ]:5RS132ZAC21</item>
+    </array>
+    <array name="H12_131_select">
+        <item>[1]:TNB220FLHMC_TUV</item>
+        <item>[2]:SNB172FJGMC_TUV</item>
+        <item>[3]:MNB36FAAMC_TUV</item>
+        <item>[4]:TNB306FPGMC_TUV</item>
+        <item>[5]:TNB220FUEMC_UL</item>
+        <item>[6]:MNB36FAUMC-L_UL</item>
+        <item>[7]:TNB306FVPMC_UL</item>
+        <item>[8]:SNB150FGAMC</item>
+        <item>[9]:FNB140FCAM</item>
+        <item>[10]:MNB36FABMC</item>
+        <item>[11]:MNB42FFDMC</item>
+        <item>[12]:MNB42FCKMC-L</item>
+        <item>[13]:LNB53FCFMC</item>
+        <item>[14]:TNB306FPNMC</item>
+        <item>[15]:LNB53FCAMC</item>
+        <item>[28]:5RD198ZAA21/5RD160ZAA21</item>
+        <item>[37]:5RS102ZMC21</item>
+        <item>[36 ]:5RS132ZAC21</item>
+    </array>
+    <array name="H12_161_select">
+        <item>[1]:TNB220FLHMC_TUV</item>
+        <item>[2]:SNB172FJGMC_TUV</item>
+        <item>[3]:MNB36FAAMC_TUV</item>
+        <item>[4]:TNB306FPGMC_TUV</item>
+        <item>[5]:TNB220FUEMC_UL</item>
+        <item>[6]:MNB36FAUMC-L_UL</item>
+        <item>[7]:TNB306FVPMC_UL</item>
+        <item>[8]:SNB150FGAMC</item>
+        <item>[9]:FNB140FCAM</item>
+        <item>[10]:MNB36FABMC</item>
+        <item>[11]:MNB42FFDMC</item>
+        <item>[12]:MNB42FCKMC-L</item>
+        <item>[13]:LNB53FCFMC</item>
+        <item>[14]:TNB306FPNMC</item>
+        <item>[15]:LNB53FCAMC</item>
+        <item>[28]:5RD198ZAA21/5RD160ZAA21</item>
+        <item>[37]:5RS102ZMC21</item>
+        <item>[36 ]:5RS132ZAC21</item>
+    </array>
+    <array name="H12_array_select">
+        <item>Fixed freq. comp.</item>
+        <item>TNB220FLHMC_TUV</item>
+        <item>SNB172FJGMC_TUV</item>
+        <item>MNB36FAAMC_TUV</item>
+        <item>TNB306FPGMC_TUV</item>
+        <item>TNB220FUEMC_UL</item>
+        <item>MNB36FAUMC-L_UL</item>
+        <item>TNB306FVPMC_UL</item>
+        <item>SNB150FGAMC</item>
+        <item>FNB140FCAM</item>
+        <item>MNB36FABMC</item>
+        <item>MNB42FFDMC</item>
+        <item>MNB42FCKMC-L</item>
+        <item>LNB53FCFMC</item>
+        <item>TNB306FPNMC</item>
+        <item>LNB53FCAMC</item>
+        <item>5RD198ZAA21/5RD160ZAA21</item>
+        <item>5RS132ZAC21</item>
+        <item>5RS102ZMC21</item>
+    </array>
+    <array name="H12_array_select2">
+        <item>Fixed freq. comp.</item>
+        <item>TNB220FLHMC_TUV</item>
+        <item>SNB172FJGMC_TUV</item>
+        <item>MNB36FAAMC_TUV</item>
+        <item>TNB306FPGMC_TUV</item>
+        <item>TNB220FUEMC_UL</item>
+        <item>MNB36FAUMC-L_UL</item>
+        <item>TNB306FVPMC_UL</item>
+        <item>SNB150FGAMC</item>
+        <item>FNB140FCAM</item>
+        <item>MNB36FABMC</item>
+        <item>MNB42FFDMC</item>
+    </array>
+    <array name="H16_1001_select">
+        <item>0-R410A</item>
+        <item>1-R407C</item>
+        <item>2-R32</item>
+    </array>
+    <array name="H16_131_select">
+        <item>R410A</item>
+        <item>R407C</item>
+        <item>R32</item>
+    </array>
+    <array name="H16_161_select">
+        <item>R410A</item>
+        <item>R407C</item>
+        <item>R32</item>
+    </array>
+    <array name="H16_array_select">
+        <item>R410A</item>
+        <item>R407c</item>
+        <item>R32</item>
+    </array>
+    <array name="H27_1001_select">
+        <item>0-inlet</item>
+        <item>1-outlet</item>
+    </array>
+    <array name="H27_131_select">
+        <item>0-inlet</item>
+        <item>1-outlet</item>
+    </array>
+    <array name="H27_161_select">
+        <item>Inlet Water</item>
+        <item>Outlet Water</item>
+    </array>
+    <array name="H38_array1001_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="H38_array_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="H46_131_select">
+        <item>Heating On</item>
+        <item>Heating Load-loss</item>
+    </array>
+    <array name="H46_array_select">
+        <item>Heating On</item>
+        <item>Heating Load-loss</item>
+    </array>
+    <array name="NO_YES_1001_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="NO_YES_131_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="NO_YES_161_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="OFF_ON_1001_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="OFF_ON_131_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="OFF_ON_161_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="P01_131_select">
+        <item>Nor.</item>
+        <item>Stop</item>
+        <item>Interval</item>
+    </array>
+    <array name="P01_161_select">
+        <item>Nor.</item>
+        <item>Stop</item>
+        <item>Interval</item>
+    </array>
+    <array name="P01_array1001_select">
+        <item>Nor.</item>
+        <item>Stop</item>
+        <item>Interval</item>
+    </array>
+    <array name="P01_array_select">
+        <item>Nor.</item>
+        <item>Stop</item>
+        <item>Interval</item>
+    </array>
+    <array name="P151trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P152trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P17trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P181trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P182trouble">
+        <item>Check the default discharge temp., the range of exhaust temp.is 120 ℃.\n1.Use thermometer to check the exhaust temp and compare with exhaust temp. sensor value. If the true value has huge difference from the temp. sensor value, replace the exhaust sensor.</item>
+    </array>
+    <array name="P192trouble">
+        <item>1.检查防冻感温头的连接和阻值\n2.更换防冻感温头</item>
+    </array>
+    <array name="P251trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P252trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P27trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P281trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="P282trouble">
+        <item>Check the default discharge temp., the range of exhaust temp.is 120 ℃.\n1.Use thermometer to check the exhaust temp and compare with exhaust temp. sensor value. If the true value has huge difference from the temp. sensor value, replace the exhaust sensor.</item>
+    </array>
+    <array name="P292trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="PP11trouble">
+        <item>1.Check the connection of the pressure sensor\n2.Replace the pressure sensor</item>
+    </array>
+    <array name="PP12trouble">
+        <item>1.Check the connection of the pressure sensor\n2.Replace the pressure sensor</item>
+    </array>
+    <array name="PP21trouble">
+        <item>1.Check the connection of the pressure sensor\n2.Replace the pressure sensor</item>
+    </array>
+    <array name="PP22trouble">
+        <item>1.Check the connection of the pressure sensor\n2.Replace the pressure sensor</item>
+    </array>
+    <array name="e01trouble">
+        <item>Measure the high pressure value when heat pump is running, if it’s higher than 42.0 bar, the heat pump have HP issues:\n1. Check EEV step, high pressure and discharge temp.\n2. Check if the inlet/outlet water temp is too high.\n3. Check the refrigerant system, especially for split unit the refrigerant filling could need adjustment depending on distance in-between the in- and outdoor unit\n4. Check the flow of pump and the speed of fan.\n5. Check the connection of cables.</item>
+    </array>
+    <array name="e02trouble">
+        <item>Measure the pressure value when heat pump is running, if it’s lower than 1.5 bar, it means heat pump has got really low pressure protection:\n1. Check the EEV step, low pressure and suction temp.\n2. Check the inlet/outlet water temp.\n3. Check the leakage in the refrigeration system.\n4. Check the sensor wiring.\n5. Check the ambient temp, whether the ambient temp is on the minimum heating area.</item>
+    </array>
+    <array name="e03trouble">
+        <item>1. Check the connection of cables.\n2. Check the flow switch.\n3. Check the water valve is opened or opened fully.\n4. Check the water pump and the filter.\n5. Maybe there is some air in the water route.</item>
+    </array>
+    <array name="e051trouble">
+        <item>1.Check that parameter H12 and H15 is set correct or not\n2.Check if the compressor is ok\n3.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="e05trouble">
+        <item>1.Check the water flow\n2.Check the oullet water and antifreezing temp is lower than 2 degress\n3.Check the record of defrosting, whether the defrosting time is too long or too often.</item>
+    </array>
+    <array name="e06trouble">
+        <item>Check if the inlet and outlet water temp difference is ≥13℃ or not</item>
+    </array>
+    <array name="e07trouble">
+        <item>Check if the outlet temp is ≤4 ℃</item>
+    </array>
+    <array name="e081trouble">
+        <item>1.Check if the fan module/motor connection is ok\n2.Check if the fan module input voltage is 220V or not?\n3.If the above is ok the fan motor needs to be replaced</item>
+    </array>
+    <array name="e08trouble">
+        <item>1.Check that the connection in-between the display and mainboard is ok\n2.Check the mainboard port A and port B voltage when the unit on power,if the voltage different ≤0.1V, replace the display\n3.Replace the display</item>
+    </array>
+    <array name="e19trouble">
+        <item>1.Check if the inlet and outlet water temp is ≤4 ℃ and ambient temp is ≤0 ℃</item>
+    </array>
+    <array name="e29trouble">
+        <item>1.Check if the inlet and outlet water temp is ≤2 ℃ and ambient temp is ≤0 ℃</item>
+    </array>
+    <array name="f01trouble">
+        <item>1.Test whether the drive input power is greater than or close to the set value.</item>
+    </array>
+    <array name="f02trouble">
+        <item>1.Check the connection between inverter driver board and main board\n2.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f031trouble">
+        <item>1.Check the state of the fan motor 1 on the display\n2.Check F01 value is ture or not?\n3.Check the fan module output voltage\n4.If the above is ok the fan motor needs to be replaced</item>
+    </array>
+    <array name="f032trouble">
+        <item>1.Check the state of the fan motor 2 on the display\n2.Check if F01 value is ture or not?\n3.Check the fan module output voltage\n4.If the above is ok the fan motor needs to be replaced</item>
+    </array>
+    <array name="f03trouble">
+        <item>1.Check the compressor connection\n2.Check that parameter H12 is set correct or not\n3.Check system pressure and compressor for blocking or not\n4.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f04trouble">
+        <item>1.Check the compressor connection\n2.Check that parameter H12 is set correct or not\n3.Check if the compressor is ok\n4.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f051trouble">
+        <item />
+    </array>
+    <array name="f05trouble">
+        <item>1.Check that parameter F01 is set correct or not\n2.Check the fan motor input voltage，the red line abd the black line voltage should be 280~370V;if not,please replace the fan motor module\n3.If the above is ok the fan motor needs to be replaced</item>
+    </array>
+    <array name="f06trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f07trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f08trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f09trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f10trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f11trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f12trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f13trouble">
+        <item>1.Detect the connection between the DSO and SPPB board.</item>
+    </array>
+    <array name="f14trouble">
+        <item>1.Detect the connection between the DSP and MCU board.</item>
+    </array>
+    <array name="f15trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f16trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f17trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f18trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f19trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f20trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f22trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f23trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f24trouble">
+        <item>1.Check the compressor connection\n2.Check that parameter H12 is set correct or not\n3.Check if the compressor is ok\n4.If the above is ok the inverter driver board needs to be replace</item>
+    </array>
+    <array name="f25trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f26trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f27trouble">
+        <item>1.Check the compressor connection\n2.Check that parameter H12 is set correct or not\n3.Check if the compressor is ok\n4.If the above is ok the inverter driver board needs to be replaced</item>
+    </array>
+    <array name="f28trouble">
+        <item>The inverter driver board needs to be replaced</item>
+    </array>
+    <array name="factory_parameter_d">
+        <item>Stat Defrosting Temp</item>
+        <item>Start setp.</item>
+        <item>End Defrosting Temp</item>
+        <item>Defrosting Cycle</item>
+        <item>Max. Duration</item>
+        <item>Defrost type</item>
+        <item>Out Temp when Defrost</item>
+        <item>Defrost Coil Temp. Deviation</item>
+        <item>Compensation offset</item>
+        <item>Defrost out Temp. Deviation</item>
+        <item>Defrost ending coil temp.</item>
+        <item>Defrost ending pressure.</item>
+    </array>
+    <array name="factory_parameter_d_1001">
+        <item>Stat Defrosting Temp</item>
+        <item>End Defrosting Temp</item>
+        <item>Defrosting Cycle</item>
+        <item>Max. duration</item>
+        <item>Min. duration</item>
+        <item>Defrost type</item>
+    </array>
+    <array name="factory_parameter_d_1006">
+        <item>Stat Defrosting Temp</item>
+        <item>End Defrosting Temp</item>
+        <item>Defrosting Cycle</item>
+        <item>Max. duration</item>
+        <item>Min. duration</item>
+        <item>Defrost type</item>
+    </array>
+    <array name="factory_parameter_d_131">
+        <item>Stat Defrosting Temp.</item>
+        <item>Start Defrosting Pressure</item>
+        <item>End Defrosting Temp.</item>
+        <item>Defrosting Cycle</item>
+        <item>Max. duration</item>
+        <item>Defrost type</item>
+        <item>Out Temp when Defrost</item>
+        <item>Defrost Coil Temp. Deviation</item>
+        <item>Compensation offset</item>
+        <item>Defrost out Temp. Deviation</item>
+        <item>Defrost ending coil temp.</item>
+        <item>Defrost ending pressure.</item>
+    </array>
+    <array name="factory_parameter_d_161">
+        <item>Stat Defrosting Temp.</item>
+        <item>Start Defrosting Pressure</item>
+        <item>End Defrosting Temp.</item>
+        <item>Defrosting Cycle</item>
+        <item>Max. duration</item>
+        <item>Defrost type</item>
+        <item>Out Temp when Defrost</item>
+        <item>Defrost Coil Temp. Deviation</item>
+        <item>Compensation offset</item>
+        <item>Defrost out Temp. Deviation</item>
+        <item>Defrost ending coil temp.</item>
+        <item>Defrost ending pressure.</item>
+    </array>
+    <array name="factory_parameter_d_mini">
+        <item>Stat Defrosting Temp</item>
+        <item>End Defrosting Temp</item>
+        <item>Defrosting Cycle</item>
+        <item>Max. Duration</item>
+        <item>Min. Duration</item>
+        <item>Defrost type</item>
+    </array>
+    <array name="factory_parameter_e">
+        <item>EEV Mode</item>
+        <item>Super Heat</item>
+        <item>Init. Place</item>
+        <item>Min. Place</item>
+        <item>Defrost Place</item>
+        <item>Cooling Place</item>
+        <item>EEV exhaust set temp.</item>
+        <item>EEV step proportion value</item>
+        <item>EEV step integral value</item>
+        <item>EEV step differential value</item>
+        <item>Super heatcompen. differ.</item>
+    </array>
+    <array name="factory_parameter_e_1001">
+        <item>EEV Mode</item>
+        <item>Super Heat</item>
+        <item>Init. Place</item>
+        <item>Min. Place</item>
+        <item>Defrost Place</item>
+        <item>Cooling Place</item>
+        <item>EEV exhaust set temp.</item>
+        <item>Whether to enable exhaust as an auxiliary condition to control the electronic expansion valve function</item>
+    </array>
+    <array name="factory_parameter_e_1006">
+        <item>EEV Mode</item>
+        <item>Super Heat</item>
+        <item>Init. Place</item>
+        <item>Min. Place</item>
+        <item>Defrost Place</item>
+        <item>Cooling Place</item>
+        <item>EEV exhaust set temp.</item>
+        <item>Whether to enable exhaust as an auxiliary condition to control the electronic expansion valve function</item>
+    </array>
+    <array name="factory_parameter_e_131">
+        <item>EEV Mode</item>
+        <item>Super Heat</item>
+        <item>Init. Open Steps</item>
+        <item>Min. Open Steps</item>
+        <item>Defrost Open Steps</item>
+        <item>Cooling Open Steps</item>
+        <item>EEV Exhaust Set Temp.</item>
+        <item>EEV Step Proportion Value</item>
+        <item>EEV Step Integral Value</item>
+        <item>EEV Step Differential Value</item>
+        <item>Super Heat Compen. Differ.</item>
+    </array>
+    <array name="factory_parameter_e_161">
+        <item>EEV Mode</item>
+        <item>Super Heat</item>
+        <item>Init. Open Steps</item>
+        <item>Min. Open Steps</item>
+        <item>Defrost Open Steps</item>
+        <item>Cooling Open Steps</item>
+        <item>Exhaust High Temp. Protection Set Point</item>
+        <item>EEV Step Proportion Value</item>
+        <item>EEV Step Integral Value</item>
+        <item>EEV Step Differential Value</item>
+        <item>Super Heat Compen. Differ.</item>
+    </array>
+    <array name="factory_parameter_f_1001">
+        <item>Speed</item>
+        <item>Max. cool</item>
+        <item>Min. cool</item>
+        <item>Stop cool</item>
+        <item>Max. heat</item>
+        <item>Min. heat</item>
+        <item>Stop heat</item>
+        <item>Min.start time</item>
+        <item>Min.stop time</item>
+        <item>Ctrl probe</item>
+        <item>Start Blower</item>
+        <item>Blower Min</item>
+        <item>Blower Max</item>
+    </array>
+    <array name="factory_parameter_f_1006">
+        <item>Speed</item>
+        <item>Max. cool</item>
+        <item>Min. cool</item>
+        <item>Stop cool</item>
+        <item>Max. heat</item>
+        <item>Min. heat</item>
+        <item>Stop heat</item>
+        <item>Min.start time</item>
+        <item>Min.stop time</item>
+        <item>Ctrl probe</item>
+        <item>Start Blower</item>
+        <item>Blower Min</item>
+        <item>Blower Max</item>
+    </array>
+    <array name="factory_parameter_f_131">
+        <item>Speed</item>
+        <item>Max. cool</item>
+        <item>Cooling high speed pressure</item>
+        <item>Min. Cool Coil Temp.</item>
+        <item>Cooling Low Speed Pressure</item>
+        <item>Stop Cool Coil Temp.</item>
+        <item>Cooling Motor Off Pressure</item>
+        <item>Max. Heat Coil Temp.</item>
+        <item>Heating High Speed Pressure</item>
+        <item>Min. Heat Coil Temp.</item>
+        <item>Heating Low Speed Pressure</item>
+        <item>Stop heat Coil Temp.</item>
+        <item>Heating Motor Off Pressure</item>
+        <item>Ctrl. probe</item>
+        <item>Heating Max. Duty Ratio</item>
+        <item>Fan Motor Heat Max. Speed</item>
+        <item>Cooling Fan Duty Ratio</item>
+        <item>Heating Min. Fan Duty Ratio</item>
+        <item>Fan Motor Min. Speed in Heating</item>
+        <item>Timer Mute Start</item>
+        <item>Timer Mute End</item>
+        <item>Duty Ratio of Mute Mode</item>
+        <item>Mute Mode Speed</item>
+        <item>Timer Mute ON/OFF</item>
+        <item>Manual Fan Motor Speed</item>
+        <item>AC Fan Rated Duty Ratio</item>
+        <item>DC/EC Fan Rated Speed</item>
+    </array>
+    <array name="factory_parameter_f_161">
+        <item>Speed</item>
+        <item>Max. Cool Coil Temp.</item>
+        <item>Cooling High Speed Pressure</item>
+        <item>Min. Cool Coil Temp.</item>
+        <item>Cooling Low Speed Pressure</item>
+        <item>Stop Cool Coil Temp.</item>
+        <item>Cooling Motor Off Pressure</item>
+        <item>Max. Heat Coil Temp.</item>
+        <item>Heating High Speed Pressure</item>
+        <item>Min. Heat Coil Temp.</item>
+        <item>Heating Low Speed Pressure</item>
+        <item>Stop Heat Coil Temp.</item>
+        <item>Heating Motor Off Pressure</item>
+        <item>Timer Mute Start</item>
+        <item>Timer Mute End</item>
+        <item>Timer Mute ON/OFF</item>
+        <item>Manual Fan Motor Speed</item>
+        <item>Max. Fan Motor Speed</item>
+        <item>Cooling Fan Motor Speed</item>
+        <item>Heating Min. Fan Motor Speed</item>
+        <item>Mute Mode Fan Motor Speed</item>
+        <item>Manual Fan Motor Speed</item>
+    </array>
+    <array name="factory_parameter_fh0">
+        <item>Speed</item>
+        <item>Max. cool</item>
+        <item>Cooling high speed pressure</item>
+        <item>Min. cool</item>
+        <item>Cooling low speed pressure</item>
+        <item>Stop cool</item>
+        <item>Cooling motor off pressure</item>
+        <item>Max. heat</item>
+        <item>Heating high speed pressure</item>
+        <item>Min. heat</item>
+        <item>Heating low speed pressure</item>
+        <item>Stop heat</item>
+        <item>Heating motor off pressure</item>
+        <item>Ctrl. probe</item>
+        <item>Heating Max. Duty Ratio</item>
+        <item>Fan Motor Heat Max. Speed</item>
+        <item>Cooling Fan Duty Ratio</item>
+        <item>Cooling Fan Motor Speed</item>
+        <item>Heating Min. fan duty ratio</item>
+        <item>Fan Motor Min. Speed in Heating</item>
+        <item>Timer Mute Start</item>
+        <item>Timer Mute End</item>
+        <item>Duty Ratio of Mute Mode</item>
+        <item>Mute Mode Speed</item>
+        <item>Timer Mute ON/OFF</item>
+        <item>Manual Fan motor Speed</item>
+        <item>AC Fan Rated Duty Ratio</item>
+        <item>DC/EC Fan Rated Speed</item>
+        <item>PWM Detect/Antifreeze Temp.</item>
+    </array>
+    <array name="factory_parameter_h">
+        <item>Power Down Memory</item>
+        <item>Mode Type</item>
+        <item>Temperature Unit</item>
+        <item>Heating Min. frequency</item>
+        <item>Cooling Min. frequency</item>
+        <item>Heating Max frequency</item>
+        <item>Cooling Max frequency</item>
+        <item>Delay off time</item>
+        <item>Auto mode restarting time</item>
+        <item>Compressor type</item>
+        <item>Comp. Defrost Frequency</item>
+        <item>Frequency Cycle of 0.2℃</item>
+        <item>Comp. Overcurren Protect</item>
+        <item>Refrigerant Type</item>
+        <item>Cool start Compen. Low temp.</item>
+        <item>Cool stop Compen. Low temp.</item>
+        <item>Cool Max. Frequency low temp.</item>
+        <item>Cool start Compen. high temp.</item>
+        <item>Cool stop Compen. High temp.</item>
+        <item>Cool stop Frequency high temp.</item>
+        <item>Heat start Compen.low temp.</item>
+        <item>Heat stop Compen.low temp.</item>
+        <item>Heat Max.frequency low temp</item>
+        <item>Heat start Compen.high temp.</item>
+        <item>Heat stop Compen.high temp.</item>
+        <item>Heat Max.frequency high temp.</item>
+        <item>Max. Pressure Sensor Value</item>
+        <item>Min. Pressure Sensor Value</item>
+        <item>Ambient temp. before commpen.</item>
+        <item>Ambient temp. after commpen.</item>
+        <item>Max. Frequency silent comp.</item>
+        <item>Comp. stop.</item>
+        <item>Temp Difference of Start Freq.</item>
+        <item>Start Frequency</item>
+        <item>Unit Address</item>
+        <item>Pressure Measurement</item>
+        <item>Resonance 1</item>
+        <item>Resonance 2</item>
+        <item>Resonance 3</item>
+        <item>Fast Test Mode</item>
+        <item>Dual Coil</item>
+    </array>
+    <array name="factory_parameter_h_1001">
+        <item>Power down memory</item>
+        <item>Mode type</item>
+        <item>Comp. stop.</item>
+    </array>
+    <array name="factory_parameter_h_1006">
+        <item>Power down memory</item>
+        <item>Mode type</item>
+        <item>Temperature unit</item>
+        <item>Comp. stop.</item>
+    </array>
+    <array name="factory_parameter_h_131">
+        <item>Power Down Memory</item>
+        <item>Mode Type</item>
+        <item>Temperature Unit</item>
+        <item>Comp. Overcurren Protect</item>
+        <item>Refrigerant Type</item>
+        <item>Max. Pressure Sensor Value</item>
+        <item>Min. Pressure Sensor Value</item>
+        <item>Ambient temp. before commpen.</item>
+        <item>Ambient temp. after commpen.</item>
+        <item>Comp. stop.</item>
+        <item>Unit address</item>
+        <item>Low Pressure Measurement</item>
+        <item>Dual Coil</item>
+        <item>Comp. Energy Stage Control</item>
+        <item>Comp. Shunt Times</item>
+        <item>4-Way Valve Polarity</item>
+        <item>High Pressure Measurement</item>
+    </array>
+    <array name="factory_parameter_h_161">
+        <item>Power Down Memory</item>
+        <item>Mode Type</item>
+        <item>Temperature Unit</item>
+        <item>Heating: Low AT for Compensate Start</item>
+        <item>Heating: Low AT for Compensate Stop</item>
+        <item>Heating: Max. Target Temp for Low AT Compensate</item>
+        <item>Heating: High AT for Compensate Start</item>
+        <item>Heating: High AT for Compensate Stop</item>
+        <item>Heating: Max. Target Temp for High AT Compensate</item>
+        <item>Compressor Type</item>
+        <item>Compressor Defrosting Frequency</item>
+        <item>Water(Out) High Temp Protection</item>
+        <item>Compressor Overcurrent Protect</item>
+        <item>Refrigerant Type</item>
+        <item>Single Syst. To Double Syst. Energy Demand.</item>
+        <item>Double Syst. To Single Syst. Energy Demand</item>
+        <item>Heating: KP coefficient</item>
+        <item>Heating: Energy Demand Range Refresh Time</item>
+        <item>Heating: Energy Demand Accumulating Refresh Time</item>
+        <item>Heating: Max. Energy Demand</item>
+        <item>Cooling: KP coefficient</item>
+        <item>Cooling: Energy Demand Range Refresh Time</item>
+        <item>Cooling: Energy Demand Accumulating Refresh Time</item>
+        <item>Cooling: Max. Energy Demand</item>
+        <item>Water Temperature Control Method</item>
+        <item>Ambient Temp. before Compensate</item>
+        <item>Ambient Temp. after Compensate</item>
+        <item>Compressor Silent Running Frequency</item>
+        <item>Low AT for Compressor Stop</item>
+        <item>Dual Coil</item>
+        <item>Refrigerant Leakage Pressure Set</item>
+        <item>Boost Mode Heating Max. Frequency</item>
+        <item>Boost Mode Cooling Max. Frequency</item>
+        <item>Inlet Water Temp To Start Electric Heating</item>
+        <item>Limit 1 of Air Temp</item>
+        <item>Limit 1 of Inlet Water Temp</item>
+        <item>Limit 2 of Air Temp</item>
+        <item>Limit 2 of Inlet Water Temp</item>
+        <item>Limit 3 of Air Temp</item>
+        <item>Limit 3 of Inlet Water Temp</item>
+    </array>
+    <array name="factory_parameter_h_mini">
+        <item>Power down memory</item>
+        <item>Temperature unit</item>
+        <item>Comp. stop</item>
+        <item>Exhaust Temp.High</item>
+        <item>Outlet Water Temperature Sensor</item>
+        <item>Mode type</item>
+    </array>
+    <array name="factory_parameter_i_131">
+        <item>Syst1: Compressor Set Frequency</item>
+        <item>Syst1: Compressor Running Frequency</item>
+        <item>Syst1: Inverter Board Phase Current</item>
+        <item>Syst1: Inverter Board IPM Temp</item>
+        <item>Syst1: Inverter Board Bus Voltage</item>
+        <item>Syst1: Inverter Board Running Status</item>
+        <item>Syst1: Inverter Board Failure Status 1</item>
+        <item>Syst1: Inverter Board Failure Status 2</item>
+        <item>Syst2: Compressor Set Frequency</item>
+        <item>Syst2: Compressor Running Frequency</item>
+        <item>Syst2: Inverter Board Phase Current</item>
+        <item>Syst2: Inverter Board IPM Temp</item>
+        <item>Syst2: Inverter Board Bus Voltage</item>
+        <item>Syst2: Inverter Board Running Status</item>
+        <item>Syst2: Inverter Board Failure Status 1</item>
+        <item>Syst2: Inverter Board Failure Status 2</item>
+        <item>Inverter Board 1 Program Version No.</item>
+        <item>Inverter Board 2 Program Version No.</item>
+        <item>Syst1: Fan Motor Set Speed</item>
+        <item>Syst1: Fan Motor Phase Current</item>
+        <item>Syst1: Fan Motor IPM Temp.</item>
+        <item>Syst1: Fan Motor Bus Voltage</item>
+        <item>Syst1: Fan Motor Failure Status</item>
+        <item>Syst1: Fan Motor Version No.</item>
+        <item>Syst1: Fan Motor Power</item>
+        <item>Syst2: Fan Motor Set Speed</item>
+        <item>Syst2: Fan Motor Phase Current</item>
+        <item>Syst2: Fan Motor IPM Temp.</item>
+        <item>Syst2: Fan Motor Bus Voltage</item>
+        <item>Syst2: Fan Motor Failure Status</item>
+        <item>Syst2: Fan Motor Version No.</item>
+        <item>Syst2: Fan Motor Power</item>
+    </array>
+    <array name="factory_parameter_i_161">
+        <item>Syst1: Compressor Set Frequency</item>
+        <item>Syst1: Compressor Running Frequency</item>
+        <item>Syst1: Inverter Board Phase Current</item>
+        <item>Syst1: Inverter Board IPM Temp</item>
+        <item>Syst1: Inverter Board Bus Voltage</item>
+        <item>Syst1: Inverter Board Running Status</item>
+        <item>Syst1: Inverter Board Failure Status 1</item>
+        <item>Syst1: Inverter Board Failure Status 2</item>
+        <item>Syst2: Compressor Set Frequency</item>
+        <item>Syst2: Compressor Running Frequency</item>
+        <item>Syst2: Inverter Board Phase Current</item>
+        <item>Syst2: Inverter Board IPM Temp</item>
+        <item>Syst2: Inverter Board Bus Voltage</item>
+        <item>Syst2: Inverter Board Running Status</item>
+        <item>Syst2: Inverter Board Failure Status 1</item>
+        <item>Syst2: Inverter Board Failure Status 2</item>
+        <item>Inverter Board 1 Program Version No.</item>
+        <item>Inverter Board 2 Program Version No.</item>
+        <item>Syst1: Fan Motor Set Speed</item>
+        <item>Syst1: Fan Motor Phase Current</item>
+        <item>Syst1: Fan Motor IPM Temp.</item>
+        <item>Syst1: Fan Motor Bus Voltage</item>
+        <item>Syst1: Fan Motor Failure Status</item>
+        <item>Syst1: Fan Motor Version No.</item>
+        <item>Syst1: Fan Motor Power</item>
+        <item>Syst2: Fan Motor Set Speed</item>
+        <item>Syst2: Fan Motor Phase Current</item>
+        <item>Syst2: Fan Motor IPM Temp.</item>
+        <item>Syst2: Fan Motor Bus Voltage</item>
+        <item>Syst2: Fan Motor Failure Status</item>
+        <item>Syst2: Fan Motor Version No.</item>
+        <item>Syst2: Fan Motor Power</item>
+    </array>
+    <array name="factory_parameter_o">
+        <item>Compressor</item>
+        <item>High fan</item>
+        <item>Low fan</item>
+        <item>Circulate pump</item>
+        <item>4-way valve</item>
+        <item>Exp. Valve</item>
+        <item>Comp. Output frequency</item>
+        <item>Compressor current</item>
+        <item>IPM Temp.</item>
+    </array>
+    <array name="factory_parameter_o2">
+        <item>Compressor</item>
+        <item>Circulate pump</item>
+        <item>4-way valve</item>
+        <item>High fan</item>
+        <item>Low fan</item>
+        <item>Exp. Valve</item>
+        <item>Comp. Output frequency</item>
+        <item>Compressor current</item>
+        <item>IPM Temp.</item>
+        <item>DSP</item>
+        <item>PFC</item>
+        <item>EEPROM</item>
+    </array>
+    <array name="factory_parameter_o_1001">
+        <item>Compressor</item>
+        <item>Circulate pump</item>
+        <item>4-way valve</item>
+        <item>High fan</item>
+        <item>Low fan</item>
+    </array>
+    <array name="factory_parameter_o_1006">
+        <item>Compressor</item>
+        <item>Circulate pump</item>
+        <item>4-way valve</item>
+        <item>High fan</item>
+        <item>Low fan</item>
+        <item>Exp. Valve</item>
+        <item>Flow display</item>
+    </array>
+    <array name="factory_parameter_o_131">
+        <item>Compressor</item>
+        <item>Circulate pump</item>
+        <item>4-way valve</item>
+        <item>High fan</item>
+        <item>Low fan</item>
+        <item>Exp. valve</item>
+        <item>Comp. output frequency</item>
+        <item>Compressor current</item>
+        <item>IMP Temp.</item>
+        <item>DSP software version</item>
+        <item>PFC software version</item>
+        <item>EEPROM version</item>
+        <item>Chassis Heater</item>
+    </array>
+    <array name="factory_parameter_o_161">
+        <item>Syst1:Compressor</item>
+        <item>Syst2:Compressor</item>
+        <item>Fan Motor 1 High Speed</item>
+        <item>Fan Motor 1 Low Speed</item>
+        <item>4-way Valve 1</item>
+        <item>Circulate Pump</item>
+        <item>Fan Motor 2 High Speed</item>
+        <item>Fan Motor 2 Low Speed</item>
+        <item>Crankshaft Heater 1</item>
+        <item>Crankshaft Heater 2</item>
+        <item>4-way Valve 2</item>
+        <item>Chassis Heater</item>
+        <item>Syst1:EEV Open Step</item>
+        <item>Syst2: EEV Open Step</item>
+        <item>Capacity Demand</item>
+        <item>Electric Heater 1</item>
+        <item>Electric Heater 2</item>
+    </array>
+    <array name="factory_parameter_o_mini">
+        <item>Compressor</item>
+        <item>Circulate pump</item>
+        <item>High fan</item>
+        <item>4-way valve</item>
+    </array>
+    <array name="factory_parameter_p">
+        <item>Mode</item>
+        <item>Interval</item>
+        <item>Duration</item>
+        <item>Advance</item>
+        <item>Water pump filtration</item>
+        <item>Water Pump Filtration start Time1</item>
+        <item>Water Pump Filtration End Time1</item>
+        <item>Water Pump Filtration start Time2</item>
+        <item>Water Pump Filtration End Time 2</item>
+    </array>
+    <array name="factory_parameter_p_1001">
+        <item>Mode</item>
+        <item>Interval</item>
+        <item>Duration</item>
+        <item>Advance</item>
+    </array>
+    <array name="factory_parameter_p_1006">
+        <item>Mode</item>
+        <item>Interval</item>
+        <item>Duration</item>
+        <item>Advance</item>
+    </array>
+    <array name="factory_parameter_p_131">
+        <item>Mode</item>
+        <item>Interval</item>
+        <item>Duration</item>
+        <item>Advance</item>
+        <item>Water pump filtration</item>
+        <item>Water Pump Filtration start Time 1</item>
+        <item>Water Pump Filtration End Time 1</item>
+        <item>Water Pump Filtration start Time 2</item>
+        <item>Water Pump Filtration End Time 2</item>
+    </array>
+    <array name="factory_parameter_p_161">
+        <item>Mode</item>
+        <item>Interval</item>
+        <item>Duration</item>
+        <item>Advance</item>
+        <item>Water pump filtration</item>
+        <item>Water Pump Filtration start Time 1</item>
+        <item>Water Pump Filtration End Time 1</item>
+        <item>Water Pump Filtration start Time 2</item>
+        <item>Water Pump Filtration End Time 2</item>
+    </array>
+    <array name="factory_parameter_r">
+        <item>Cooling set</item>
+        <item>Heating set</item>
+        <item>Auto. Set</item>
+        <item>Temp Difference</item>
+        <item>Power Off Temp Difference</item>
+        <item>Min. cool</item>
+        <item>Max. cool</item>
+        <item>Min. heat</item>
+        <item>Max. heat</item>
+        <item>Power on Difference</item>
+    </array>
+    <array name="factory_parameter_r_1001">
+        <item>Cooling set</item>
+        <item>Heating set</item>
+        <item>Auto. Set</item>
+        <item>Cool diff.</item>
+        <item>Cool stop</item>
+        <item>Heat diff.</item>
+        <item>Heat stop</item>
+        <item>Min. cool</item>
+        <item>Max. cool</item>
+        <item>Min. heat</item>
+        <item>Max. heat</item>
+    </array>
+    <array name="factory_parameter_r_1006">
+        <item>Cooling set</item>
+        <item>Heating set</item>
+        <item>Auto. Set</item>
+        <item>Cool diff.</item>
+        <item>Cool stop</item>
+        <item>Heat diff.</item>
+        <item>Heat stop</item>
+        <item>Min. cool</item>
+        <item>Max. cool</item>
+        <item>Min. heat</item>
+        <item>Max. heat</item>
+    </array>
+    <array name="factory_parameter_r_131">
+        <item>Cooling set</item>
+        <item>Heating set</item>
+        <item>Auto. Set</item>
+        <item>Temp Difference</item>
+        <item>Power Off Temp Difference</item>
+        <item>Min. cool</item>
+        <item>Max. cool</item>
+        <item>Min. heat</item>
+        <item>Max. heat</item>
+    </array>
+    <array name="factory_parameter_r_161">
+        <item>Cooling set</item>
+        <item>Heating set</item>
+        <item>Auto. Set</item>
+        <item>Temp Difference</item>
+        <item>Power Off Temp Difference</item>
+        <item>Min. cool</item>
+        <item>Max. cool</item>
+        <item>Min. heat</item>
+        <item>Max. heat</item>
+    </array>
+    <array name="factory_parameter_r_mini">
+        <item>Heating set</item>
+        <item>Temp difference</item>
+        <item>Power off temp difference(Heating)</item>
+        <item>Min. heat</item>
+        <item>Max. heat</item>
+        <item>Cooling set</item>
+        <item>Temp difference</item>
+        <item>Power off temp difference(Cooling)</item>
+        <item>Min. cool</item>
+        <item>Max. cool</item>
+        <item>Auto. set</item>
+    </array>
+    <array name="factory_parameter_s">
+        <item>HP switch</item>
+        <item>LP switch</item>
+        <item>Flow switch</item>
+        <item>Remote switch</item>
+        <item>Mode switch</item>
+        <item>Master/Slave switch</item>
+    </array>
+    <array name="factory_parameter_s_1001">
+        <item>Remote switch</item>
+        <item>Flow switch</item>
+        <item>LP switch</item>
+        <item>HP switch</item>
+        <item>Mode switch</item>
+        <item>Master/Slave switch</item>
+    </array>
+    <array name="factory_parameter_s_1006">
+        <item>Remote switch</item>
+        <item>Flow switch</item>
+        <item>LP switch</item>
+        <item>HP switch</item>
+        <item>Mode switch</item>
+        <item>Master/Slave switch</item>
+    </array>
+    <array name="factory_parameter_s_131">
+        <item>Syst1:HP Switch</item>
+        <item>Syst2:HP Switch</item>
+        <item>Syst1:LP Switch</item>
+        <item>Syst2:LP Switch</item>
+        <item>Flow Switch</item>
+        <item>Remote Switch</item>
+        <item>Mode Switch</item>
+        <item>Master/Slave Switch</item>
+        <item>Fan Motor 1 Overheat Switch</item>
+        <item>Fan Motor 2 Overheat Switch</item>
+    </array>
+    <array name="factory_parameter_s_161">
+        <item>Syst1:HP Switch</item>
+        <item>Syst2:HP Switch</item>
+        <item>Syst1:LP Switch</item>
+        <item>Syst2:LP Switch</item>
+        <item>Flow Switch</item>
+        <item>Remote Switch</item>
+        <item>Mode Switch</item>
+        <item>Master/Slave Switch</item>
+        <item>Fan Motor 1 Overheat Switch</item>
+        <item>Fan Motor 2 Overheat Switch</item>
+    </array>
+    <array name="factory_parameter_t">
+        <item>Suction Temp.</item>
+        <item>Inlet water Temp.</item>
+        <item>Outlet water Temp.</item>
+        <item>Coil 1 Temp.</item>
+        <item>Ambient Temp.</item>
+        <item>Exhaust Temp.</item>
+        <item>Compressor current Detect</item>
+        <item>AC Fan Output</item>
+        <item>Flow Rate Input</item>
+        <item>Pressure Sensor</item>
+        <item>Super heat</item>
+        <item>Target speed of fan motor</item>
+        <item>Over heat after commpen.</item>
+        <item>Inverter plate AC voltage</item>
+        <item>Antifreeze Temp.</item>
+        <item>EC Fan motor Speed</item>
+        <item>Speed of fan motor1</item>
+        <item>Speed of fan motor2</item>
+        <item>Buses voltage</item>
+        <item>Limited Frequency Protect State</item>
+        <item>Frequency Reduction Protect State</item>
+        <item>Coil 2 Temp.</item>
+        <item>driver board running state 1</item>
+        <item>driver board running state 2</item>
+        <item>driver board running state 3</item>
+        <item>driver board running state 4</item>
+        <item>driver board running state 5</item>
+        <item>Target frequency</item>
+    </array>
+    <array name="factory_parameter_t2">
+        <item>Suction Temp.</item>
+        <item>Inlet water Temp.</item>
+        <item>Outlet water Temp.</item>
+        <item>Coil 1 Temp.</item>
+        <item>Ambient Temp.</item>
+        <item>Exhaust Temp.</item>
+        <item>Compressor current Detect</item>
+        <item>AC Fan Output</item>
+        <item>Flow Rate Input</item>
+        <item>Pressure Sensor</item>
+        <item>Super heat</item>
+        <item>Target speed of fan motor</item>
+        <item>Over heat after commpen.</item>
+        <item>Inverter plate AC voltage</item>
+        <item>Antifreeze Temp.</item>
+        <item>EC Fan motor Speed</item>
+        <item>Speed of fan motor1</item>
+        <item>Speed of fan motor2</item>
+        <item>Buses voltage</item>
+        <item>Limited Frequency Protect State</item>
+        <item>Frequency Reduction Protect State</item>
+        <item>Coil 2 Temp.</item>
+        <item>driver board running state 1</item>
+        <item>driver board running state 2</item>
+        <item>driver board running state 3</item>
+        <item>driver board running state 4</item>
+        <item>driver board running state 5</item>
+    </array>
+    <array name="factory_parameter_t_1001">
+        <item>Suction Temp.</item>
+        <item>Inlet water Temp.</item>
+        <item>Outlet water Temp.</item>
+        <item>Coil 1 Temp.</item>
+        <item>Ambient Temp.</item>
+    </array>
+    <array name="factory_parameter_t_1006">
+        <item>Suction Temp.</item>
+        <item>Inlet water Temp.</item>
+        <item>Outlet water Temp.</item>
+        <item>Coil 1 Temp.</item>
+        <item>Ambient Temp.</item>
+        <item>Exhaust Temp.</item>
+    </array>
+    <array name="factory_parameter_t_131">
+        <item>Inlet Water Temp..</item>
+        <item>Outlet water Temp.</item>
+        <item>Ambient Temp.</item>
+        <item>Syst1: Suction Temp</item>
+        <item>Syst2: Suction Temp.</item>
+        <item>Syst1:Coil 1 Temp.</item>
+        <item>Syst2:Coil 1 Temp.</item>
+        <item>Syst1: Exhaust Temp.</item>
+        <item>Syst2: Exhaust Temp.</item>
+        <item>Syst1:Compressor Current</item>
+        <item>Syst2: Compressor Current</item>
+        <item>Syst1: LP</item>
+        <item>Syst2: LP</item>
+        <item>Syst1: Super Heat</item>
+        <item>Syst2: Super Heat</item>
+        <item>Over Heat after Compensate</item>
+        <item>Fan Motor Target Speed</item>
+        <item>Fan Motor 1 Speed</item>
+        <item>Fan Motor 2 Speed</item>
+        <item>EC Fan Motor Speed</item>
+        <item>Syst1:Antifreeze Temp.</item>
+        <item>Syst2:Antifreeze Temp.</item>
+        <item>Syst1: Coil 2 Temp.</item>
+        <item>Syst2: Coil 2 Temp.</item>
+        <item>Syst1: HP</item>
+        <item>Syst2: HP</item>
+    </array>
+    <array name="factory_parameter_t_161">
+        <item>Inlet Water Temp..</item>
+        <item>Outlet water Temp.</item>
+        <item>Ambient Temp.</item>
+        <item>Syst1: Suction Temp</item>
+        <item>Syst2: Suction Temp.</item>
+        <item>Syst1:Coil 1 Temp.</item>
+        <item>Syst2:Coil 1 Temp.</item>
+        <item>Syst1: Exhaust Temp.</item>
+        <item>Syst2: Exhaust Temp.</item>
+        <item>Syst1:Compressor Current</item>
+        <item>Syst2: Compressor Current</item>
+        <item>Syst1: LP</item>
+        <item>Syst2: LP</item>
+        <item>Syst1: Super Heat</item>
+        <item>Syst2: Super Heat</item>
+        <item>Over Heat after Compensate</item>
+        <item>Fan Motor Target Speed</item>
+        <item>Fan Motor 1 Speed</item>
+        <item>Fan Motor 2 Speed</item>
+        <item>EC Fan Motor Speed</item>
+        <item>Syst1:Antifreeze Temp.</item>
+        <item>Syst2:Antifreeze Temp.</item>
+        <item>Syst1: Coil 2 Temp.</item>
+        <item>Syst2: Coil 2 Temp.</item>
+        <item>Syst1: HP</item>
+        <item>Syst2: HP</item>
+    </array>
+    <array name="factory_parameter_t_mini">
+        <item>Suction Temp.</item>
+        <item>Inlet water Temp.</item>
+        <item>Outlet water Temp.</item>
+        <item>Coil Temp.</item>
+        <item>Ambient Temp.</item>
+        <item>Exhaust Temp.</item>
+    </array>
+    <array name="factory_parameter_u">
+        <item>1L Water Pulse</item>
+    </array>
+    <array name="factory_parameter_u_131">
+        <item>1L Water Pulse</item>
+    </array>
+    <array name="factory_parameter_u_161">
+        <item>1L Water Pulse</item>
+    </array>
+    <array name="o_array1001_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="o_array_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="p01trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p02trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p04trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p05trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p07trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p081trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p082trouble">
+        <item>Check the default discharge temp., the range of exhaust temp.is 120 ℃.\n1.Use thermometer to check the exhaust temp and compare with exhaust temp. sensor value. If the true value has huge difference from the temp. sensor value, replace the exhaust sensor.</item>
+    </array>
+    <array name="p09trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p15trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p81trouble">
+        <item>Check the connection and measure the resistance of sensor, if it’s lower than 100Ω or higher than 500kΩ, replace with a new sensor</item>
+    </array>
+    <array name="p82trouble">
+        <item>Check the default discharge temp., the range of exhaust temp.is 120 ℃.\n1.Use thermometer to check the exhaust temp and compare with exhaust temp. sensor value. If the true value has huge difference from the temp. sensor value, replace the exhaust sensor.</item>
+    </array>
+    <array name="pptrouble">
+        <item>1.Check the connection of the pressure sensor\n2.Replace the pressure sensor</item>
+    </array>
+    <array name="s_array_select">
+        <item>CLOSE</item>
+        <item>OPEN</item>
+    </array>
+    <array name="tptrouble">
+        <item>1.Check the ambient temp and the low ambient temperature shutdown protection parameter H34 value</item>
+    </array>
+    <array name="user_parameter_h">
+        <item>Power Down Memory</item>
+        <item>Mode Type</item>
+        <item>Temperature Unit</item>
+        <item>Delay off time</item>
+        <item>Auto mode restarting time</item>
+        <item>Temp Difference of Start Freq.</item>
+        <item>Start Frequency</item>
+        <item>Unit Address</item>
+    </array>
+</resources>

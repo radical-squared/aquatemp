@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.11
+
+- Per device's product ID parameters support
+
 ## v3.0.10
 
 - Handling expired token error (401) more gracefully (re-login)
