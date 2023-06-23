@@ -26,6 +26,7 @@ class ProductConfigurationManager:
 
     def __init__(self):
         self._entity_descriptions = {}
+        self._protocal_codes = {}
         self.platforms = []
 
     def initialize(self):
@@ -39,6 +40,11 @@ class ProductConfigurationManager:
 
     def get_entity_descriptions(self, product_id):
         result = self._entity_descriptions.get(product_id)
+
+        return result
+
+    def get_supported_protocal_codes(self, product_id) -> list[str]:
+        result = self._protocal_codes.get(product_id)
 
         return result
 
@@ -130,6 +136,7 @@ class ProductConfigurationManager:
                     entities.append(binary_sensor_entity)
 
         self._update_platforms(entities)
+        self._update_protocal_codes(product_id, entities)
 
         self._entity_descriptions[product_id] = entities
 
@@ -140,3 +147,10 @@ class ProductConfigurationManager:
                 and entity_description.platform is not None
             ):
                 self.platforms.append(entity_description.platform)
+
+    def _update_protocal_codes(self, product_id, entity_descriptions):
+        self._protocal_codes[product_id] = [
+            entity_description.key
+            for entity_description in entity_descriptions
+            if entity_description.is_protocol_code
+        ]

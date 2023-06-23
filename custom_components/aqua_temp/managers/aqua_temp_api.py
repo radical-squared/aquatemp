@@ -1,5 +1,4 @@
 """Platform for climate integration."""
-from copy import copy
 import logging
 import sys
 
@@ -305,15 +304,15 @@ class AquaTempAPI:
 
     async def _fetch_data(self, device_code: str):
         device_data = self.get_device_data(device_code)
-        device_protocal_codes = device_data.get(PROTOCAL_CODES)
+        product_id = device_data.get(DEVICE_PRODUCT_ID)
 
-        protocal_codes = [
-            device_protocal_code.key for device_protocal_code in device_protocal_codes
-        ]
+        codes = self._product_configuration_manager.get_supported_protocal_codes(
+            product_id
+        )
 
         data = {
             DEVICE_CODE: device_code,
-            PROTOCAL_CODES: protocal_codes,
+            PROTOCAL_CODES: codes,
         }
 
         data_response = await self._post_request(Endpoints.DEVICE_DATA, data)
@@ -431,26 +430,10 @@ class AquaTempAPI:
 
             for device in devices:
                 device_code = device.get(DEVICE_CODE)
-                device_product_id = device.get(DEVICE_PRODUCT_ID)
-                entity_descriptions = (
-                    self._product_configuration_manager.get_entity_descriptions(
-                        device_product_id
-                    )
-                )
 
                 _LOGGER.debug(
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
                 )
-
-                device_entities = copy(
-                    [
-                        entity
-                        for entity in entity_descriptions
-                        if entity.is_protocol_code
-                    ]
-                )
-
-                device[PROTOCAL_CODES] = device_entities
 
                 self._devices[device_code] = device
 

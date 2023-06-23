@@ -1,15 +1,14 @@
 import asyncio
+import json
 import logging
 import os
 import sys
 
 from custom_components.aqua_temp import ProductConfigurationManager
-from custom_components.aqua_temp.common.consts import PROTOCAL_CODES
 from custom_components.aqua_temp.managers.aqua_temp_api import AquaTempAPI
 from custom_components.aqua_temp.managers.aqua_temp_config_manager import (
     AquaTempConfigManager,
 )
-from homeassistant.const import Platform
 
 DEBUG = str(os.environ.get("DEBUG", False)).lower() == str(True).lower()
 USERNAME = os.environ.get("USERNAME", False)
@@ -45,21 +44,10 @@ class Test:
 
         await self._api.update()
 
-        print(f"| Parameter | Device Code | Value | Description           |")
-        print(f"| --------- | ----------- | ----- | --------------------- |")
-
         for device_code in self._api.devices:
             device_data = self._api.get_device_data(device_code)
-            device_entities = device_data.get(PROTOCAL_CODES)
 
-            for entity_description in device_entities:
-                value = device_data.get(entity_description.key)
-
-                if entity_description.platform == Platform.BINARY_SENSOR:
-                    value = value == entity_description.on_value
-
-                if value is not None and value != "":
-                    print(f"| {entity_description.key} | {device_code} | {value} | {entity_description.name} |")
+            _LOGGER.info(f"{device_code}: {json.dumps(device_data, indent=4)}")
 
         await self._api.terminate()
 
