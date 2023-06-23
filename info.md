@@ -127,3 +127,7 @@ logger:
 
 Please attach also diagnostic details of the integration, available in:
 Settings -> Devices & Services -> Aqua Temp -> 3 dots menu -> Download diagnostics
+
+## Discord
+
+Join our community in [Discord](https://discord.gg/6B6fakaK)
