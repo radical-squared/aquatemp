@@ -282,9 +282,7 @@ class AquaTempAPI:
 
             control_params.append(set_mode)
 
-        request_data = {
-            DEVICE_CONTROL_PARAM: control_params
-        }
+        request_data = {DEVICE_CONTROL_PARAM: control_params}
 
         await self._perform_action(request_data, mode_pc_key)
 

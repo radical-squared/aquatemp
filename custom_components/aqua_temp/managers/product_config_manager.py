@@ -13,12 +13,15 @@ from ..common.consts import (
     CONFIG_HVAC_SET,
     DEVICE_CODE,
     DEVICE_PRODUCT_ID,
-    PRODUCT_IDS, PRODUCT_ID_DEFAULT, ProductParameter,
+    PRODUCT_ID_DEFAULT,
+    PRODUCT_IDS,
+    ProductParameter,
 )
 from ..common.entity_descriptions import (
     DEFAULT_ENTITY_DESCRIPTIONS,
     AquaTempBinarySensorEntityDescription,
-    AquaTempSensorEntityDescription, AquaTempEntityDescription,
+    AquaTempEntityDescription,
+    AquaTempSensorEntityDescription,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,14 +56,22 @@ class ProductConfigurationManager:
                 self._load_entity_descriptions(product_id)
                 self._load_protocol_codes(product_id)
 
-            _LOGGER.debug(f"Initialized Entity Descriptions: {len(self._entity_descriptions)}")
+            _LOGGER.debug(
+                f"Initialized Entity Descriptions: {len(self._entity_descriptions)}"
+            )
             _LOGGER.debug(f"Initialized protocol codes: {self._protocol_codes}")
-            _LOGGER.debug(f"Initialized protocol codes configuration: {self._protocol_codes_configuration}")
+            _LOGGER.debug(
+                f"Initialized protocol codes configuration: {self._protocol_codes_configuration}"
+            )
             _LOGGER.debug(f"Initialized platforms: {self.platforms}")
             _LOGGER.debug(f"Initialized HVAC modes: {self._hvac_modes}")
-            _LOGGER.debug(f"Initialized HVAC modes - reversed: {self._hvac_modes_reverse}")
+            _LOGGER.debug(
+                f"Initialized HVAC modes - reversed: {self._hvac_modes_reverse}"
+            )
             _LOGGER.debug(f"Initialized Entity Descriptions: {self._fan_modes}")
-            _LOGGER.debug(f"Initialized fan modes - reversed: {self._fan_modes_reverse}")
+            _LOGGER.debug(
+                f"Initialized fan modes - reversed: {self._fan_modes_reverse}"
+            )
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -76,7 +87,9 @@ class ProductConfigurationManager:
         entity_descriptions = self._entity_descriptions.get(product_id)
 
         config_key = "default" if config is None else product_id
-        entity_descriptions_key = "default" if entity_descriptions is None else product_id
+        entity_descriptions_key = (
+            "default" if entity_descriptions is None else product_id
+        )
 
         self._devices[device_code] = {
             ProductParameter.CONFIG: config_key,
@@ -228,8 +241,7 @@ class ProductConfigurationManager:
 
                 else:
                     entity = AquaTempEntityDescription(
-                        key=data_item.get("key"),
-                        name=data_item.get("name")
+                        key=data_item.get("key"), name=data_item.get("name")
                     )
 
                     entities.append(entity)
@@ -315,7 +327,9 @@ class ProductConfigurationManager:
         return result
 
     def _get_entity_descriptions(self, device_code):
-        product_id = self._get_product_id(device_code, ProductParameter.ENTITY_DESCRIPTION)
+        product_id = self._get_product_id(
+            device_code, ProductParameter.ENTITY_DESCRIPTION
+        )
 
         result = self._entity_descriptions.get(product_id)
 

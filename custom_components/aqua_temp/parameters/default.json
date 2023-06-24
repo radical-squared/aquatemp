@@ -1,1154 +1,1154 @@
 [
-    {
-        "key": "Power",
-        "name": "Power",
-        "platform": "binary_sensor",
-        "device_class": "power",
-        "on_value": "1"
-    },
-    {
-        "key": "Mode",
-        "name": "Mode",
-        "platform": null
-    },
-    {
-        "key": "Manual-mute",
-        "name": "Manual-mute",
-        "platform": null
-    },
-    {
-        "key": "Set_Temp",
-        "name": "Set_Temp",
-        "platform": null
-    },
-    {
-        "key": "2074",
-        "name": "2074",
-        "platform": null
-    },
-    {
-        "key": "2075",
-        "name": "2075",
-        "platform": null
-    },
-    {
-        "key": "2076",
-        "name": "2076",
-        "platform": null
-    },
-    {
-        "key": "2077",
-        "name": "2077",
-        "platform": null
-    },
-    {
-        "key": "1158",
-        "name": "1158",
-        "platform": null
-    },
-    {
-        "key": "1159",
-        "name": "1159",
-        "platform": null
-    },
-    {
-        "key": "2064",
-        "name": "2064",
-        "platform": null
-    },
-    {
-        "key": "ver",
-        "name": "Version",
-        "platform": null
-    },
-    {
-        "key": "software_code",
-        "name": "Software Code",
-        "platform": null
-    },
-    {
-        "key": "D01",
-        "name": "Stat Defrosting Temp [D01]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "D01-bar",
-        "name": "Start setp. [D01-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "D02",
-        "name": "End Defrosting Temp [D02]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "D03",
-        "name": "Defrosting Cycle [D03]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "min"
-    },
-    {
-        "key": "D04",
-        "name": "Max. Duration [D04]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "min"
-    },
-    {
-        "key": "D06",
-        "name": "Defrost type [D06]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "D07",
-        "name": "Out Temp when Defrost [D07]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "D08",
-        "name": "Defrost Coil Temp. Deviation [D08]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "D08-bar",
-        "name": "Compensation offset [D08-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "D09",
-        "name": "Defrost out Temp. Deviation [D09]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "D10",
-        "name": "Defrost ending coil temp. [D10]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "D10-bar",
-        "name": "Defrost ending pressure. [D10-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "E01",
-        "name": "EEV Mode [E01]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E02",
-        "name": "Super Heat [E02]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "E03",
-        "name": "Init. Place [E03]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E04",
-        "name": "Min. Place [E04]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E05",
-        "name": "Defrost Place [E05]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E06",
-        "name": "Cooling Place [E06]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E07",
-        "name": "EEV exhaust set temp. [E07]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "E09",
-        "name": "EEV step proportion value [E09]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E10",
-        "name": "EEV step integral value [E10]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E11",
-        "name": "EEV step differential value [E11]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "E12",
-        "name": "Super heatcompen. differ. [E12]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F01",
-        "name": "Speed [F01]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "F02",
-        "name": "Max. cool [F02]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F02-bar",
-        "name": "Cooling high speed pressure [F02-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "F03",
-        "name": "Min. cool [F03]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F03-bar",
-        "name": "Cooling low speed pressure [F03-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "F04",
-        "name": "Stop cool [F04]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F04-bar",
-        "name": "Cooling motor off pressure [F04-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "F05",
-        "name": "Max. heat [F05]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F05-bar",
-        "name": "Heating high speed pressure [F05-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "F06",
-        "name": "Min. heat [F06]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F06-bar",
-        "name": "Heating low speed pressure [F06-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "F07",
-        "name": "Stop heat [F07]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "F07-bar",
-        "name": "Heating motor off pressure [F07-bar]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "F10",
-        "name": "Ctrl. probe [F10]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "F11",
-        "name": "Heating Max. Duty Ratio [F11]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "%"
-    },
-    {
-        "key": "F11-r",
-        "name": "Fan Motor Heat Max. Speed [F11-r]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "F12",
-        "name": "Cooling Fan Duty Ratio [F12]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "%"
-    },
-    {
-        "key": "F12-r",
-        "name": "Cooling Fan Motor Speed [F12-r]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "F13",
-        "name": "Heating Min. fan duty ratio [F13]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "%"
-    },
-    {
-        "key": "F13-r",
-        "name": "Fan Motor Min. Speed in Heating [F13-r]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "F14",
-        "name": "Timer Mute Start [F14]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "h"
-    },
-    {
-        "key": "F15",
-        "name": "Timer Mute End [F15]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "h"
-    },
-    {
-        "key": "F16",
-        "name": "Duty Ratio of Mute Mode [F16]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "%"
-    },
-    {
-        "key": "F16-r",
-        "name": "Mute Mode Speed [F16-r]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "F17",
-        "name": "Timer Mute ON/OFF [F17]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "F18",
-        "name": "Manual Fan motor Speed [F18]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "F19",
-        "name": "AC Fan Rated Duty Ratio [F19]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "%"
-    },
-    {
-        "key": "F19-r",
-        "name": "DC/EC Fan Rated Speed [F19-r]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "F20",
-        "name": "PWM Detect/Antifreeze Temp. [F20]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H01",
-        "name": "Power Down Memory [H01]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H02",
-        "name": "Mode Type [H02]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H03",
-        "name": "Temperature Unit [H03]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "H06",
-        "name": "Heating Min. frequency [H06]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H07",
-        "name": "Cooling Min. frequency [H07]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H08",
-        "name": "Heating Max frequency [H08]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H09",
-        "name": "Cooling Max frequency [H09]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H10",
-        "name": "Delay off time [H10]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H11",
-        "name": "Auto mode restarting time [H11]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H12",
-        "name": "Compressor type [H12]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H13",
-        "name": "Comp. Defrost Frequency [H13]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H14",
-        "name": "Frequency Cycle of 0.2\u2103 [H14]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H15",
-        "name": "Comp. Overcurren Protect [H15]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H16",
-        "name": "Refrigerant Type [H16]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H17",
-        "name": "Cool start Compen. Low temp. [H17]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H18",
-        "name": "Cool stop Compen. Low temp. [H18]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H19",
-        "name": "Cool Max. Frequency low temp. [H19]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H20",
-        "name": "Cool start Compen. high temp. [H20]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H21",
-        "name": "Cool stop Compen. High temp. [H21]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H22",
-        "name": "Cool stop Frequency high temp. [H22]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H23",
-        "name": "Heat start Compen.low temp. [H23]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H24",
-        "name": "Heat stop Compen.low temp. [H24]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H25",
-        "name": "Heat Max.frequency low temp [H25]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H26",
-        "name": "Heat start Compen.high temp. [H26]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H27",
-        "name": "Heat stop Compen.high temp. [H27]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H28",
-        "name": "Heat Max.frequency high temp. [H28]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H29",
-        "name": "Max. Pressure Sensor Value [H29]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H30",
-        "name": "Min. Pressure Sensor Value [H30]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H31",
-        "name": "Ambient temp. before commpen. [H31]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H32",
-        "name": "Ambient temp. after commpen. [H32]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H33",
-        "name": "Max. Frequency silent comp. [H33]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H34",
-        "name": "Comp. stop. [H34]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H35",
-        "name": "Temp Difference of Start Freq. [H35]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H36",
-        "name": "Start Frequency [H36]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H37",
-        "name": "Unit Address [H37]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H38",
-        "name": "Pressure Measurement [H38]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H39",
-        "name": "Resonance 1 [H39]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H40",
-        "name": "Resonance 2 [H40]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H41",
-        "name": "Resonance 3 [H41]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H42",
-        "name": "Fast Test Mode [H42]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "H43",
-        "name": "Dual Coil [H43]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O01",
-        "name": "Compressor [O01]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O02",
-        "name": "High fan [O02]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O03",
-        "name": "Low fan [O03]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O04",
-        "name": "Circulate pump [O04]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O05",
-        "name": "4-way valve [O05]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O06",
-        "name": "Exp. Valve [O06]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "O07",
-        "name": "Comp. Output frequency [O07]",
-        "platform": "sensor",
-        "device_class": "frequency",
-        "unit_of_measurement": "Hz"
-    },
-    {
-        "key": "O08",
-        "name": "Compressor current [O08]",
-        "platform": "sensor",
-        "device_class": "current",
-        "unit_of_measurement": "A"
-    },
-    {
-        "key": "O09",
-        "name": "IPM Temp. [O09]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "P01",
-        "name": "Mode [P01]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "P02",
-        "name": "Interval [P02]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "min"
-    },
-    {
-        "key": "P03",
-        "name": "Duration [P03]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "min"
-    },
-    {
-        "key": "P04",
-        "name": "Advance [P04]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "min"
-    },
-    {
-        "key": "P05",
-        "name": "Water pump filtration [P05]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "P06",
-        "name": "Water Pump Filtration start Time1 [P06]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "h"
-    },
-    {
-        "key": "P07",
-        "name": "Water Pump Filtration End Time1 [P07]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "h"
-    },
-    {
-        "key": "P08",
-        "name": "Water Pump Filtration start Time2 [P08]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "h"
-    },
-    {
-        "key": "P09",
-        "name": "Water Pump Filtration End Time 2 [P09]",
-        "platform": "sensor",
-        "device_class": "duration",
-        "unit_of_measurement": "h"
-    },
-    {
-        "key": "R01",
-        "name": "Cooling set [R01]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R02",
-        "name": "Heating set [R02]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R03",
-        "name": "Auto. Set [R03]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R04",
-        "name": "Temp Difference [R04]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R05",
-        "name": "Power Off Temp Difference [R05]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R08",
-        "name": "Min. cool [R08]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R09",
-        "name": "Max. cool [R09]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R10",
-        "name": "Min. heat [R10]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R11",
-        "name": "Max. heat [R11]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "R12",
-        "name": "Power on Difference [R12]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "S01",
-        "name": "HP switch [S01]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "S02",
-        "name": "LP switch [S02]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "S03",
-        "name": "Flow switch [S03]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "S04",
-        "name": "Remote switch [S04]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "S05",
-        "name": "Mode switch [S05]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "S06",
-        "name": "Master/Slave switch [S06]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T01",
-        "name": "Suction Temp. [T01]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T02",
-        "name": "Inlet water Temp. [T02]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T03",
-        "name": "Outlet water Temp. [T03]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T04",
-        "name": "Coil 1 Temp. [T04]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T05",
-        "name": "Ambient Temp. [T05]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T06",
-        "name": "Exhaust Temp. [T06]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T07",
-        "name": "Compressor current Detect [T07]",
-        "platform": "sensor",
-        "device_class": "current",
-        "unit_of_measurement": "A"
-    },
-    {
-        "key": "T08",
-        "name": "AC Fan Output [T08]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "%"
-    },
-    {
-        "key": "T09",
-        "name": "Flow Rate Input [T09]",
-        "platform": "sensor",
-        "device_class": "frequency",
-        "unit_of_measurement": "Hz"
-    },
-    {
-        "key": "T10",
-        "name": "Pressure Sensor [T10]",
-        "platform": "sensor",
-        "device_class": "pressure",
-        "unit_of_measurement": "bar"
-    },
-    {
-        "key": "T11",
-        "name": "Super heat [T11]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T12",
-        "name": "Target speed of fan motor [T12]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "T13",
-        "name": "Over heat after commpen. [T13]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T14",
-        "name": "Inverter plate AC voltage [T14]",
-        "platform": "sensor",
-        "device_class": "voltage",
-        "unit_of_measurement": "V"
-    },
-    {
-        "key": "T15",
-        "name": "Antifreeze Temp. [T15]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T16",
-        "name": "EC Fan motor Speed [T16]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "T17",
-        "name": "Speed of fan motor1 [T17]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "T18",
-        "name": "Speed of fan motor2 [T18]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": "r"
-    },
-    {
-        "key": "T19",
-        "name": "Buses voltage [T19]",
-        "platform": "sensor",
-        "device_class": "voltage",
-        "unit_of_measurement": "V"
-    },
-    {
-        "key": "T20",
-        "name": "Limited Frequency Protect State [T20]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T21",
-        "name": "Frequency Reduction Protect State [T21]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T22",
-        "name": "Coil 2 Temp. [T22]",
-        "platform": "sensor",
-        "device_class": "temperature",
-        "unit_of_measurement": "\u00b0C"
-    },
-    {
-        "key": "T23",
-        "name": "driver board running state 1 [T23]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T24",
-        "name": "driver board running state 2 [T24]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T25",
-        "name": "driver board running state 3 [T25]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T26",
-        "name": "driver board running state 4 [T26]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T27",
-        "name": "driver board running state 5 [T27]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    },
-    {
-        "key": "T28",
-        "name": "Target frequency [T28]",
-        "platform": "sensor",
-        "device_class": null,
-        "unit_of_measurement": null
-    }
+  {
+    "key": "Power",
+    "name": "Power",
+    "platform": "binary_sensor",
+    "device_class": "power",
+    "on_value": "1"
+  },
+  {
+    "key": "Mode",
+    "name": "Mode",
+    "platform": null
+  },
+  {
+    "key": "Manual-mute",
+    "name": "Manual-mute",
+    "platform": null
+  },
+  {
+    "key": "Set_Temp",
+    "name": "Set_Temp",
+    "platform": null
+  },
+  {
+    "key": "2074",
+    "name": "2074",
+    "platform": null
+  },
+  {
+    "key": "2075",
+    "name": "2075",
+    "platform": null
+  },
+  {
+    "key": "2076",
+    "name": "2076",
+    "platform": null
+  },
+  {
+    "key": "2077",
+    "name": "2077",
+    "platform": null
+  },
+  {
+    "key": "1158",
+    "name": "1158",
+    "platform": null
+  },
+  {
+    "key": "1159",
+    "name": "1159",
+    "platform": null
+  },
+  {
+    "key": "2064",
+    "name": "2064",
+    "platform": null
+  },
+  {
+    "key": "ver",
+    "name": "Version",
+    "platform": null
+  },
+  {
+    "key": "software_code",
+    "name": "Software Code",
+    "platform": null
+  },
+  {
+    "key": "D01",
+    "name": "Stat Defrosting Temp [D01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D01-bar",
+    "name": "Start setp. [D01-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "D02",
+    "name": "End Defrosting Temp [D02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D03",
+    "name": "Defrosting Cycle [D03]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "D04",
+    "name": "Max. Duration [D04]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "D06",
+    "name": "Defrost type [D06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "D07",
+    "name": "Out Temp when Defrost [D07]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D08",
+    "name": "Defrost Coil Temp. Deviation [D08]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D08-bar",
+    "name": "Compensation offset [D08-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "D09",
+    "name": "Defrost out Temp. Deviation [D09]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D10",
+    "name": "Defrost ending coil temp. [D10]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D10-bar",
+    "name": "Defrost ending pressure. [D10-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "E01",
+    "name": "EEV Mode [E01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E02",
+    "name": "Super Heat [E02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "E03",
+    "name": "Init. Place [E03]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E04",
+    "name": "Min. Place [E04]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E05",
+    "name": "Defrost Place [E05]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E06",
+    "name": "Cooling Place [E06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E07",
+    "name": "EEV exhaust set temp. [E07]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "E09",
+    "name": "EEV step proportion value [E09]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E10",
+    "name": "EEV step integral value [E10]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E11",
+    "name": "EEV step differential value [E11]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "E12",
+    "name": "Super heatcompen. differ. [E12]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F01",
+    "name": "Speed [F01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "F02",
+    "name": "Max. cool [F02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F02-bar",
+    "name": "Cooling high speed pressure [F02-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "F03",
+    "name": "Min. cool [F03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F03-bar",
+    "name": "Cooling low speed pressure [F03-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "F04",
+    "name": "Stop cool [F04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F04-bar",
+    "name": "Cooling motor off pressure [F04-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "F05",
+    "name": "Max. heat [F05]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F05-bar",
+    "name": "Heating high speed pressure [F05-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "F06",
+    "name": "Min. heat [F06]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F06-bar",
+    "name": "Heating low speed pressure [F06-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "F07",
+    "name": "Stop heat [F07]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "F07-bar",
+    "name": "Heating motor off pressure [F07-bar]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "F10",
+    "name": "Ctrl. probe [F10]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "F11",
+    "name": "Heating Max. Duty Ratio [F11]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "%"
+  },
+  {
+    "key": "F11-r",
+    "name": "Fan Motor Heat Max. Speed [F11-r]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "F12",
+    "name": "Cooling Fan Duty Ratio [F12]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "%"
+  },
+  {
+    "key": "F12-r",
+    "name": "Cooling Fan Motor Speed [F12-r]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "F13",
+    "name": "Heating Min. fan duty ratio [F13]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "%"
+  },
+  {
+    "key": "F13-r",
+    "name": "Fan Motor Min. Speed in Heating [F13-r]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "F14",
+    "name": "Timer Mute Start [F14]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "h"
+  },
+  {
+    "key": "F15",
+    "name": "Timer Mute End [F15]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "h"
+  },
+  {
+    "key": "F16",
+    "name": "Duty Ratio of Mute Mode [F16]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "%"
+  },
+  {
+    "key": "F16-r",
+    "name": "Mute Mode Speed [F16-r]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "F17",
+    "name": "Timer Mute ON/OFF [F17]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "F18",
+    "name": "Manual Fan motor Speed [F18]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "F19",
+    "name": "AC Fan Rated Duty Ratio [F19]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "%"
+  },
+  {
+    "key": "F19-r",
+    "name": "DC/EC Fan Rated Speed [F19-r]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "F20",
+    "name": "PWM Detect/Antifreeze Temp. [F20]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H01",
+    "name": "Power Down Memory [H01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H02",
+    "name": "Mode Type [H02]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H03",
+    "name": "Temperature Unit [H03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "H06",
+    "name": "Heating Min. frequency [H06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H07",
+    "name": "Cooling Min. frequency [H07]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H08",
+    "name": "Heating Max frequency [H08]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H09",
+    "name": "Cooling Max frequency [H09]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H10",
+    "name": "Delay off time [H10]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H11",
+    "name": "Auto mode restarting time [H11]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H12",
+    "name": "Compressor type [H12]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H13",
+    "name": "Comp. Defrost Frequency [H13]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H14",
+    "name": "Frequency Cycle of 0.2\u2103 [H14]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H15",
+    "name": "Comp. Overcurren Protect [H15]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H16",
+    "name": "Refrigerant Type [H16]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H17",
+    "name": "Cool start Compen. Low temp. [H17]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H18",
+    "name": "Cool stop Compen. Low temp. [H18]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H19",
+    "name": "Cool Max. Frequency low temp. [H19]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H20",
+    "name": "Cool start Compen. high temp. [H20]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H21",
+    "name": "Cool stop Compen. High temp. [H21]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H22",
+    "name": "Cool stop Frequency high temp. [H22]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H23",
+    "name": "Heat start Compen.low temp. [H23]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H24",
+    "name": "Heat stop Compen.low temp. [H24]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H25",
+    "name": "Heat Max.frequency low temp [H25]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H26",
+    "name": "Heat start Compen.high temp. [H26]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H27",
+    "name": "Heat stop Compen.high temp. [H27]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H28",
+    "name": "Heat Max.frequency high temp. [H28]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H29",
+    "name": "Max. Pressure Sensor Value [H29]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H30",
+    "name": "Min. Pressure Sensor Value [H30]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H31",
+    "name": "Ambient temp. before commpen. [H31]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H32",
+    "name": "Ambient temp. after commpen. [H32]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H33",
+    "name": "Max. Frequency silent comp. [H33]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H34",
+    "name": "Comp. stop. [H34]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H35",
+    "name": "Temp Difference of Start Freq. [H35]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H36",
+    "name": "Start Frequency [H36]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H37",
+    "name": "Unit Address [H37]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H38",
+    "name": "Pressure Measurement [H38]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H39",
+    "name": "Resonance 1 [H39]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H40",
+    "name": "Resonance 2 [H40]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H41",
+    "name": "Resonance 3 [H41]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H42",
+    "name": "Fast Test Mode [H42]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H43",
+    "name": "Dual Coil [H43]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O01",
+    "name": "Compressor [O01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O02",
+    "name": "High fan [O02]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O03",
+    "name": "Low fan [O03]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O04",
+    "name": "Circulate pump [O04]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O05",
+    "name": "4-way valve [O05]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O06",
+    "name": "Exp. Valve [O06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "O07",
+    "name": "Comp. Output frequency [O07]",
+    "platform": "sensor",
+    "device_class": "frequency",
+    "unit_of_measurement": "Hz"
+  },
+  {
+    "key": "O08",
+    "name": "Compressor current [O08]",
+    "platform": "sensor",
+    "device_class": "current",
+    "unit_of_measurement": "A"
+  },
+  {
+    "key": "O09",
+    "name": "IPM Temp. [O09]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "P01",
+    "name": "Mode [P01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "P02",
+    "name": "Interval [P02]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "P03",
+    "name": "Duration [P03]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "P04",
+    "name": "Advance [P04]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "P05",
+    "name": "Water pump filtration [P05]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "P06",
+    "name": "Water Pump Filtration start Time1 [P06]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "h"
+  },
+  {
+    "key": "P07",
+    "name": "Water Pump Filtration End Time1 [P07]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "h"
+  },
+  {
+    "key": "P08",
+    "name": "Water Pump Filtration start Time2 [P08]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "h"
+  },
+  {
+    "key": "P09",
+    "name": "Water Pump Filtration End Time 2 [P09]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "h"
+  },
+  {
+    "key": "R01",
+    "name": "Cooling set [R01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R02",
+    "name": "Heating set [R02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R03",
+    "name": "Auto. Set [R03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R04",
+    "name": "Temp Difference [R04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R05",
+    "name": "Power Off Temp Difference [R05]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R08",
+    "name": "Min. cool [R08]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R09",
+    "name": "Max. cool [R09]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R10",
+    "name": "Min. heat [R10]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R11",
+    "name": "Max. heat [R11]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R12",
+    "name": "Power on Difference [R12]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "S01",
+    "name": "HP switch [S01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "S02",
+    "name": "LP switch [S02]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "S03",
+    "name": "Flow switch [S03]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "S04",
+    "name": "Remote switch [S04]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "S05",
+    "name": "Mode switch [S05]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "S06",
+    "name": "Master/Slave switch [S06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T01",
+    "name": "Suction Temp. [T01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T02",
+    "name": "Inlet water Temp. [T02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T03",
+    "name": "Outlet water Temp. [T03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T04",
+    "name": "Coil 1 Temp. [T04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T05",
+    "name": "Ambient Temp. [T05]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T06",
+    "name": "Exhaust Temp. [T06]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T07",
+    "name": "Compressor current Detect [T07]",
+    "platform": "sensor",
+    "device_class": "current",
+    "unit_of_measurement": "A"
+  },
+  {
+    "key": "T08",
+    "name": "AC Fan Output [T08]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "%"
+  },
+  {
+    "key": "T09",
+    "name": "Flow Rate Input [T09]",
+    "platform": "sensor",
+    "device_class": "frequency",
+    "unit_of_measurement": "Hz"
+  },
+  {
+    "key": "T10",
+    "name": "Pressure Sensor [T10]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "T11",
+    "name": "Super heat [T11]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T12",
+    "name": "Target speed of fan motor [T12]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "T13",
+    "name": "Over heat after commpen. [T13]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T14",
+    "name": "Inverter plate AC voltage [T14]",
+    "platform": "sensor",
+    "device_class": "voltage",
+    "unit_of_measurement": "V"
+  },
+  {
+    "key": "T15",
+    "name": "Antifreeze Temp. [T15]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T16",
+    "name": "EC Fan motor Speed [T16]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "T17",
+    "name": "Speed of fan motor1 [T17]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "T18",
+    "name": "Speed of fan motor2 [T18]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "r"
+  },
+  {
+    "key": "T19",
+    "name": "Buses voltage [T19]",
+    "platform": "sensor",
+    "device_class": "voltage",
+    "unit_of_measurement": "V"
+  },
+  {
+    "key": "T20",
+    "name": "Limited Frequency Protect State [T20]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T21",
+    "name": "Frequency Reduction Protect State [T21]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T22",
+    "name": "Coil 2 Temp. [T22]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T23",
+    "name": "driver board running state 1 [T23]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T24",
+    "name": "driver board running state 2 [T24]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T25",
+    "name": "driver board running state 3 [T25]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T26",
+    "name": "driver board running state 4 [T26]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T27",
+    "name": "driver board running state 5 [T27]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "T28",
+    "name": "Target frequency [T28]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  }
 ]

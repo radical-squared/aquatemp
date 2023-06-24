@@ -83,8 +83,6 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
     ),
     AquaTempClimateEntityDescription(
-        key="Mode",
-        name="HVAC Mode",
-        category="Control parameters"
+        key="Mode", name="HVAC Mode", category="Control parameters"
     ),
 ]
