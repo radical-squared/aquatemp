@@ -57,11 +57,6 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     def config_data(self):
         return self._config_manager.data
 
-    def get_target_temperature_protocol_code(self, hvac_mode: HVACMode):
-        result = self._api.get_target_temperature_protocol_code(hvac_mode)
-
-        return result
-
     def get_device(self, device_code: str) -> DeviceInfo:
         device_data = self.get_device_data(device_code)
         device_nickname = device_data.get("device_nick_name", device_code)

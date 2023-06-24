@@ -8,7 +8,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
-from .common.consts import DEVICE_PRODUCT_ID, DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
+from .common.consts import DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
 from .common.entity_descriptions import AquaTempSensorEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -23,11 +23,8 @@ async def async_setup_entry(
     ) -> AquaTempSensorEntity:
         product_configuration_manager = coordinator.product_configuration_manager
 
-        device_data = coordinator.get_device_data(device_code)
-        product_id = device_data.get(DEVICE_PRODUCT_ID)
-
         entity_description = product_configuration_manager.find_entity_description(
-            product_id, entity_description_key, Platform.SENSOR
+            device_code, entity_description_key, Platform.SENSOR
         )
 
         entity = AquaTempSensorEntity(device_code, entity_description, coordinator)

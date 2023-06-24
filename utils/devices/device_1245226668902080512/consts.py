@@ -4,8 +4,8 @@ PARAMETER_MAPPING = {
         "bar": [],
         "frequency": [],
         "amper": [],
-        "temperature": [],
-        "duration_min": [],
+        "temperature": [0, 1],
+        "duration_min": [2, 3, 4],
         "duration_h": [],
         "percentage": [],
         "rotation": [],
@@ -16,20 +16,20 @@ PARAMETER_MAPPING = {
         "bar": [],
         "frequency": [],
         "amper": [],
-        "temperature": [],
+        "temperature": [1],
         "duration_min": [],
         "duration_h": [],
         "percentage": [],
         "rotation": [],
         "skip": []
     },
-    "factory_parameter_fh0": {
-        "name": "F",
+    "factory_parameter_g": {
+        "name": "G",
         "bar": [],
         "frequency": [],
         "amper": [],
-        "temperature": [],
-        "duration_min": [],
+        "temperature": [0],
+        "duration_min": [1],
         "duration_h": [],
         "percentage": [],
         "rotation": [],
@@ -47,13 +47,13 @@ PARAMETER_MAPPING = {
         "rotation": [],
         "skip": []
     },
-    "factory_parameter_p": {
-        "name": "P",
+    "factory_parameter_n": {
+        "name": "N",
         "bar": [],
         "frequency": [],
         "amper": [],
-        "temperature": [],
-        "duration_min": [],
+        "temperature": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+        "duration_min": [0, 1],
         "duration_h": [],
         "percentage": [],
         "rotation": [],
@@ -71,7 +71,7 @@ PARAMETER_MAPPING = {
         "rotation": [],
         "skip": []
     },
-    "factory_parameter_o": {
+    "status_parameter_o": {
         "name": "O",
         "bar": [],
         "frequency": [],
@@ -83,7 +83,7 @@ PARAMETER_MAPPING = {
         "rotation": [],
         "skip": []
     },
-    "factory_parameter_s": {
+    "status_parameter_s": {
         "name": "S",
         "bar": [],
         "frequency": [],
@@ -95,13 +95,13 @@ PARAMETER_MAPPING = {
         "rotation": [],
         "skip": []
     },
-    "factory_parameter_t": {
+    "status_parameter_t": {
         "name": "T",
         "bar": [],
         "frequency": [],
         "amper": [],
         "volt": [],
-        "temperature": [],
+        "temperature": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         "duration_min": [],
         "duration_h": [],
         "percentage": [],
