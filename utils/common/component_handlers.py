@@ -19,6 +19,7 @@ class ComponentHandlers:
             "temperature": self.get_sensor_temperature,
             "duration_min": self.get_sensor_duration_min,
             "duration_h": self.get_sensor_duration_h,
+            "duration_d": self.get_sensor_duration_d,
             "percentage": self.get_sensor_percentage,
             "rotation": self.get_sensor_rotation,
             "volt": self.get_sensor_volt,
@@ -106,6 +107,18 @@ class ComponentHandlers:
             "platform": str(Platform.SENSOR),
             "device_class": str(SensorDeviceClass.DURATION),
             "unit_of_measurement": str(UnitOfTime.HOURS)
+        }
+
+        return data
+
+    @staticmethod
+    def get_sensor_duration_d(parameter, name):
+        data = {
+            "key": parameter,
+            "name": name,
+            "platform": str(Platform.SENSOR),
+            "device_class": str(SensorDeviceClass.DURATION),
+            "unit_of_measurement": str(UnitOfTime.DAYS)
         }
 
         return data

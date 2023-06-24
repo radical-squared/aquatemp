@@ -1,321 +1,650 @@
 [
-  {
-    "key": "Power",
-    "name": "Power",
-    "platform": "binary_sensor",
-    "device_class": "power",
-    "on_value": "1"
-  },
-  {
-    "key": "Mode",
-    "name": "Mode",
-    "platform": null
-  },
-  {
-    "key": "Manual-mute",
-    "name": "Manual-mute",
-    "platform": null
-  },
-  {
-    "key": "Set_Temp",
-    "name": "Set_Temp",
-    "platform": null
-  },
-  {
-    "key": "2074",
-    "name": "2074",
-    "platform": null
-  },
-  {
-    "key": "2075",
-    "name": "2075",
-    "platform": null
-  },
-  {
-    "key": "2076",
-    "name": "2076",
-    "platform": null
-  },
-  {
-    "key": "2077",
-    "name": "2077",
-    "platform": null
-  },
-  {
-    "key": "1158",
-    "name": "1158",
-    "platform": null
-  },
-  {
-    "key": "1159",
-    "name": "1159",
-    "platform": null
-  },
-  {
-    "key": "2064",
-    "name": "2064",
-    "platform": null
-  },
-  {
-    "key": "ver",
-    "name": "Version",
-    "platform": null
-  },
-  {
-    "key": "software_code",
-    "name": "Software Code",
-    "platform": null
-  },
-  {
-    "key": "D01",
-    "name": "Defrosting startup temp [D01]",
-    "platform": "sensor",
-    "device_class": "temperature",
-    "unit_of_measurement": "\u00b0C"
-  },
-  {
-    "key": "D02",
-    "name": "Defrosting shutdown temp [D02]",
-    "platform": "sensor",
-    "device_class": "temperature",
-    "unit_of_measurement": "\u00b0C"
-  },
-  {
-    "key": "D03",
-    "name": "Duration of defrosting [D03]",
-    "platform": "sensor",
-    "device_class": "duration",
-    "unit_of_measurement": "min"
-  },
-  {
-    "key": "D04",
-    "name": "Longest duration of defrosting [D04]",
-    "platform": "sensor",
-    "device_class": "duration",
-    "unit_of_measurement": "min"
-  },
-  {
-    "key": "D05",
-    "name": "Shortest duration of defrosting [D05]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "D06",
-    "name": "Defrosting way [D06]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "D07",
-    "name": "Intelligent defrosting judgement [D07]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "E01",
-    "name": "EEV adjustment mode [E01]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "E02",
-    "name": "Target degree of supreheat [E02]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "E03",
-    "name": "Original position of EEV [E03]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "E04",
-    "name": "Minimal opening position of EEV [E04]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "E05",
-    "name": "Position of EEV for defrosting [E05]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H01",
-    "name": "Remenber the status of device when power down [H01]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H02",
-    "name": "Heating source [H02]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H03",
-    "name": "Temperature unit [H03]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H04",
-    "name": "Device address [H04]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H05",
-    "name": "Intelligent control mode [H05]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H06",
-    "name": "Circle of submitting data to Cloud [H06]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H07",
-    "name": "Adjustable range of target temperature [H07]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "H08",
-    "name": "Compensate to the shown temp [H08]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R01",
-    "name": "Target temp [R01]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R02",
-    "name": "Hysteresis of heat pump startup(bottom sensor) [R02]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R03",
-    "name": "Enable R05 as setpoint of booster? [R03]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R04",
-    "name": "Setpoint of booster [R04]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R05",
-    "name": "Booster startup delay [R05]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R06",
-    "name": "Booster replaces heat pump? [R06]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R07",
-    "name": "Setpoint of ambient temp to activate booster to replace heat pump [R07]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R08",
-    "name": "Setpoint of ambient temp to activate booster without delay [R08]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R09",
-    "name": "Setpoint of ambient temp to activate booster with delay [R09]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R10",
-    "name": "Ambient temp of shutting down compressor compulsively [R10]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R11",
-    "name": "The target temp of second heating source [R11]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R12",
-    "name": "Maximal ambient temp of working compressor [R12]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R13",
-    "name": "Enable top sensor to control compressor? [R13]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R14",
-    "name": "Hysteresis of heat pump startup(top sensor) [R14]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R15",
-    "name": "Setpoint 1 of ambient temp to stop compressor [R15]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  },
-  {
-    "key": "R16",
-    "name": "Setpoint 2 of ambient temp to stop compressor [R16]",
-    "platform": "sensor",
-    "device_class": null,
-    "unit_of_measurement": null
-  }
+    {
+        "key": "Power",
+        "name": "Power",
+        "platform": "binary_sensor",
+        "device_class": "power",
+        "on_value": "1"
+    },
+    {
+        "key": "Mode",
+        "name": "Mode",
+        "platform": null
+    },
+    {
+        "key": "Manual-mute",
+        "name": "Manual-mute",
+        "platform": null
+    },
+    {
+        "key": "Set_Temp",
+        "name": "Set_Temp",
+        "platform": null
+    },
+    {
+        "key": "2074",
+        "name": "2074",
+        "platform": null
+    },
+    {
+        "key": "2075",
+        "name": "2075",
+        "platform": null
+    },
+    {
+        "key": "2076",
+        "name": "2076",
+        "platform": null
+    },
+    {
+        "key": "2077",
+        "name": "2077",
+        "platform": null
+    },
+    {
+        "key": "1158",
+        "name": "1158",
+        "platform": null
+    },
+    {
+        "key": "1159",
+        "name": "1159",
+        "platform": null
+    },
+    {
+        "key": "2064",
+        "name": "2064",
+        "platform": null
+    },
+    {
+        "key": "ver",
+        "name": "Version",
+        "platform": null
+    },
+    {
+        "key": "software_code",
+        "name": "Software Code",
+        "platform": null
+    },
+    {
+        "key": "/01",
+        "name": "Usage of OUT 05 [/01]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "/02",
+        "name": "Usage of OUT 06 [/02]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "D01",
+        "name": "Defrosting startup temp [D01]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "D02",
+        "name": "Defrosting shutdown temp [D02]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "D03",
+        "name": "Duration of defrosting [D03]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "D04",
+        "name": "Longest duration of defrosting [D04]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "D05",
+        "name": "Shortest duration of defrosting [D05]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "D06",
+        "name": "Defrosting way [D06]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "D07",
+        "name": "Intelligent defrosting judgement [D07]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "E01",
+        "name": "EEV adjustment mode [E01]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "E02",
+        "name": "Target degree of supreheat [E02]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "E03",
+        "name": "Original position of EEV [E03]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "E04",
+        "name": "Minimal opening position of EEV [E04]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "E05",
+        "name": "Position of EEV for defrosting [E05]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "G01",
+        "name": "Disinfection target temp [G01]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "G02",
+        "name": "Duration of disinfection [G02]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "G03",
+        "name": "Startup point of disinfection [G03]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "h"
+    },
+    {
+        "key": "G04",
+        "name": "Circle of disinfection [G04]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "d"
+    },
+    {
+        "key": "H01",
+        "name": "Remenber the status of device when power down [H01]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "H03",
+        "name": "Heating source [H03]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "H07",
+        "name": "Temperature unit [H07]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "H30",
+        "name": "Device address [H30]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "H31",
+        "name": "Intelligent control mode [H31]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "H32",
+        "name": "Circle of submitting data to Cloud [H32]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "H98",
+        "name": "Adjustable range of target temperature [H98]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "H99",
+        "name": "Compensate to the shown temp [H99]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "N01",
+        "name": "The sensor to control solar water pump [N01]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "N02",
+        "name": "Longest running time of solar water pump [N02]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "N03",
+        "name": "Temp hysteresis of solar water pump [N03]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "N04",
+        "name": "Activate the nighttime temp decreases mode [N04]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "N05",
+        "name": "Startup point of the nighttime temp decreases mode [N05]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "N06",
+        "name": "Shutdown point of the nighttime temp decreases mode [N06]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "h"
+    },
+    {
+        "key": "N07",
+        "name": "Startup temp of decreasing solar water temp [N07]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "N08",
+        "name": "Temp hysteresis of stopping decreasing solar water temp [N08]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "N09",
+        "name": "Solar water releasing temp [N09]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "N10",
+        "name": "Shutdown temp of solar water pump [N10]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "N11",
+        "name": "Working mode of solar water pump [N11]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "R01",
+        "name": "Target temp [R01]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R03",
+        "name": "Hysteresis of heat pump startup(bottom sensor) [R03]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R04",
+        "name": "Enable R05 as setpoint of booster? [R04]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "R05",
+        "name": "Setpoint of booster [R05]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R06",
+        "name": "Booster startup delay [R06]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "min"
+    },
+    {
+        "key": "R07",
+        "name": "Booster replaces heat pump? [R07]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "R08",
+        "name": "Setpoint of ambient temp to activate booster to replace heat pump [R08]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R09",
+        "name": "Setpoint of ambient temp to activate booster without delay [R09]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R10",
+        "name": "Setpoint of ambient temp to activate booster with delay [R10]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R12",
+        "name": "Ambient temp of shutting down compressor compulsively [R12]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R14",
+        "name": "The target temp of second heating source [R14]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R15",
+        "name": "Maximal ambient temp of working compressor [R15]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R17",
+        "name": "Enable top sensor to control compressor? [R17]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "R18",
+        "name": "Hysteresis of heat pump startup(top sensor) [R18]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R19",
+        "name": "Setpoint 1 of ambient temp to stop compressor [R19]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "R20",
+        "name": "Setpoint 2 of ambient temp to stop compressor [R20]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "O01",
+        "name": "Compressor [O01]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O02",
+        "name": "Electrical heater [O02]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O03",
+        "name": "4-way valve [O03]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O04",
+        "name": "Fan high speed [O04]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O05",
+        "name": "Fan low speed [O05]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O06",
+        "name": "Reserve/solar pump/solar valve pump [O06]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O07",
+        "name": "EEV current position [O07]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O08",
+        "name": "Accumulative running time of compressor [O08]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "h"
+    },
+    {
+        "key": "O09",
+        "name": "Accumulative running time of booster [O09]",
+        "platform": "sensor",
+        "device_class": "duration",
+        "unit_of_measurement": "h"
+    },
+    {
+        "key": "O10",
+        "name": "3V_DE [O10]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O11",
+        "name": "MV_DE [O11]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O12",
+        "name": "shutDown [O12]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O13",
+        "name": "DTU&WIFI\u662f\u5426\u4e0a\u7ebf [O13]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O14",
+        "name": "\u9664\u971cDefrost [O14]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "O15",
+        "name": "\u7cfb\u7edf\u662f\u5426\u8fdb\u5165\u9ad8\u6e29\u70ed\u6c34\u9636\u6bb5 [O15]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "S01",
+        "name": "Remote ON/OFF switch [S01]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "S02",
+        "name": "Over heat protection switch [S02]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "S03",
+        "name": "Low pressure switch [S03]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "S04",
+        "name": "High pressure switch [S04]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "S05",
+        "name": "Accelerate the running time of heater [S05]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "S06",
+        "name": "Second heating source [S06]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "T01",
+        "name": "Ambient temperature [T01]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T02",
+        "name": "Bottom temperature [T02]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T03",
+        "name": "Top temperature [T03]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T04",
+        "name": "Coil temperature [T04]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T05",
+        "name": "Suction temperature [T05]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T06",
+        "name": "Solar temperature [T06]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T10",
+        "name": "Temperature value shown on APP/display [T10]",
+        "platform": "sensor",
+        "device_class": "temperature",
+        "unit_of_measurement": "\u00b0C"
+    },
+    {
+        "key": "T11",
+        "name": "\u8fdb\u5165\u53c2\u6570\u8d85\u8303\u56f4\u4fdd\u62a4\u6b21\u6570 [T11]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    },
+    {
+        "key": "T12",
+        "name": "\u8bb0\u5fc6\u82af\u7247EEPROM\u5b58\u50a8\u6b21\u6570 [T12]",
+        "platform": "sensor",
+        "device_class": null,
+        "unit_of_measurement": null
+    }
 ]
