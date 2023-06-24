@@ -1,0 +1,26 @@
+{
+  "mode": "mode_real",
+  "power": "MO6",
+  "temperature": "R01",
+  "fan": "M17",
+  "current_temperature": "T10",
+  "hvac_modes": {
+    "off": {
+      "set": null,
+      "target": null,
+      "minimum": null,
+      "maximum": null
+    },
+    "heat": {
+      "set": "0",
+      "target": "R01",
+      "minimum": "T02",
+      "maximum": "T03"
+    }
+  },
+  "fan_modes": {
+    "off": "0",
+    "low": "1",
+    "high": "2"
+  }
+}

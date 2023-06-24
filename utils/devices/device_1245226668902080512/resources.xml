@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="_01_array_select">
+        <item>Low speed</item>
+        <item>Solar water pump</item>
+    </array>
+    <array name="_02_array_select">
+        <item>No output</item>
+        <item>Solar water pump</item>
+        <item>Solar water release valve</item>
+    </array>
+    <array name="_factory_parameter">
+        <item>Usage of OUT 05</item>
+        <item>Usage of OUT 06</item>
+    </array>
+    <array name="d06_array_select">
+        <item>Standard</item>
+        <item>Economic</item>
+        <item>Intelligent</item>
+    </array>
+    <array name="e01_array_select">
+        <item>Manual</item>
+        <item>automatic</item>
+    </array>
+    <array name="factory_parameter_d">
+        <item>Defrosting startup temp</item>
+        <item>Defrosting shutdown temp</item>
+        <item>Duration of defrosting</item>
+        <item>Longest duration of defrosting</item>
+        <item>Shortest duration of defrosting</item>
+        <item>Defrosting way</item>
+        <item>Intelligent defrosting judgement</item>
+    </array>
+    <array name="factory_parameter_e">
+        <item>EEV adjustment mode</item>
+        <item>Target degree of supreheat</item>
+        <item>Original position of EEV</item>
+        <item>Minimal opening position of EEV</item>
+        <item>Position of EEV for defrosting</item>
+    </array>
+    <array name="factory_parameter_g">
+        <item>Disinfection target temp</item>
+        <item>Duration of disinfection</item>
+        <item>Startup point of disinfection</item>
+        <item>Circle of disinfection</item>
+    </array>
+    <array name="factory_parameter_h">
+        <item>Remenber the status of device when power down</item>
+        <item>Heating source</item>
+        <item>Temperature unit</item>
+        <item>Device address</item>
+        <item>Intelligent control mode</item>
+        <item>Circle of submitting data to Cloud</item>
+        <item>Adjustable range of target temperature</item>
+        <item>Compensate to the shown temp</item>
+    </array>
+    <array name="factory_parameter_n">
+        <item>The sensor to control solar water pump</item>
+        <item>Longest running time of solar water pump</item>
+        <item>Temp hysteresis of solar water pump</item>
+        <item>Activate the nighttime temp decreases mode</item>
+        <item>Startup point of the nighttime temp decreases mode</item>
+        <item>Shutdown point of the nighttime temp decreases mode</item>
+        <item>Startup temp of decreasing solar water temp</item>
+        <item>Temp hysteresis of stopping decreasing solar water temp</item>
+        <item>Solar water releasing temp</item>
+        <item>Shutdown temp of solar water pump</item>
+        <item>Working mode of solar water pump</item>
+    </array>
+    <array name="factory_parameter_r">
+        <item>Target temp</item>
+        <item>Hysteresis of heat pump startup(bottom sensor)</item>
+        <item>Enable R05 as setpoint of booster?</item>
+        <item>Setpoint of booster</item>
+        <item>Booster startup delay</item>
+        <item>Booster replaces heat pump?</item>
+        <item>Setpoint of ambient temp to activate booster to replace heat pump</item>
+        <item>Setpoint of ambient temp to activate booster without delay</item>
+        <item>Setpoint of ambient temp to activate booster with delay</item>
+        <item>Ambient temp of shutting down compressor compulsively</item>
+        <item>The target temp of second heating source</item>
+        <item>Maximal ambient temp of working compressor</item>
+        <item>Enable top sensor to control compressor?</item>
+        <item>Hysteresis of heat pump startup(top sensor)</item>
+        <item>Setpoint 1 of ambient temp to stop compressor</item>
+        <item>Setpoint 2 of ambient temp to stop compressor</item>
+    </array>
+    <array name="h01_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="h03_array_select">
+        <item>Air source</item>
+    </array>
+    <array name="h07_array_select">
+        <item>Celsius degree</item>
+        <item>Fahrenheit degree</item>
+    </array>
+    <array name="h31_array_select">
+        <item>Centralized control</item>
+        <item>DTU&amp;WIFI</item>
+    </array>
+    <array name="h98_7_array_select">
+        <item>0x07</item>
+        <item>0x17</item>
+    </array>
+    <array name="h98_array_select">
+        <item>0x08</item>
+        <item>0x18</item>
+    </array>
+    <array name="h99_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="n01_array_select">
+        <item>Bottom</item>
+        <item>Top</item>
+    </array>
+    <array name="n04_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="n11_array_select">
+        <item>Dependent</item>
+        <item>Independent</item>
+    </array>
+    <array name="o_array_select">
+        <item>OFF</item>
+        <item>ON</item>
+    </array>
+    <array name="problem">
+        <item>APP asks for WiFi connection even the smartphone has connected.</item>
+        <item>Device is always offline.</item>
+        <item>APP forced termination.</item>
+        <item>Can&apos;t find the name of WiFi Smart_AP_***.</item>
+        <item>Device fails in connecting to the network.</item>
+    </array>
+    <array name="r04_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="r07_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="r17_array_select">
+        <item>NO</item>
+        <item>YES</item>
+    </array>
+    <array name="s_array_select">
+        <item>CL</item>
+        <item>OP</item>
+    </array>
+    <array name="status_parameter_o">
+        <item>Compressor</item>
+        <item>Electrical heater</item>
+        <item>4-way valve</item>
+        <item>Fan high speed</item>
+        <item>Fan low speed</item>
+        <item>Reserve/solar pump/solar valve pump</item>
+        <item>EEV current position</item>
+        <item>Accumulative running time of compressor</item>
+        <item>Accumulative running time of booster</item>
+        <item>3V_DE</item>
+        <item>MV_DE</item>
+        <item>shutDown</item>
+        <item>DTU&amp;WIFI是否上线</item>
+        <item>除霜Defrost</item>
+        <item>系统是否进入高温热水阶段</item>
+    </array>
+    <array name="status_parameter_s">
+        <item>Remote ON/OFF switch</item>
+        <item>Over heat protection switch</item>
+        <item>Low pressure switch</item>
+        <item>High pressure switch</item>
+        <item>Accelerate the running time of heater</item>
+        <item>Second heating source</item>
+    </array>
+    <array name="status_parameter_t">
+        <item>Ambient temperature</item>
+        <item>Bottom temperature</item>
+        <item>Top temperature</item>
+        <item>Coil temperature</item>
+        <item>Suction temperature</item>
+        <item>Solar temperature</item>
+        <item>Temperature value shown on APP/display</item>
+        <item>进入参数超范围保护次数</item>
+        <item>记忆芯片EEPROM存储次数</item>
+    </array>
+</resources>

@@ -13,6 +13,7 @@ from ..common.consts import (
 )
 from .aqua_temp_api import AquaTempAPI
 from .aqua_temp_config_manager import AquaTempConfigManager
+from .product_config_manager import ProductConfigurationManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,7 +21,13 @@ _LOGGER = logging.getLogger(__name__)
 class AquaTempCoordinator(DataUpdateCoordinator):
     """My custom coordinator."""
 
-    def __init__(self, hass, api: AquaTempAPI, config_manager: AquaTempConfigManager):
+    def __init__(
+        self,
+        hass,
+        api: AquaTempAPI,
+        config_manager: AquaTempConfigManager,
+        product_configuration_manager: ProductConfigurationManager,
+    ):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -32,6 +39,11 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
         self._api = api
         self._config_manager = config_manager
+        self._product_configuration_manager = product_configuration_manager
+
+    @property
+    def product_configuration_manager(self):
+        return self._product_configuration_manager
 
     @property
     def devices(self):
@@ -44,11 +56,6 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     @property
     def config_data(self):
         return self._config_manager.data
-
-    def get_target_temperature_protocol_code(self, hvac_mode: HVACMode):
-        result = self._api.get_target_temperature_protocol_code(hvac_mode)
-
-        return result
 
     def get_device(self, device_code: str) -> DeviceInfo:
         device_data = self.get_device_data(device_code)
@@ -65,10 +72,10 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         return device_info
 
     async def _async_update_data(self):
-        """Fetch data from API endpoint.
+        """Fetch parameters from API endpoint.
 
-        This is the place to pre-process the data to lookup tables
-        so entities can quickly look up their data.
+        This is the place to pre-process the parameters to lookup tables
+        so entities can quickly look up their parameters.
         """
         try:
             await self._api.update()
@@ -144,3 +151,15 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         power = self._api.get_device_power(device_code)
 
         return power
+
+    def get_hvac_modes(self, device_code: str) -> list[HVACMode]:
+        modes = self.product_configuration_manager.get_hvac_modes(device_code)
+
+        result = [HVACMode(mode) for mode in modes]
+
+        return result
+
+    def get_fan_modes(self, device_code: str) -> list[str]:
+        modes = self.product_configuration_manager.get_fan_modes(device_code)
+
+        return modes

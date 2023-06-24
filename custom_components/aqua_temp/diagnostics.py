@@ -99,7 +99,7 @@ def _async_device_as_dict(hass: HomeAssistant, device_data: dict) -> dict[str, A
             "name_by_user": ha_device.name_by_user,
             "disabled": ha_device.disabled,
             "disabled_by": ha_device.disabled_by,
-            "data": device_data,
+            "parameters": device_data,
             "entities": [],
         }
 

@@ -17,10 +17,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
 
 from .common.consts import DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
-from .common.device_discovery import (
-    async_handle_discovered_device,
-    find_entity_description,
-)
 from .common.entity_descriptions import AquaTempClimateEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -33,9 +29,14 @@ async def async_setup_entry(
     def _create(
         device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
     ) -> AquaTempClimateEntity:
-        entity_description = find_entity_description(
-            entity_description_key, Platform.CLIMATE
+        product_configuration_manager = coordinator.product_configuration_manager
+
+        entity_description = product_configuration_manager.find_entity_description(
+            device_code, entity_description_key, Platform.CLIMATE
         )
+
+        entity_description.fan_modes = list(coordinator.get_fan_modes(device_code))
+        entity_description.hvac_modes = list(coordinator.get_hvac_modes(device_code))
 
         entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
 
@@ -44,8 +45,9 @@ async def async_setup_entry(
     @callback
     def _async_device_new(device_code):
         coordinator = hass.data[DOMAIN][entry.entry_id]
+        product_configuration_manager = coordinator.product_configuration_manager
 
-        async_handle_discovered_device(
+        product_configuration_manager.async_handle_discovered_device(
             device_code,
             coordinator,
             Platform.CLIMATE,
@@ -124,7 +126,7 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         await self._local_coordinator.set_fan_mode(self._device_code, fan_mode)
 
     def _handle_coordinator_update(self) -> None:
-        """Fetch new state data for the sensor."""
+        """Fetch new state parameters for the sensor."""
         coordinator = self._local_coordinator
         device_code = self._device_code
 

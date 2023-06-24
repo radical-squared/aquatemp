@@ -5,11 +5,11 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .common.consts import DOMAIN
-from .common.entity_descriptions import ALL_ENTITIES
 from .common.exceptions import LoginError
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
+from .managers.product_config_manager import ProductConfigurationManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,19 +23,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     initialized = False
 
     try:
-        platforms = _get_platforms()
+        product_configuration_manager = ProductConfigurationManager()
+        product_configuration_manager.initialize()
 
         config_manager = AquaTempConfigManager(hass, entry)
         await config_manager.initialize()
 
-        api = AquaTempAPI(hass, config_manager)
+        api = AquaTempAPI(hass, config_manager, product_configuration_manager)
         await api.initialize()
 
-        coordinator = AquaTempCoordinator(hass, api, config_manager)
+        coordinator = AquaTempCoordinator(
+            hass, api, config_manager, product_configuration_manager
+        )
 
         hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
-        await hass.config_entries.async_forward_entry_setups(entry, platforms)
+        await hass.config_entries.async_forward_entry_setups(
+            entry, product_configuration_manager.platforms
+        )
 
         _LOGGER.info(f"Start loading {DOMAIN} integration, Entry ID: {entry.entry_id}")
 
@@ -61,7 +66,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
     _LOGGER.info(f"Unloading {DOMAIN} integration, Entry ID: {entry.entry_id}")
 
-    platforms = _get_platforms()
+    coordinator: AquaTempCoordinator = hass.data[DOMAIN][entry.entry_id]
+
+    platforms = coordinator.platforms
 
     for platform in platforms:
         await hass.config_entries.async_forward_entry_unload(entry, platform)
@@ -69,15 +76,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     del hass.data[DOMAIN][entry.entry_id]
 
     return True
-
-
-def _get_platforms():
-    platforms = []
-    for entity_description in ALL_ENTITIES:
-        if (
-            entity_description.platform not in platforms
-            and entity_description.platform is not None
-        ):
-            platforms.append(entity_description.platform)
-
-    return platforms

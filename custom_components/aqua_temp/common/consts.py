@@ -1,4 +1,5 @@
-from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW
+from homeassistant.backports.enum import StrEnum
+from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 
 from .endpoints import Endpoints
 
@@ -8,13 +9,13 @@ SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 
-SUPPORTED_PRODUCT_ID = [
-    "1132174963097280512",
-    "1186904563333062656",
-    "1158905952238313472",
-    "1245226668902080512",
-    "1442284873216843776",
-    "1548963836789501952",
+PRODUCT_IDS = [
+    "1132174963097280512",  # Aqua Temp
+    "1245226668902080512",  # Hitemp
+    "1186904563333062656",  # Aqua Temp
+    "1158905952238313472",  # Aqua Temp
+    "1442284873216843776",  # Aqua Temp
+    "1548963836789501952",  # Aqua Temp
 ]
 
 DEVICE_REQUEST_PRODUCT_IDS = "product_ids"
@@ -32,7 +33,7 @@ DEVICE_CONTROL_PROTOCOL_CODE = "protocol_code"
 DEVICE_CONTROL_VALUE = "value"
 
 DEVICE_REQUEST_PARAMETERS = {
-    DEVICE_REQUEST_PRODUCT_IDS: SUPPORTED_PRODUCT_ID,
+    DEVICE_REQUEST_PRODUCT_IDS: PRODUCT_IDS,
     DEVICE_REQUEST_PAGE_INDEX: 1,
     DEVICE_REQUEST_PAGE_SIZE: 999,
 }
@@ -68,3 +69,30 @@ HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 DATA_ITEM_DEVICES = "device"
 DATA_ITEM_LOGIN_DETAILS = "login-details"
 DATA_ITEM_CONFIG = "configuration"
+
+CONFIG_SET_MODE = "mode"
+CONFIG_SET_POWER = "power"
+CONFIG_SET_TEMPERATURE = "temperature"
+CONFIG_SET_FAN = "fan"
+CONFIG_SET_CURRENT_TEMPERATURE = "current_temperature"
+
+PRODUCT_ID_DEFAULT = "default"
+
+CONFIG_HVAC_MODES = "hvac_modes"
+CONFIG_HVAC_OFF = str(HVACMode.OFF)
+CONFIG_HVAC_HEAT = str(HVACMode.HEAT)
+CONFIG_HVAC_COOL = str(HVACMode.COOL)
+CONFIG_HVAC_AUTO = str(HVACMode.AUTO)
+CONFIG_HVAC_SET = "set"
+CONFIG_HVAC_TARGET = "target"
+CONFIG_HVAC_MINIMUM = "minimum"
+CONFIG_HVAC_MAXIMUM = "maximum"
+
+CONFIG_FAN_MODES = "fan_modes"
+CONFIG_FAN_AUTO = "auto"
+CONFIG_FAN_LOW = "low"
+
+
+class ProductParameter(StrEnum):
+    CONFIG = "config"
+    ENTITY_DESCRIPTION = "ENTITY_DESCRIPTION"

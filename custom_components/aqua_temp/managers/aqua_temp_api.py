@@ -1,5 +1,4 @@
 """Platform for climate integration."""
-from copy import copy
 import logging
 import sys
 
@@ -12,12 +11,20 @@ from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from ..common.consts import (
+    CONFIG_HVAC_MAXIMUM,
+    CONFIG_HVAC_MINIMUM,
+    CONFIG_HVAC_SET,
+    CONFIG_HVAC_TARGET,
+    CONFIG_SET_CURRENT_TEMPERATURE,
+    CONFIG_SET_FAN,
+    CONFIG_SET_MODE,
+    CONFIG_SET_POWER,
+    CONFIG_SET_TEMPERATURE,
     DEVICE_CODE,
     DEVICE_CONTROL_PARAM,
     DEVICE_CONTROL_PROTOCOL_CODE,
     DEVICE_CONTROL_VALUE,
     DEVICE_LISTS,
-    DEVICE_PRODUCT_ID,
     DEVICE_REQUEST_PARAMETERS,
     DEVICE_REQUEST_TO_USER,
     FAN_MODE_MAPPING,
@@ -29,16 +36,9 @@ from ..common.consts import (
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
-from ..common.entity_descriptions import ALL_ENTITIES
 from ..common.exceptions import LoginError, OperationFailedException
-from ..common.hvac_mode_mapping import (
-    HVAC_MODE_MAPPING,
-    HVAC_MODE_MAXIMUM_TEMPERATURE,
-    HVAC_MODE_MINIMUM_TEMPERATURE,
-    HVAC_MODE_TARGET_TEMPERATURE,
-)
-from ..common.protocol_codes import PROTOCOL_CODE_OVERRIDES, ProtocolCode
 from .aqua_temp_config_manager import AquaTempConfigManager
+from .product_config_manager import ProductConfigurationManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +53,10 @@ class AquaTempAPI:
     _hass: HomeAssistant | None
 
     def __init__(
-        self, hass: HomeAssistant | None, config_manager: AquaTempConfigManager
+        self,
+        hass: HomeAssistant | None,
+        config_manager: AquaTempConfigManager,
+        product_configuration_manager: ProductConfigurationManager,
     ):
         """Initialize the climate entity."""
 
@@ -66,16 +69,10 @@ class AquaTempAPI:
         self._hass = hass
         self._headers = HEADERS
         self._config_manager = config_manager
+        self._product_manager = product_configuration_manager
+
         self._dispatched_devices = []
         self._device_list_request_data = {}
-
-        self._reverse_hvac_mode_mapping = {
-            HVAC_MODE_MAPPING[key]: key for key in HVAC_MODE_MAPPING
-        }
-
-        self._reverse_fan_mode_mapping = {
-            FAN_MODE_MAPPING[key]: key for key in FAN_MODE_MAPPING
-        }
 
     @property
     def is_connected(self):
@@ -130,7 +127,7 @@ class AquaTempAPI:
             await self._session.close()
 
     async def update(self):
-        """Fetch new state data for the sensor."""
+        """Fetch new state parameters for the sensor."""
         try:
             if self._token is None:
                 await self._login()
@@ -140,19 +137,24 @@ class AquaTempAPI:
                 await self._update_device(device_code)
 
         except Exception as ex:
-            _LOGGER.error(f"Error fetching data, Error: {ex}")
+            _LOGGER.error(f"Error fetching parameters, Error: {ex}")
 
     async def _update_device(self, device_code: str):
         _LOGGER.debug(f"Starting to update device: {device_code}")
 
         try:
+            new_device = device_code not in self._dispatched_devices
+
+            if new_device:
+                self._product_manager.set_device(self._devices[device_code])
+
             await self._send_passthrough_instruction(device_code)
 
             await self._fetch_data(device_code)
 
             await self._fetch_errors(device_code)
 
-            if device_code not in self._dispatched_devices:
+            if new_device:
                 self._dispatched_devices.append(device_code)
 
                 async_dispatcher_send(
@@ -162,7 +164,9 @@ class AquaTempAPI:
                 )
 
         except ClientResponseError as cre:
-            error_message = f"Error fetching data for device {device_code}, Error: "
+            error_message = (
+                f"Error fetching parameters for device {device_code}, Error: "
+            )
 
             if cre.status == 401:
                 _LOGGER.warning(f"{error_message}expired token")
@@ -199,71 +203,92 @@ class AquaTempAPI:
     async def set_temperature(self, device_code: str, temperature: float):
         """Set new target temperature."""
         hvac_mode = self.get_device_hvac_mode(device_code)
-        temp_protocol_code = self.get_target_temperature_protocol_code(hvac_mode)
+        target_temperature_pc = self._get_target_temperature_protocol_code(
+            device_code, hvac_mode
+        )
 
-        request_data = {
-            DEVICE_CONTROL_PARAM: [
-                {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: temp_protocol_code,
-                    DEVICE_CONTROL_VALUE: temperature,
-                },
-                {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.SET_TEMP,
-                    DEVICE_CONTROL_VALUE: temperature,
-                },
-            ]
-        }
-
-        await self._perform_action(request_data, ProtocolCode.SET_TEMP)
-
-    async def _set_power_mode(self, device_code: str, value):
-        """Set new target power mode."""
-        request_data = {
-            DEVICE_CONTROL_PARAM: [
-                {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.POWER.lower(),
-                    DEVICE_CONTROL_VALUE: value,
-                }
-            ]
-        }
-
-        await self._perform_action(request_data, ProtocolCode.POWER)
-
-    async def _set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
-        """Set new target hvac mode."""
-        if hvac_mode == HVACMode.OFF:
-            return
-
-        device_mode = HVAC_MODE_MAPPING.get(hvac_mode)
-
-        target_temperature = self.get_device_target_temperature(device_code)
-
-        _LOGGER.info(
-            f"Set HVAC Mode: {hvac_mode}, PC Mode: {device_mode}, Target temperature: {target_temperature}"
+        set_temp_pc_key = self._product_manager.get_pc_key(
+            device_code, CONFIG_SET_TEMPERATURE
         )
 
         request_data = {
             DEVICE_CONTROL_PARAM: [
                 {
                     DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.MODE,
-                    DEVICE_CONTROL_VALUE: device_mode,
+                    DEVICE_CONTROL_PROTOCOL_CODE: target_temperature_pc,
+                    DEVICE_CONTROL_VALUE: temperature,
                 },
                 {
                     DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.SET_TEMP,
-                    DEVICE_CONTROL_VALUE: target_temperature,
+                    DEVICE_CONTROL_PROTOCOL_CODE: set_temp_pc_key,
+                    DEVICE_CONTROL_VALUE: temperature,
                 },
             ]
         }
 
-        await self._perform_action(request_data, ProtocolCode.MODE)
+        await self._perform_action(request_data, set_temp_pc_key)
+
+    async def _set_power_mode(self, device_code: str, value):
+        """Set new target power mode."""
+        power_pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_POWER)
+
+        request_data = {
+            DEVICE_CONTROL_PARAM: [
+                {
+                    DEVICE_CODE: device_code,
+                    DEVICE_CONTROL_PROTOCOL_CODE: power_pc_key.lower(),
+                    DEVICE_CONTROL_VALUE: value,
+                }
+            ]
+        }
+
+        await self._perform_action(request_data, power_pc_key)
+
+    async def _set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
+        """Set new target hvac mode."""
+        if hvac_mode == HVACMode.OFF:
+            return
+
+        mode_pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_MODE)
+        set_temp_pc_key = self._product_manager.get_pc_key(
+            device_code, CONFIG_SET_TEMPERATURE
+        )
+        action_pc_key = self._product_manager.get_hvac_mode_pc_key(
+            device_code, hvac_mode, CONFIG_HVAC_SET
+        )
+
+        target_temperature = self.get_device_target_temperature(device_code)
+
+        _LOGGER.info(
+            f"Set HVAC Mode: {hvac_mode}, PC Mode: {action_pc_key}, Target temperature: {target_temperature}"
+        )
+
+        control_params = []
+
+        set_target_temp = {
+            DEVICE_CODE: device_code,
+            DEVICE_CONTROL_PROTOCOL_CODE: set_temp_pc_key,
+            DEVICE_CONTROL_VALUE: target_temperature,
+        }
+
+        control_params.append(set_target_temp)
+
+        if mode_pc_key != set_temp_pc_key:
+            set_mode = {
+                DEVICE_CODE: device_code,
+                DEVICE_CONTROL_PROTOCOL_CODE: mode_pc_key,
+                DEVICE_CONTROL_VALUE: action_pc_key,
+            }
+
+            control_params.append(set_mode)
+
+        request_data = {DEVICE_CONTROL_PARAM: control_params}
+
+        await self._perform_action(request_data, mode_pc_key)
 
     async def set_fan_mode(self, device_code: str, fan_mode):
         """Set new target fan mode."""
+        fan_pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_FAN)
 
         value = FAN_MODE_MAPPING.get(fan_mode)
 
@@ -271,13 +296,13 @@ class AquaTempAPI:
             DEVICE_CONTROL_PARAM: [
                 {
                     DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: ProtocolCode.MANUAL_MUTE,
+                    DEVICE_CONTROL_PROTOCOL_CODE: fan_pc_key,
                     DEVICE_CONTROL_VALUE: value,
                 }
             ]
         }
 
-        await self._perform_action(request_data, ProtocolCode.MANUAL_MUTE)
+        await self._perform_action(request_data, fan_pc_key)
 
     async def _perform_action(self, request_data: dict, operation: str):
         try:
@@ -297,16 +322,11 @@ class AquaTempAPI:
             raise cre
 
     async def _fetch_data(self, device_code: str):
-        device_data = self.get_device_data(device_code)
-        device_protocal_codes = device_data.get(PROTOCAL_CODES)
-
-        protocal_codes = [
-            device_protocal_code.key for device_protocal_code in device_protocal_codes
-        ]
+        codes = self._product_manager.get_supported_protocol_codes(device_code)
 
         data = {
             DEVICE_CODE: device_code,
-            PROTOCAL_CODES: protocal_codes,
+            PROTOCAL_CODES: codes,
         }
 
         data_response = await self._post_request(Endpoints.DEVICE_DATA, data)
@@ -324,7 +344,7 @@ class AquaTempAPI:
         error_msg = data_response.get("error_msg")
 
         if error_msg != "Success":
-            _LOGGER.error(f"Failed to fetch data, Error: {error_msg}")
+            _LOGGER.error(f"Failed to fetch parameters, Error: {error_msg}")
 
     async def _send_passthrough_instruction(self, device_code: str):
         data = {DEVICE_CODE: device_code, "query_instruction": "630300040001CD89"}
@@ -424,26 +444,10 @@ class AquaTempAPI:
 
             for device in devices:
                 device_code = device.get(DEVICE_CODE)
-                device_product_id = device.get(DEVICE_PRODUCT_ID)
 
                 _LOGGER.debug(
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
                 )
-
-                protocol_code_overrides = PROTOCOL_CODE_OVERRIDES.get(device_product_id)
-                device_entities = copy(
-                    [entity for entity in ALL_ENTITIES if entity.is_protocol_code]
-                )
-
-                for entity in device_entities:
-                    if protocol_code_overrides is not None:
-                        for replace_key in protocol_code_overrides:
-                            replace_with = protocol_code_overrides[replace_key]
-                            key = entity.key.replace(replace_key, replace_with)
-
-                            entity.key = key
-
-                device[PROTOCAL_CODES] = device_entities
 
                 self._devices[device_code] = device
 
@@ -474,12 +478,12 @@ class AquaTempAPI:
 
     def get_device_target_temperature(self, device_code: str) -> float | None:
         hvac_mode = self.get_device_hvac_mode(device_code)
-        target_temperature_protocol_code = self.get_target_temperature_protocol_code(
-            hvac_mode
+        target_temperature_pc = self._get_target_temperature_protocol_code(
+            device_code, hvac_mode
         )
 
         device_data = self.get_device_data(device_code)
-        target_temperature = device_data.get(target_temperature_protocol_code)
+        target_temperature = device_data.get(target_temperature_pc)
 
         if target_temperature == "":
             target_temperature = None
@@ -491,7 +495,10 @@ class AquaTempAPI:
 
     def get_device_current_temperature(self, device_code: str) -> float | None:
         device_data = self.get_device_data(device_code)
-        current_temperature = device_data.get(ProtocolCode.CURRENT_TEMPERATURE)
+        pc_key = self._product_manager.get_pc_key(
+            device_code, CONFIG_SET_CURRENT_TEMPERATURE
+        )
+        current_temperature = device_data.get(pc_key)
 
         if current_temperature == "":
             current_temperature = None
@@ -505,7 +512,9 @@ class AquaTempAPI:
         device_data = self.get_device_data(device_code)
 
         hvac_mode = self.get_device_hvac_mode(device_code)
-        key = HVAC_MODE_MINIMUM_TEMPERATURE.get(hvac_mode)
+        key = self._product_manager.get_hvac_mode_pc_key(
+            device_code, hvac_mode, CONFIG_HVAC_MINIMUM
+        )
 
         temperature = device_data.get(key)
 
@@ -521,7 +530,10 @@ class AquaTempAPI:
         device_data = self.get_device_data(device_code)
 
         hvac_mode = self.get_device_hvac_mode(device_code)
-        key = HVAC_MODE_MAXIMUM_TEMPERATURE.get(hvac_mode)
+
+        key = self._product_manager.get_hvac_mode_pc_key(
+            device_code, hvac_mode, CONFIG_HVAC_MAXIMUM
+        )
 
         temperature = device_data.get(key)
 
@@ -535,31 +547,43 @@ class AquaTempAPI:
 
     def get_device_hvac_mode(self, device_code: str) -> HVACMode:
         device_data = self.get_device_data(device_code)
-        device_mode = device_data.get(ProtocolCode.MODE)
-        hvac_mode = self._reverse_hvac_mode_mapping.get(device_mode, HVACMode.OFF)
+        pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_MODE)
+        device_mode = device_data.get(pc_key)
 
-        return hvac_mode
+        hvac_mode = self._product_manager.get_hvac_reverse_mapping(
+            device_code, device_mode
+        )
+        result = HVACMode(hvac_mode)
+
+        return result
 
     def get_device_fan_mode(self, device_code: str) -> str:
         device_data = self.get_device_data(device_code)
-        manual_mute = device_data.get(ProtocolCode.MANUAL_MUTE)
-        fan_mode = self._reverse_fan_mode_mapping.get(manual_mute)
+        pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_FAN)
+        manual_mute = device_data.get(pc_key)
+
+        fan_mode = self._product_manager.get_fan_reverse_mapping(
+            device_code, manual_mute
+        )
 
         return fan_mode
 
     def get_device_power(self, device_code: str) -> bool:
         device_data = self.get_device_data(device_code)
-        power = device_data.get(ProtocolCode.POWER)
+        pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_POWER)
+
+        power = device_data.get(pc_key)
         is_on = power == POWER_MODE_ON
 
         return is_on
 
-    @staticmethod
-    def get_target_temperature_protocol_code(hvac_mode: HVACMode):
-        target_temperature_protocol_code = HVAC_MODE_TARGET_TEMPERATURE.get(hvac_mode)
-
-        _LOGGER.debug(
-            f"Target temp PC {target_temperature_protocol_code}, HA Mode: {hvac_mode}"
+    def _get_target_temperature_protocol_code(
+        self, device_code: str, hvac_mode: HVACMode
+    ):
+        target_temperature_pc = self._product_manager.get_hvac_mode_pc_key(
+            device_code, hvac_mode, CONFIG_HVAC_TARGET
         )
 
-        return target_temperature_protocol_code
+        _LOGGER.debug(f"Target temp PC {target_temperature_pc}, HA Mode: {hvac_mode}")
+
+        return target_temperature_pc
