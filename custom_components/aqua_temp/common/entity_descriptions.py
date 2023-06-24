@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from custom_components.aqua_temp.common.consts import FAN_MODE_MAPPING, POWER_MODE_ON
-from custom_components.aqua_temp.common.hvac_mode_mapping import HVAC_MODE_MAPPING
+from custom_components.aqua_temp.common.consts import POWER_MODE_ON
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntityDescription,
@@ -53,7 +52,8 @@ class AquaTempSelectEntityDescription(
 
 
 DEFAULT_ENTITY_DESCRIPTIONS: list[
-    AquaTempSelectEntityDescription
+    AquaTempEntityDescription
+    | AquaTempSelectEntityDescription
     | AquaTempSensorEntityDescription
     | AquaTempBinarySensorEntityDescription
 ] = [
@@ -85,8 +85,6 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
     AquaTempClimateEntityDescription(
         key="Mode",
         name="HVAC Mode",
-        category="Control parameters",
-        fan_modes=list(FAN_MODE_MAPPING.keys()),
-        hvac_modes=list(HVAC_MODE_MAPPING.keys()),
+        category="Control parameters"
     ),
 ]

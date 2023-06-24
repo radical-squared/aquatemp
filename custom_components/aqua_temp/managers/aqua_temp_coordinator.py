@@ -151,3 +151,15 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         power = self._api.get_device_power(device_code)
 
         return power
+
+    def get_hvac_modes(self, device_code: str) -> list[HVACMode]:
+        modes = self.product_configuration_manager.get_hvac_modes(device_code)
+
+        result = [HVACMode(mode) for mode in modes]
+
+        return result
+
+    def get_fan_modes(self, device_code: str) -> list[str]:
+        modes = self.product_configuration_manager.get_fan_modes(device_code)
+
+        return modes

@@ -1,3 +1,4 @@
+from homeassistant.backports.enum import StrEnum
 from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 
 from .endpoints import Endpoints
@@ -75,6 +76,8 @@ CONFIG_SET_TEMPERATURE = "temperature"
 CONFIG_SET_FAN = "fan"
 CONFIG_SET_CURRENT_TEMPERATURE = "current_temperature"
 
+PRODUCT_ID_DEFAULT = "default"
+
 CONFIG_HVAC_MODES = "hvac_modes"
 CONFIG_HVAC_OFF = str(HVACMode.OFF)
 CONFIG_HVAC_HEAT = str(HVACMode.HEAT)
@@ -88,3 +91,8 @@ CONFIG_HVAC_MAXIMUM = "maximum"
 CONFIG_FAN_MODES = "fan_modes"
 CONFIG_FAN_AUTO = "auto"
 CONFIG_FAN_LOW = "low"
+
+
+class ProductParameter(StrEnum):
+    CONFIG = "config"
+    ENTITY_DESCRIPTION = "ENTITY_DESCRIPTION"

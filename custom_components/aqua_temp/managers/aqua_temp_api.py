@@ -25,7 +25,6 @@ from ..common.consts import (
     DEVICE_CONTROL_PROTOCOL_CODE,
     DEVICE_CONTROL_VALUE,
     DEVICE_LISTS,
-    DEVICE_PRODUCT_ID,
     DEVICE_REQUEST_PARAMETERS,
     DEVICE_REQUEST_TO_USER,
     FAN_MODE_MAPPING,
@@ -144,15 +143,18 @@ class AquaTempAPI:
         _LOGGER.debug(f"Starting to update device: {device_code}")
 
         try:
+            new_device = device_code not in self._dispatched_devices
+
+            if new_device:
+                self._product_manager.set_device(self._devices[device_code])
+
             await self._send_passthrough_instruction(device_code)
 
             await self._fetch_data(device_code)
 
             await self._fetch_errors(device_code)
 
-            if device_code not in self._dispatched_devices:
-                self._product_manager.set_device(self._devices[device_code])
-
+            if new_device:
                 self._dispatched_devices.append(device_code)
 
                 async_dispatcher_send(
@@ -261,19 +263,27 @@ class AquaTempAPI:
             f"Set HVAC Mode: {hvac_mode}, PC Mode: {action_pc_key}, Target temperature: {target_temperature}"
         )
 
+        control_params = []
+
+        set_target_temp = {
+            DEVICE_CODE: device_code,
+            DEVICE_CONTROL_PROTOCOL_CODE: set_temp_pc_key,
+            DEVICE_CONTROL_VALUE: target_temperature,
+        }
+
+        control_params.append(set_target_temp)
+
+        if mode_pc_key != set_temp_pc_key:
+            set_mode = {
+                DEVICE_CODE: device_code,
+                DEVICE_CONTROL_PROTOCOL_CODE: mode_pc_key,
+                DEVICE_CONTROL_VALUE: action_pc_key,
+            }
+
+            control_params.append(set_mode)
+
         request_data = {
-            DEVICE_CONTROL_PARAM: [
-                {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: mode_pc_key,
-                    DEVICE_CONTROL_VALUE: action_pc_key,
-                },
-                {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: set_temp_pc_key,
-                    DEVICE_CONTROL_VALUE: target_temperature,
-                },
-            ]
+            DEVICE_CONTROL_PARAM: control_params
         }
 
         await self._perform_action(request_data, mode_pc_key)
@@ -314,10 +324,7 @@ class AquaTempAPI:
             raise cre
 
     async def _fetch_data(self, device_code: str):
-        device_data = self.get_device_data(device_code)
-        product_id = device_data.get(DEVICE_PRODUCT_ID)
-
-        codes = self._product_manager.get_supported_protocol_codes(product_id)
+        codes = self._product_manager.get_supported_protocol_codes(device_code)
 
         data = {
             DEVICE_CODE: device_code,

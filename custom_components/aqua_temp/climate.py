@@ -35,6 +35,9 @@ async def async_setup_entry(
             device_code, entity_description_key, Platform.CLIMATE
         )
 
+        entity_description.fan_modes = coordinator.get_fan_modes(device_code)
+        entity_description.hvac_modes = coordinator.get_hvac_modes(device_code)
+
         entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
 
         return entity

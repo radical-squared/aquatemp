@@ -13,12 +13,12 @@ from ..common.consts import (
     CONFIG_HVAC_SET,
     DEVICE_CODE,
     DEVICE_PRODUCT_ID,
-    PRODUCT_IDS,
+    PRODUCT_IDS, PRODUCT_ID_DEFAULT, ProductParameter,
 )
 from ..common.entity_descriptions import (
     DEFAULT_ENTITY_DESCRIPTIONS,
     AquaTempBinarySensorEntityDescription,
-    AquaTempSensorEntityDescription,
+    AquaTempSensorEntityDescription, AquaTempEntityDescription,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,6 +53,15 @@ class ProductConfigurationManager:
                 self._load_entity_descriptions(product_id)
                 self._load_protocol_codes(product_id)
 
+            _LOGGER.debug(f"Initialized Entity Descriptions: {len(self._entity_descriptions)}")
+            _LOGGER.debug(f"Initialized protocol codes: {self._protocol_codes}")
+            _LOGGER.debug(f"Initialized protocol codes configuration: {self._protocol_codes_configuration}")
+            _LOGGER.debug(f"Initialized platforms: {self.platforms}")
+            _LOGGER.debug(f"Initialized HVAC modes: {self._hvac_modes}")
+            _LOGGER.debug(f"Initialized HVAC modes - reversed: {self._hvac_modes_reverse}")
+            _LOGGER.debug(f"Initialized Entity Descriptions: {self._fan_modes}")
+            _LOGGER.debug(f"Initialized fan modes - reversed: {self._fan_modes_reverse}")
+
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
@@ -63,33 +72,61 @@ class ProductConfigurationManager:
         device_code = device_data.get(DEVICE_CODE)
         product_id = device_data.get(DEVICE_PRODUCT_ID)
 
-        self._devices[device_code] = product_id
+        config = self._protocol_codes_configuration.get(product_id)
+        entity_descriptions = self._entity_descriptions.get(product_id)
+
+        config_key = "default" if config is None else product_id
+        entity_descriptions_key = "default" if entity_descriptions is None else product_id
+
+        self._devices[device_code] = {
+            ProductParameter.CONFIG: config_key,
+            ProductParameter.ENTITY_DESCRIPTION: entity_descriptions_key,
+        }
+
+        _LOGGER.info(
+            f"Device {device_code} mapped to "
+            f"Product ID {product_id}, "
+            f"Configuration: {config_key}, "
+            f"Parameters: {entity_descriptions_key}"
+        )
 
     def get_supported_protocol_codes(self, device_code) -> list[str]:
-        product_id = self._get_product_id_with_default(device_code)
+        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
         result = self._protocol_codes.get(product_id)
 
         return result
 
     def get_pc_key(self, device_code: str, key: str):
-        product_id = self._get_product_id_with_default(device_code)
-
-        config = self._get_pc_configuration(product_id)
+        config = self._get_pc_configuration(device_code)
         protocol_code_key = config.get(key)
 
         return protocol_code_key
 
     def get_hvac_mode_pc_key(self, device_code: str, hvac_mode: str, key: str):
-        product_id = self._get_product_id_with_default(device_code)
+        config = self._get_pc_configuration(device_code)
 
-        config = self._get_pc_configuration(product_id)
-        hvac_mode_config = config.get(hvac_mode)
+        hvac_modes = config.get(CONFIG_HVAC_MODES)
+        hvac_mode_config = hvac_modes.get(hvac_mode)
         protocol_code_key = hvac_mode_config.get(key)
 
         return protocol_code_key
 
+    def get_hvac_modes(self, device_code: str) -> list[str]:
+        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+
+        result = self._hvac_modes.get(product_id)
+
+        return result
+
+    def get_fan_modes(self, device_code: str) -> list[str]:
+        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+
+        result = self._fan_modes.get(product_id)
+
+        return result
+
     def get_fan_reverse_mapping(self, device_code, fan_mode) -> str:
-        product_id = self._get_product_id_with_default(device_code)
+        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
 
         fan_modes = self._fan_modes_reverse.get(product_id)
         result = fan_modes.get(fan_mode)
@@ -97,7 +134,7 @@ class ProductConfigurationManager:
         return result
 
     def get_hvac_reverse_mapping(self, device_code, hvac_mode) -> str:
-        product_id = self._get_product_id_with_default(device_code)
+        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
 
         hvac_modes = self._hvac_modes_reverse.get(product_id)
         result = hvac_modes.get(hvac_mode)
@@ -189,6 +226,14 @@ class ProductConfigurationManager:
 
                     entities.append(binary_sensor_entity)
 
+                else:
+                    entity = AquaTempEntityDescription(
+                        key=data_item.get("key"),
+                        name=data_item.get("name")
+                    )
+
+                    entities.append(entity)
+
         self._update_platforms(entities)
         self._update_protocol_codes(product_id, entities)
 
@@ -213,7 +258,7 @@ class ProductConfigurationManager:
 
             json_data = json.loads(json_str)
 
-            self._protocol_codes[product_id] = json_data
+            self._protocol_codes_configuration[product_id] = json_data
 
             hvac_modes = json_data.get(CONFIG_HVAC_MODES)
 
@@ -253,26 +298,28 @@ class ProductConfigurationManager:
             if entity_description.is_protocol_code
         ]
 
-    def _get_product_id(self, device_code: str):
-        product_id = self._devices.get(device_code)
-
-        return product_id
-
-    def _get_product_id_with_default(self, device_code: str):
-        product_id = self._get_product_id(device_code)
+    def _get_product_id(self, device_code: str, param: ProductParameter):
+        device = self._devices.get(device_code, {})
+        product_id = device.get(param)
 
         return product_id
 
     def _get_pc_configuration(self, device_code) -> dict:
-        product_id = self._get_product_id_with_default(device_code)
+        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
 
         result = self._protocol_codes_configuration.get(product_id)
+
+        if result is None:
+            result = self._protocol_codes_configuration.get(PRODUCT_ID_DEFAULT)
 
         return result
 
     def _get_entity_descriptions(self, device_code):
-        product_id = self._get_product_id_with_default(device_code)
+        product_id = self._get_product_id(device_code, ProductParameter.ENTITY_DESCRIPTION)
 
         result = self._entity_descriptions.get(product_id)
+
+        if result is None:
+            result = self._entity_descriptions.get(PRODUCT_ID_DEFAULT)
 
         return result
