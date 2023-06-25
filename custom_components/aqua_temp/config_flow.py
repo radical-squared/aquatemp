@@ -8,6 +8,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 
+from . import ProductConfigurationManager
 from .common.consts import DEFAULT_NAME, DOMAIN
 from .common.exceptions import LoginError
 from .managers.aqua_temp_api import AquaTempAPI
@@ -40,7 +41,11 @@ class DomainFlowHandler(config_entries.ConfigFlow):
                 config_manager = AquaTempConfigManager(self.hass, None)
                 config_manager.update_credentials(username, password)
 
-                api = AquaTempAPI(self.hass, config_manager)
+                product_manager = ProductConfigurationManager()
+                product_manager.initialize()
+
+                api = AquaTempAPI(self.hass, config_manager, product_manager)
+
                 await api.initialize()
 
                 _LOGGER.debug("User inputs are valid")

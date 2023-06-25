@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.12
+
+- Fix config flow, API manager constructor requires three parameters but only two are passed when creating it
+
 ## v3.0.11
 
 - Per device's product ID parameters support
