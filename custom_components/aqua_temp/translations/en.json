@@ -7,12 +7,21 @@
         "data": {
           "username": "Username",
           "password": "Password",
-          "account-type": "Account type"
+          "account_type": "Account type"
         }
       }
     },
     "error": {
       "invalid_credentials": "Invalid credentials"
+    }
+  },
+  "selector": {
+    "account_type": {
+      "options": {
+        "1": "Aqua Temp",
+        "2": "HiTemp",
+        "99": "Aqua Temp (=<1.5.8)"
+      }
     }
   }
 }
