@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.13
+
+- Add Account Type drop-down to configuration (Aqua Temp [Android],Aqua Temp [iOS], Hitemp)
+- Update authentication process
+
 ## v3.0.12
 
 - Fix config flow, API manager constructor requires three parameters but only two are passed when creating it

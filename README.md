@@ -28,10 +28,11 @@ Requires complete deletion of integration and reinstall after restart HA
 To add integration use Configuration -> Integrations -> Add `Aqua Temp`
 Integration supports **multiple** accounts and devices
 
-| Fields name | Type    | Required | Default | Description                       |
-| ----------- | ------- | -------- | ------- | --------------------------------- |
-| Username    | Textbox | +        | -       | Username of AquaTemp account      |
-| Password    | Textbox | +        | -       | Password for the AquaTemp account |
+| Fields name  | Type     | Required | Default             | Description                                                                                         |
+| ------------ | -------- | -------- | ------------------- | --------------------------------------------------------------------------------------------------- |
+| Username     | Textbox  | +        | -                   | Username of AquaTemp account                                                                        |
+| Password     | Textbox  | +        | -                   | Password for the AquaTemp account                                                                   |
+| Account Type | Dropdown | +        | Aqua Temp (Android) | Account type (where it was created), available values: Aqua Temp (Android), Aqua Temp (iOS), HiTemp |
 
 ###### Validation errors
 
@@ -71,28 +72,6 @@ Additional components are according to following mapping:
 | Hitemp 1245226668902080512   | [JSON](https://github.com/radical-squared/aquatemp/blob/master/custom_components/aqua_temp/parameters/1245226668902080512.json) |
 | AquaTemp 1442284873216843776 | [JSON](https://github.com/radical-squared/aquatemp/blob/master/custom_components/aqua_temp/parameters/1442284873216843776.json) |
 
-_Note:_
-
-If mapping for your device are incorrect, please follow the steps below before reporting an issue:
-
-1. Install on your mobile device packet sniffer (I'm using for Android - NetCapture)
-2. Activate the packet sniffer just for the app
-3. Open the app
-4. Login
-5. Open relevant device
-6. Open menu
-7. Click on `Parameter Settings`
-8. First cycle, use password for user parameters, code: `022`
-9. Take screenshot of each screen (letter)
-10. Repeat steps 8 & 9 with code `066` - factory parameters
-11. Open packet sniffer app and extract requests (and responses) of `login`, `deviceList`, `getDataByCode`
-
-Attach the following details to issue:
-
-- Mobile App name and version
-- Attach screenshots and logs as zip file or link for download
-- Attach diagnostic details from HA integration
-
 ## Run API over CLI
 
 ### Requirements
@@ -115,6 +94,8 @@ Run file located in `tests/main.py`
 
 ## Troubleshooting
 
+### Logs
+
 Before opening an issue, please provide logs related to the issue,
 For debug log level, please add the following to your config.yaml
 
@@ -127,6 +108,28 @@ logger:
 
 Please attach also diagnostic details of the integration, available in:
 Settings -> Devices & Services -> Aqua Temp -> 3 dots menu -> Download diagnostics
+
+### Data from mobile app
+
+If mapping for your device are incorrect, please follow the steps below before reporting an issue:
+
+1. Install on your mobile device packet sniffer (I'm using for Android - NetCapture)
+2. Activate the packet sniffer just for the app
+3. Open the app
+4. Login
+5. Open relevant device
+6. Open menu
+7. Click on `Parameter Settings`
+8. First cycle, use password for user parameters, code: `022`
+9. Take screenshot of each screen (letter)
+10. Repeat steps 8 & 9 with code `066` - factory parameters
+11. Open packet sniffer app and extract requests (and responses) of `login`, `deviceList`, `getDataByCode`
+
+Attach the following details to issue:
+
+- Mobile App name and version
+- Attach screenshots and logs as zip file or link for download
+- Attach diagnostic details from HA integration
 
 ## Discord
 

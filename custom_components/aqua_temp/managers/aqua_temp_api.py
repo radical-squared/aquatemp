@@ -10,7 +10,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
+from ..common.account_types import AccountTypes
 from ..common.consts import (
+    CONF_ACCOUNT_TYPE,
     CONFIG_HVAC_MAXIMUM,
     CONFIG_HVAC_MINIMUM,
     CONFIG_HVAC_SET,
@@ -34,8 +36,9 @@ from ..common.consts import (
     POWER_MODE_ON,
     PROTOCAL_CODES,
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
+    SUPPORTED_ACCOUNT_TYPES,
 )
-from ..common.endpoints import Endpoints
+from ..common.endpoints import ENDPOINT_SUFFIX, Endpoints
 from ..common.exceptions import LoginError, OperationFailedException
 from .aqua_temp_config_manager import AquaTempConfigManager
 from .product_config_manager import ProductConfigurationManager
@@ -52,6 +55,10 @@ class AquaTempAPI:
     _token: str | None
     _hass: HomeAssistant | None
 
+    _account_type: str | None
+    _base_url: str | None
+    _url_suffix: str | None
+
     def __init__(
         self,
         hass: HomeAssistant | None,
@@ -65,6 +72,9 @@ class AquaTempAPI:
 
         self._session = None
         self._token = None
+        self._account_type = None
+        self._base_url = None
+        self._url_suffix = None
 
         self._hass = hass
         self._headers = HEADERS
@@ -100,13 +110,18 @@ class AquaTempAPI:
                 else:
                     self._session = async_create_clientsession(hass=self._hass)
 
+                self._set_base_url_settings()
+
                 await self._connect()
 
         except LoginError as lex:
-            _LOGGER.error("Failed to login, Please update credentials and try again")
-
             if throw_error:
                 raise lex
+
+            else:
+                _LOGGER.error(
+                    "Failed to login, Please update credentials and try again"
+                )
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -115,6 +130,22 @@ class AquaTempAPI:
             _LOGGER.warning(
                 f"Failed to initialize session, Error: {ex}, Line: {line_number}"
             )
+
+    def _set_base_url_settings(self):
+        config_data = self._config_manager.data
+        self._account_type = config_data.get(CONF_ACCOUNT_TYPE)
+
+        self._base_url = SUPPORTED_ACCOUNT_TYPES.get(AccountTypes(self._account_type))
+
+        for endpoint_type in ENDPOINT_SUFFIX:
+            suffix = ENDPOINT_SUFFIX[endpoint_type]
+
+            if endpoint_type in self._base_url:
+                self._url_suffix = suffix
+
+        _LOGGER.info(
+            f"Set URLs for {self._account_type}, Base: {self._base_url}, Suffix: {self._url_suffix}"
+        )
 
     async def _connect(self):
         if self._token is None:
@@ -456,7 +487,7 @@ class AquaTempAPI:
     async def _post_request(
         self, endpoint: Endpoints, data: dict | list | None = None
     ) -> dict | None:
-        url = f"{Endpoints.BASE_URL}/{endpoint}"
+        url = f"{self._base_url}/{endpoint}{self._url_suffix}"
 
         if endpoint == Endpoints.DEVICE_CONTROL:
             _LOGGER.info(f"Sending request to control device, Data: {data}")
