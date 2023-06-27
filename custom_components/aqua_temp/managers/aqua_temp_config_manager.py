@@ -9,8 +9,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-from ..common.account_types import AccountType
-from ..common.consts import CONF_ACCOUNT_TYPE, DOMAIN
+from ..common.api_types import APIType
+from ..common.consts import CONF_API_TYPE, DOMAIN
 
 
 class AquaTempConfigManager:
@@ -43,8 +43,8 @@ class AquaTempConfigManager:
 
         self.data[CONF_USERNAME] = self._entry.data.get(CONF_USERNAME)
         self.data[CONF_PASSWORD] = self._entry.data.get(CONF_PASSWORD)
-        self.data[CONF_ACCOUNT_TYPE] = self._entry.data.get(
-            CONF_ACCOUNT_TYPE, str(AccountType.AquaTempOld)
+        self.data[CONF_API_TYPE] = self._entry.data.get(
+            CONF_API_TYPE, str(APIType.AquaTempOld)
         )
 
         for key in local_data:
@@ -55,7 +55,7 @@ class AquaTempConfigManager:
     def update_credentials(self, username, password, account_type: int):
         self.data[CONF_USERNAME] = username
         self.data[CONF_PASSWORD] = password
-        self.data[CONF_ACCOUNT_TYPE] = account_type
+        self.data[CONF_API_TYPE] = account_type
 
     async def update_temperature_unit(self, device_code: str, value: str):
         self.data[CONF_TEMPERATURE_UNIT][device_code] = value

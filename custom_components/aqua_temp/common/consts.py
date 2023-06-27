@@ -7,7 +7,7 @@ SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 
-CONF_ACCOUNT_TYPE = "account_type"
+CONF_API_TYPE = "api_type"
 
 PRODUCT_IDS = [
     "1132174963097280512",  # Aqua Temp
