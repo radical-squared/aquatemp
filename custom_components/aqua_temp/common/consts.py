@@ -1,6 +1,7 @@
 from homeassistant.backports.enum import StrEnum
 from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 
+from .account_types import AccountTypes
 from .endpoints import Endpoints
 
 DOMAIN = "aqua_temp"
@@ -8,6 +9,14 @@ DEFAULT_NAME = "Aqua Temp"
 SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 
 HTTP_HEADER_X_TOKEN = "x-token"
+
+CONF_ACCOUNT_TYPE = "account-type"
+
+SUPPORTED_ACCOUNT_TYPES = {
+    AccountTypes.AquaTempAndroid: "https://cloud.linked-go.com/cloudservice/api",
+    AccountTypes.AquaTempIOS: "https://cloud.linked-go.com:449/crmservice/api",
+    AccountTypes.HiTemp: "https://cloud.linked-go.com/cloudservice/api",
+}
 
 PRODUCT_IDS = [
     "1132174963097280512",  # Aqua Temp

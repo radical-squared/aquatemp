@@ -6,7 +6,8 @@
         "description": "Set up your Aqua Temp credentials",
         "data": {
           "username": "Username",
-          "password": "Password"
+          "password": "Password",
+          "account-type": "Account type"
         }
       }
     },
