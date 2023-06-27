@@ -8,14 +8,11 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.helpers import selector
 
 from . import ProductConfigurationManager
-from .common.consts import (
-    CONF_ACCOUNT_TYPE,
-    DEFAULT_NAME,
-    DOMAIN,
-    SUPPORTED_ACCOUNT_TYPES,
-)
+from .common.account_types import ACCOUNT_TYPES
+from .common.consts import CONF_ACCOUNT_TYPE, DEFAULT_NAME, DOMAIN
 from .common.exceptions import LoginError
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
@@ -80,8 +77,11 @@ class DomainFlowHandler(config_entries.ConfigFlow):
         new_user_input = {
             vol.Required(CONF_USERNAME): str,
             vol.Required(CONF_PASSWORD): str,
-            vol.Required(CONF_ACCOUNT_TYPE): vol.In(
-                [str(key) for key in SUPPORTED_ACCOUNT_TYPES]
+            vol.Required(CONF_ACCOUNT_TYPE): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=list(ACCOUNT_TYPES.keys()),
+                    translation_key=CONF_ACCOUNT_TYPE,
+                ),
             ),
         }
 

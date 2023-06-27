@@ -10,7 +10,12 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
-from ..common.account_types import AccountTypes
+from ..common.account_types import (
+    ACCOUNT_TYPES,
+    DEVICE_LISTS,
+    DEVICE_REQUEST_PARAMETERS,
+    AccountTypeParam,
+)
 from ..common.consts import (
     CONF_ACCOUNT_TYPE,
     CONFIG_HVAC_MAXIMUM,
@@ -22,23 +27,16 @@ from ..common.consts import (
     CONFIG_SET_MODE,
     CONFIG_SET_POWER,
     CONFIG_SET_TEMPERATURE,
-    DEVICE_CODE,
     DEVICE_CONTROL_PARAM,
-    DEVICE_CONTROL_PROTOCOL_CODE,
     DEVICE_CONTROL_VALUE,
-    DEVICE_LISTS,
-    DEVICE_REQUEST_PARAMETERS,
-    DEVICE_REQUEST_TO_USER,
     FAN_MODE_MAPPING,
     HEADERS,
     HTTP_HEADER_X_TOKEN,
     POWER_MODE_OFF,
     POWER_MODE_ON,
-    PROTOCAL_CODES,
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
-    SUPPORTED_ACCOUNT_TYPES,
 )
-from ..common.endpoints import ENDPOINT_SUFFIX, Endpoints
+from ..common.endpoints import Endpoints
 from ..common.exceptions import LoginError, OperationFailedException
 from .aqua_temp_config_manager import AquaTempConfigManager
 from .product_config_manager import ProductConfigurationManager
@@ -56,8 +54,7 @@ class AquaTempAPI:
     _hass: HomeAssistant | None
 
     _account_type: str | None
-    _base_url: str | None
-    _url_suffix: str | None
+    _account_type_config: dict | None
 
     def __init__(
         self,
@@ -73,8 +70,7 @@ class AquaTempAPI:
         self._session = None
         self._token = None
         self._account_type = None
-        self._base_url = None
-        self._url_suffix = None
+        self._account_type_config = None
 
         self._hass = hass
         self._headers = HEADERS
@@ -135,16 +131,17 @@ class AquaTempAPI:
         config_data = self._config_manager.data
         self._account_type = config_data.get(CONF_ACCOUNT_TYPE)
 
-        self._base_url = SUPPORTED_ACCOUNT_TYPES.get(AccountTypes(self._account_type))
+        account_type_config = ACCOUNT_TYPES.get(self._account_type)
 
-        for endpoint_type in ENDPOINT_SUFFIX:
-            suffix = ENDPOINT_SUFFIX[endpoint_type]
+        self._account_type_config = {}
 
-            if endpoint_type in self._base_url:
-                self._url_suffix = suffix
+        for account_type_item in account_type_config:
+            value = account_type_config[account_type_item]
 
-        _LOGGER.info(
-            f"Set URLs for {self._account_type}, Base: {self._base_url}, Suffix: {self._url_suffix}"
+            self._account_type_config[str(account_type_item)] = value
+
+        _LOGGER.debug(
+            f"Set URLs for {self._account_type}, Configuration: {self._account_type_config}"
         )
 
     async def _connect(self):
@@ -168,7 +165,12 @@ class AquaTempAPI:
                 await self._update_device(device_code)
 
         except Exception as ex:
-            _LOGGER.error(f"Error fetching parameters, Error: {ex}")
+            exc_type, exc_obj, tb = sys.exc_info()
+            line_number = tb.tb_lineno
+
+            _LOGGER.error(
+                f"Error fetching parameters, Error: {ex}, Line: {line_number}"
+            )
 
     async def _update_device(self, device_code: str):
         _LOGGER.debug(f"Starting to update device: {device_code}")
@@ -177,9 +179,15 @@ class AquaTempAPI:
             new_device = device_code not in self._dispatched_devices
 
             if new_device:
-                self._product_manager.set_device(self._devices[device_code])
+                device = self.get_device_data(device_code)
+                product_id = self._get_device_product_id(device)
 
-            await self._send_passthrough_instruction(device_code)
+                self._product_manager.set_device(device_code, product_id)
+
+            param_keep_alive = self._get_account_param(AccountTypeParam.KeepAlive)
+
+            if param_keep_alive:
+                await self._send_passthrough_instruction(device_code)
 
             await self._fetch_data(device_code)
 
@@ -242,16 +250,19 @@ class AquaTempAPI:
             device_code, CONFIG_SET_TEMPERATURE
         )
 
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+        param_protocol_code = self._get_account_param(AccountTypeParam.ProtocolCode)
+
         request_data = {
             DEVICE_CONTROL_PARAM: [
                 {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: target_temperature_pc,
+                    param_device_code: device_code,
+                    param_protocol_code: target_temperature_pc,
                     DEVICE_CONTROL_VALUE: temperature,
                 },
                 {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: set_temp_pc_key,
+                    param_device_code: device_code,
+                    param_protocol_code: set_temp_pc_key,
                     DEVICE_CONTROL_VALUE: temperature,
                 },
             ]
@@ -263,11 +274,14 @@ class AquaTempAPI:
         """Set new target power mode."""
         power_pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_POWER)
 
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+        param_protocol_code = self._get_account_param(AccountTypeParam.ProtocolCode)
+
         request_data = {
             DEVICE_CONTROL_PARAM: [
                 {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: power_pc_key.lower(),
+                    param_device_code: device_code,
+                    param_protocol_code: power_pc_key.lower(),
                     DEVICE_CONTROL_VALUE: value,
                 }
             ]
@@ -296,9 +310,12 @@ class AquaTempAPI:
 
         control_params = []
 
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+        param_protocol_code = self._get_account_param(AccountTypeParam.ProtocolCode)
+
         set_target_temp = {
-            DEVICE_CODE: device_code,
-            DEVICE_CONTROL_PROTOCOL_CODE: set_temp_pc_key,
+            param_device_code: device_code,
+            param_protocol_code: set_temp_pc_key,
             DEVICE_CONTROL_VALUE: target_temperature,
         }
 
@@ -306,8 +323,8 @@ class AquaTempAPI:
 
         if mode_pc_key != set_temp_pc_key:
             set_mode = {
-                DEVICE_CODE: device_code,
-                DEVICE_CONTROL_PROTOCOL_CODE: mode_pc_key,
+                param_device_code: device_code,
+                param_protocol_code: mode_pc_key,
                 DEVICE_CONTROL_VALUE: action_pc_key,
             }
 
@@ -321,13 +338,16 @@ class AquaTempAPI:
         """Set new target fan mode."""
         fan_pc_key = self._product_manager.get_pc_key(device_code, CONFIG_SET_FAN)
 
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+        param_protocol_code = self._get_account_param(AccountTypeParam.ProtocolCode)
+
         value = FAN_MODE_MAPPING.get(fan_mode)
 
         request_data = {
             DEVICE_CONTROL_PARAM: [
                 {
-                    DEVICE_CODE: device_code,
-                    DEVICE_CONTROL_PROTOCOL_CODE: fan_pc_key,
+                    param_device_code: device_code,
+                    param_protocol_code: fan_pc_key,
                     DEVICE_CONTROL_VALUE: value,
                 }
             ]
@@ -338,7 +358,7 @@ class AquaTempAPI:
     async def _perform_action(self, request_data: dict, operation: str):
         try:
             operation_response = await self._post_request(
-                Endpoints.DEVICE_CONTROL, request_data
+                Endpoints.DeviceControl, request_data
             )
 
             error_msg = operation_response.get("error_msg")
@@ -355,13 +375,17 @@ class AquaTempAPI:
     async def _fetch_data(self, device_code: str):
         codes = self._product_manager.get_supported_protocol_codes(device_code)
 
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+        param_protocal_codes = self._get_account_param(AccountTypeParam.ProtocalCodes)
+        param_object_result = self._get_account_param(AccountTypeParam.ObjectResult)
+
         data = {
-            DEVICE_CODE: device_code,
-            PROTOCAL_CODES: codes,
+            param_device_code: device_code,
+            param_protocal_codes: codes,
         }
 
-        data_response = await self._post_request(Endpoints.DEVICE_DATA, data)
-        object_result_items = data_response.get("object_result", [])
+        data_response = await self._post_request(Endpoints.DeviceData, data)
+        object_result_items = data_response.get(param_object_result, [])
 
         for object_result_item in object_result_items:
             code = object_result_item.get("code")
@@ -378,10 +402,12 @@ class AquaTempAPI:
             _LOGGER.error(f"Failed to fetch parameters, Error: {error_msg}")
 
     async def _send_passthrough_instruction(self, device_code: str):
-        data = {DEVICE_CODE: device_code, "query_instruction": "630300040001CD89"}
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+
+        data = {param_device_code: device_code, "query_instruction": "630300040001CD89"}
 
         data_response = await self._post_request(
-            Endpoints.DEVICE_PASSTHROUGH_INSTRUCTION, data
+            Endpoints.DevicePassthroughInstruction, data
         )
         error_msg = data_response.get("error_msg")
 
@@ -389,19 +415,22 @@ class AquaTempAPI:
             _LOGGER.error(f"Failed to send passthrough instruction, Error: {error_msg}")
 
     async def _fetch_errors(self, device_code: str):
-        data = {DEVICE_CODE: device_code}
+        param_device_code = self._get_account_param(AccountTypeParam.DeviceCode)
+        param_object_result = self._get_account_param(AccountTypeParam.ObjectResult)
 
-        device_status_response = await self._post_request(Endpoints.DEVICE_STATUS, data)
-        object_result = device_status_response.get("object_result", {})
+        data = {param_device_code: device_code}
+
+        device_status_response = await self._post_request(Endpoints.DeviceStatus, data)
+        object_result = device_status_response.get(param_object_result, {})
 
         is_fault = object_result.get("is_fault", str(False))
         fault_description = None
 
         if bool(is_fault):
             device_fault_response = await self._post_request(
-                Endpoints.DEVICE_FAULT, data
+                Endpoints.DeviceFault, data
             )
-            object_results = device_fault_response.get("object_result", [])
+            object_results = device_fault_response.get(param_object_result, [])
 
             if len(object_results) > 0:
                 object_result = object_results[0]
@@ -416,16 +445,19 @@ class AquaTempAPI:
             device_data["fault"] = fault_description
 
     async def _login(self):
+        param_username = self._get_account_param(AccountTypeParam.Username)
+        param_object_result = self._get_account_param(AccountTypeParam.ObjectResult)
+
         config_data = self._config_manager.data
 
         username = config_data.get(CONF_USERNAME)
         password = config_data.get(CONF_PASSWORD)
 
-        data = {"user_name": username, "password": password, "type": "2"}
+        data = {param_username: username, "password": password}
 
         try:
-            login_response = await self._post_request(Endpoints.LOGIN, data)
-            object_result = login_response.get("object_result", {})
+            login_response = await self._post_request(Endpoints.Login, data)
+            object_result = login_response.get(param_object_result, {})
 
             self._login_details = object_result
 
@@ -433,7 +465,8 @@ class AquaTempAPI:
 
             self.set_token(token)
 
-            await self._load_user_info()
+            if token is not None:
+                await self._load_user_info()
 
         except Exception as ex:
             self.set_token()
@@ -444,26 +477,34 @@ class AquaTempAPI:
             raise LoginError()
 
     async def _load_user_info(self):
-        user_info_response = await self._post_request(Endpoints.USER_INFO)
+        param_object_result = self._get_account_param(AccountTypeParam.ObjectResult)
+        param_user_id = self._get_account_param(AccountTypeParam.UserId)
 
-        object_result = user_info_response.get("object_result", {})
-        user_id = object_result.get("user_id")
+        user_info_response = await self._post_request(Endpoints.UserInfo)
+
+        object_result = user_info_response.get(param_object_result, {})
+        user_id = object_result.get(param_user_id)
 
         for device_list_url in DEVICE_LISTS:
             request_data = {}
             request_data_keys = DEVICE_LISTS[device_list_url]
 
             for request_data_key in request_data_keys:
-                if request_data_key == DEVICE_REQUEST_TO_USER:
+                if request_data_key == AccountTypeParam.ToUser:
                     value = user_id
+
                 else:
                     value = DEVICE_REQUEST_PARAMETERS.get(request_data_key)
 
-                request_data[request_data_key] = value
+                request_data_param = self._get_account_param(request_data_key)
+
+                request_data[request_data_param] = value
 
             self._device_list_request_data[device_list_url] = request_data
 
     async def _load_devices(self):
+        param_object_result = self._get_account_param(AccountTypeParam.ObjectResult)
+
         for device_list_url in DEVICE_LISTS:
             request_data = self._device_list_request_data[device_list_url]
 
@@ -471,10 +512,10 @@ class AquaTempAPI:
                 device_list_url, request_data
             )
 
-            devices = device_code_response.get("object_result", [])
+            devices = device_code_response.get(param_object_result, [])
 
             for device in devices:
-                device_code = device.get(DEVICE_CODE)
+                device_code = self._get_device_id(device)
 
                 _LOGGER.debug(
                     f"Discover device: {device_code} by {device_list_url}, Data: {device}"
@@ -487,9 +528,12 @@ class AquaTempAPI:
     async def _post_request(
         self, endpoint: Endpoints, data: dict | list | None = None
     ) -> dict | None:
-        url = f"{self._base_url}/{endpoint}{self._url_suffix}"
+        param_url = self._get_account_param(AccountTypeParam.URL)
+        param_suffix = self._get_account_param(AccountTypeParam.Suffix)
 
-        if endpoint == Endpoints.DEVICE_CONTROL:
+        url = f"{param_url}/{endpoint}{param_suffix}"
+
+        if endpoint == Endpoints.DeviceControl:
             _LOGGER.info(f"Sending request to control device, Data: {data}")
 
         async with self._session.post(
@@ -498,7 +542,7 @@ class AquaTempAPI:
             response.raise_for_status()
 
             result = await response.json()
-            _LOGGER.debug(f"Request to {endpoint}, Result: {result}")
+            _LOGGER.debug(f"Request to {url}, Body: {data}, Result: {result}")
 
         return result
 
@@ -618,3 +662,20 @@ class AquaTempAPI:
         _LOGGER.debug(f"Target temp PC {target_temperature_pc}, HA Mode: {hvac_mode}")
 
         return target_temperature_pc
+
+    def _get_device_product_id(self, device_data: dict):
+        param = self._get_account_param(AccountTypeParam.ProductId)
+        product_id = device_data.get(param)
+
+        return product_id
+
+    def _get_device_id(self, device_data: dict):
+        param = self._get_account_param(AccountTypeParam.DeviceCode)
+        device_code = device_data.get(param)
+
+        return device_code
+
+    def _get_account_param(self, param: AccountTypeParam):
+        result = self._account_type_config.get(str(param))
+
+        return result

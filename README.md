@@ -28,11 +28,11 @@ Requires complete deletion of integration and reinstall after restart HA
 To add integration use Configuration -> Integrations -> Add `Aqua Temp`
 Integration supports **multiple** accounts and devices
 
-| Fields name  | Type     | Required | Default             | Description                                                                                         |
-| ------------ | -------- | -------- | ------------------- | --------------------------------------------------------------------------------------------------- |
-| Username     | Textbox  | +        | -                   | Username of AquaTemp account                                                                        |
-| Password     | Textbox  | +        | -                   | Password for the AquaTemp account                                                                   |
-| Account Type | Dropdown | +        | Aqua Temp (Android) | Account type (where it was created), available values: Aqua Temp (Android), Aqua Temp (iOS), HiTemp |
+| Fields name  | Type     | Required | Default             | Description                                                                                   |
+| ------------ | -------- | -------- | ------------------- | --------------------------------------------------------------------------------------------- |
+| Username     | Textbox  | +        | -                   | Username of AquaTemp account                                                                  |
+| Password     | Textbox  | +        | -                   | Password for the AquaTemp account                                                             |
+| Account Type | Dropdown | +        | Aqua Temp (=<1.5.8) | Account type (where it was created), available values: Aqua Temp, HiTemp, Aqua Temp (=<1.5.8) |
 
 ###### Validation errors
 

@@ -11,8 +11,6 @@ from ..common.consts import (
     CONFIG_FAN_MODES,
     CONFIG_HVAC_MODES,
     CONFIG_HVAC_SET,
-    DEVICE_CODE,
-    DEVICE_PRODUCT_ID,
     PRODUCT_ID_DEFAULT,
     PRODUCT_IDS,
     ProductParameter,
@@ -79,10 +77,7 @@ class ProductConfigurationManager:
 
             _LOGGER.error(f"Failed to initialize, Error: {ex}, Line: {line_number}")
 
-    def set_device(self, device_data: dict):
-        device_code = device_data.get(DEVICE_CODE)
-        product_id = device_data.get(DEVICE_PRODUCT_ID)
-
+    def set_device(self, device_code: str, product_id: str):
         config = self._protocol_codes_configuration.get(product_id)
         entity_descriptions = self._entity_descriptions.get(product_id)
 

@@ -68,7 +68,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     coordinator: AquaTempCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    platforms = coordinator.platforms
+    platforms = coordinator.product_configuration_manager.platforms
 
     for platform in platforms:
         await hass.config_entries.async_forward_entry_unload(entry, platform)
