@@ -2,7 +2,7 @@
 
 ## v3.0.13
 
-- Add Account Type drop-down to configuration (Aqua Temp [Android],Aqua Temp [iOS], Hitemp)
+- Add API Type drop-down to configuration (Aqua Temp, Hitemp, Aqua Temp [=<1.5.8])
 - Update authentication process
 
 ## v3.0.12
