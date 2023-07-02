@@ -18,5 +18,19 @@ class OperationFailedException(Exception):
 
 
 class LoginError(Exception):
-    def __init__(self):
-        self.error = "Failed to login"
+    def __str__(self):
+        result = "Failed to login"
+
+        return result
+
+
+class InvalidTokenError(Exception):
+    flow: str
+
+    def __init__(self, flow: str):
+        self.flow = flow
+
+    def __str__(self):
+        result = f"Invalid token, Flow: {self.flow}"
+
+        return result

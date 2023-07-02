@@ -1,4 +1,5 @@
 """Platform for climate integration."""
+from copy import copy
 import logging
 import sys
 
@@ -17,6 +18,8 @@ from ..common.api_types import (
     APIParam,
 )
 from ..common.consts import (
+    API_MAX_ATTEMPTS,
+    API_STATUS,
     CONF_API_TYPE,
     CONFIG_HVAC_MAXIMUM,
     CONFIG_HVAC_MINIMUM,
@@ -37,7 +40,7 @@ from ..common.consts import (
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
-from ..common.exceptions import LoginError, OperationFailedException
+from ..common.exceptions import InvalidTokenError, LoginError, OperationFailedException
 from .aqua_temp_config_manager import AquaTempConfigManager
 from .product_config_manager import ProductConfigurationManager
 
@@ -55,6 +58,8 @@ class AquaTempAPI:
 
     _api_type: str | None
     _api_types_config: dict | None
+
+    _api_status: bool
 
     def __init__(
         self,
@@ -79,6 +84,8 @@ class AquaTempAPI:
 
         self._dispatched_devices = []
         self._device_list_request_data = {}
+
+        self._api_status = False
 
     @property
     def is_connected(self):
@@ -156,23 +163,51 @@ class AquaTempAPI:
 
     async def update(self):
         """Fetch new state parameters for the sensor."""
+        await self._internal_update()
+
+    async def _internal_update(self, attempt: int = 1):
+        """Fetch new state parameters for the sensor."""
+        error = None
+        line_number = None
+
         try:
-            if self._token is None:
-                await self._login()
-                await self._load_devices()
+            await self._connect()
 
             for device_code in self._devices:
                 await self._update_device(device_code)
+
+        except LoginError as lex:
+            exc_type, exc_obj, tb = sys.exc_info()
+            line_number = tb.tb_lineno
+
+            self.set_token()
+
+            error = lex
+
+        except InvalidTokenError as itex:
+            exc_type, exc_obj, tb = sys.exc_info()
+            line_number = tb.tb_lineno
+
+            self.set_token()
+
+            error = itex
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.error(
-                f"Error fetching parameters, Error: {ex}, Line: {line_number}"
-            )
+            error = ex
 
-    async def _update_device(self, device_code: str):
+        if error is not None:
+            if attempt < API_MAX_ATTEMPTS:
+                await self._internal_update(attempt + 1)
+
+            else:
+                _LOGGER.error(
+                    f"Failed to update (Attempt #{attempt}), Error: {error}, Line: {line_number}"
+                )
+
+    async def _update_device(self, device_code: str, attempt: int = 0):
         _LOGGER.debug(f"Starting to update device: {device_code}")
 
         try:
@@ -203,21 +238,17 @@ class AquaTempAPI:
                 )
 
         except ClientResponseError as cre:
-            error_message = (
-                f"Error fetching parameters for device {device_code}, Error: "
-            )
-
             if cre.status == 401:
-                _LOGGER.warning(f"{error_message}expired token")
-
-                self.set_token()
+                raise InvalidTokenError(f"Update device: {device_code}")
 
             else:
-                _LOGGER.error(f"{error_message}{cre}")
+                raise cre
 
     def set_token(self, token: str | None = None):
         self._device_list_request_data = {}
         self._token = token
+
+        self._api_status = token is not None
 
         if token is None:
             if HTTP_HEADER_X_TOKEN in self._headers:
@@ -355,7 +386,9 @@ class AquaTempAPI:
 
         await self._perform_action(request_data, fan_pc_key)
 
-    async def _perform_action(self, request_data: dict, operation: str):
+    async def _perform_action(
+        self, request_data: dict, operation: str, attempt: int = 1
+    ):
         try:
             operation_response = await self._post_request(
                 Endpoints.DeviceControl, request_data
@@ -370,7 +403,16 @@ class AquaTempAPI:
             if cre.status == 401:
                 self.set_token()
 
-            raise cre
+                if attempt < API_MAX_ATTEMPTS:
+                    await self._connect()
+
+                    await self._perform_action(request_data, operation, attempt + 1)
+
+                else:
+                    raise InvalidTokenError(f"Perform action, Data: {request_data}")
+
+            else:
+                raise cre
 
     async def _fetch_data(self, device_code: str):
         codes = self._product_manager.get_supported_protocol_codes(device_code)
@@ -547,7 +589,9 @@ class AquaTempAPI:
         return result
 
     def get_device_data(self, device_code: str) -> dict | None:
-        device_data = self._devices.get(device_code)
+        device_data = copy(self._devices.get(device_code))
+
+        device_data[API_STATUS] = self._api_status
 
         return device_data
 
