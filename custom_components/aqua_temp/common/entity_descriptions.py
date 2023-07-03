@@ -64,6 +64,7 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
         entity_category=EntityCategory.DIAGNOSTIC,
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
+        on_value=True,
     ),
     AquaTempSelectEntityDescription(
         key="temperature_unit",
