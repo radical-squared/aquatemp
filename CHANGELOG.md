@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.14
+
+- Fix for the new capability of AquaTemp of single app to login, will re-login on every attempt to perform action / refresh
+- Add new binary sensor of `API Status` represents whether the API is authenticated (logged in) or not
+
 ## v3.0.13
 
 - Add API Type drop-down to configuration (Aqua Temp, Hitemp, Aqua Temp [=<1.5.8])

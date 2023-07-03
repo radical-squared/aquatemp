@@ -28,6 +28,8 @@ POWER_MODE_ON = "1"
 
 HEADERS = {"Content-Type": "application/json; charset=utf-8"}
 
+API_MAX_ATTEMPTS = 3
+
 DATA_ITEM_DEVICES = "device"
 DATA_ITEM_LOGIN_DETAILS = "login-details"
 DATA_ITEM_CONFIG = "configuration"
@@ -37,6 +39,8 @@ CONFIG_SET_POWER = "power"
 CONFIG_SET_TEMPERATURE = "temperature"
 CONFIG_SET_FAN = "fan"
 CONFIG_SET_CURRENT_TEMPERATURE = "current_temperature"
+
+API_STATUS = "api_status"
 
 PRODUCT_ID_DEFAULT = "default"
 

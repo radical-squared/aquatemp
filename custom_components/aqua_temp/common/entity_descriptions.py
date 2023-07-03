@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from custom_components.aqua_temp.common.consts import POWER_MODE_ON
+from custom_components.aqua_temp.common.consts import API_STATUS, POWER_MODE_ON
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntityDescription,
@@ -57,6 +57,15 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
     | AquaTempSensorEntityDescription
     | AquaTempBinarySensorEntityDescription
 ] = [
+    AquaTempBinarySensorEntityDescription(
+        key=API_STATUS,
+        name="API Status",
+        category="Status parameters",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        is_protocol_code=False,
+        device_class=BinarySensorDeviceClass.CONNECTIVITY,
+        on_value=True,
+    ),
     AquaTempSelectEntityDescription(
         key="temperature_unit",
         name="Temperature Unit",
