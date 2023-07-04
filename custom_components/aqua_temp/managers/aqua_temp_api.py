@@ -435,21 +435,27 @@ class AquaTempAPI:
         }
 
         data_response = await self._post_request(Endpoints.DeviceData, data)
-        object_result_items = data_response.get(param_object_result, [])
-
-        for object_result_item in object_result_items:
-            code = object_result_item.get("code")
-            value = object_result_item.get("value")
-
-            if value is not None and isinstance(value, str) and value == "":
-                value = None
-
-            self._devices[device_code][code] = value
-
         error_msg = data_response.get("error_msg")
 
-        if error_msg != "Success":
-            _LOGGER.error(f"Failed to fetch parameters, Error: {error_msg}")
+        object_result_items = data_response.get(param_object_result, [])
+
+        if error_msg == "Success":
+            for object_result_item in object_result_items:
+                code = object_result_item.get("code")
+                value = object_result_item.get("value")
+
+                if value is not None and isinstance(value, str) and value == "":
+                    value = None
+
+                self._devices[device_code][code] = value
+
+        else:
+            error_code = data_response.get("error_code")
+            if error_code == "-100":
+                raise InvalidTokenError(f"Fetch data for device {device_code}")
+
+            else:
+                _LOGGER.error(f"Failed to fetch parameters, Error: {error_msg}")
 
     async def _send_passthrough_instruction(self, device_code: str):
         param_device_code = self._get_api_param(APIParam.DeviceCode)
