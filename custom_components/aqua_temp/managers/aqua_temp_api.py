@@ -248,7 +248,9 @@ class AquaTempAPI:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.error(f"Failed to update device {device_code}, Error: {ex}, Line: {line_number}")
+            _LOGGER.error(
+                f"Failed to update device {device_code}, Error: {ex}, Line: {line_number}"
+            )
 
     def set_token(self, token: str | None = None):
         self._device_list_request_data = {}
