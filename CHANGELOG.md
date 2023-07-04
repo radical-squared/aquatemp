@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.15
+
+- Add log to update device
+
 ## v3.0.14
 
 - Fix for the new capability of AquaTemp of single app to login, will re-login on every attempt to perform action / refresh
