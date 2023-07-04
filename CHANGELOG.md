@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.16
+
+- Optimize error handling for fetch device data
+
 ## v3.0.15
 
 - Add log to update device
