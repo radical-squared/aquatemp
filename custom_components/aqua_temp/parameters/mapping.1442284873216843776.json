@@ -1,0 +1,37 @@
+{
+  "mode": "Mode",
+  "power": "Power",
+  "temperature": "Set_Temp",
+  "fan": "Manual-mute",
+  "current_temperature": "T2",
+  "hvac_modes": {
+    "off": {
+      "set": null,
+      "target": null,
+      "minimum": null,
+      "maximum": null
+    },
+    "cool": {
+      "set": "0",
+      "target": "R01",
+      "minimum": null,
+      "maximum": null
+    },
+    "heat": {
+      "set": "1",
+      "target": "R02",
+      "minimum": "R08",
+      "maximum": "R09"
+    },
+    "auto": {
+      "set": "2",
+      "target": "R03",
+      "minimum": "R10",
+      "maximum": "R11"
+    }
+  },
+  "fan_modes": {
+    "auto": "0",
+    "low": "1"
+  }
+}
