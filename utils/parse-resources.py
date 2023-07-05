@@ -6,6 +6,7 @@ import sys
 
 import xmltodict
 
+from custom_components.aqua_temp.common.consts import ProductParameter
 from utils.common.component_handlers import ComponentHandlers
 from utils.common.consts import CUSTOM_PARAMETERS
 from utils.devices.default.consts import PARAMETER_MAPPING as PARAMETER_MAPPING_DEFAULT
@@ -51,9 +52,12 @@ class Test:
         try:
             device_name = device.replace("device_", "")
             xml_file_path = os.path.join(os.path.dirname(__file__), f'devices\\{device}\\resources.xml')
+
+            json_file_key = f"{ProductParameter.ENTITY_DESCRIPTION}.{device_name}"
+
             json_file_path = os.path.join(
                 os.path.dirname(__file__),
-                f"..\\custom_components\\aqua_temp\\parameters\\{device_name}.json"
+                f"..\\custom_components\\aqua_temp\\parameters\\{json_file_key}.json"
             )
 
             with open(xml_file_path, encoding="utf-8") as xml_file:

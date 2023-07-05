@@ -63,5 +63,5 @@ DEVICE_CONTROL_PARAM = "param"
 
 
 class ProductParameter(StrEnum):
-    CONFIG = "config"
-    ENTITY_DESCRIPTION = "ENTITY_DESCRIPTION"
+    MAPPING = "mapping"
+    ENTITY_DESCRIPTION = "entity_description"

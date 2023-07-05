@@ -48,28 +48,26 @@ class ProductConfigurationManager:
     def initialize(self):
         try:
             self._load_entity_descriptions("default")
-            self._load_protocol_codes("default")
+            self._load_pc_mapping("default")
 
             for product_id in PRODUCT_IDS:
                 self._load_entity_descriptions(product_id)
-                self._load_protocol_codes(product_id)
+                self._load_pc_mapping(product_id)
 
-            _LOGGER.debug(
-                f"Initialized Entity Descriptions: {len(self._entity_descriptions)}"
-            )
-            _LOGGER.debug(f"Initialized protocol codes: {self._protocol_codes}")
-            _LOGGER.debug(
-                f"Initialized protocol codes configuration: {self._protocol_codes_configuration}"
-            )
-            _LOGGER.debug(f"Initialized platforms: {self.platforms}")
-            _LOGGER.debug(f"Initialized HVAC modes: {self._hvac_modes}")
-            _LOGGER.debug(
-                f"Initialized HVAC modes - reversed: {self._hvac_modes_reverse}"
-            )
-            _LOGGER.debug(f"Initialized Entity Descriptions: {self._fan_modes}")
-            _LOGGER.debug(
-                f"Initialized fan modes - reversed: {self._fan_modes_reverse}"
-            )
+            log_messages = [
+                f"Entity Descriptions: {len(self._entity_descriptions)}",
+                f"protocol codes: {len(self._protocol_codes)}",
+                f"protocol codes configuration: {len(self._protocol_codes_configuration)}",
+                f"platforms: {len(self.platforms)}",
+                f"HVAC modes: {self._hvac_modes}",
+                f"HVAC modes - reversed: {self._hvac_modes_reverse}",
+                f"Fan modes: {self._fan_modes}",
+                f"Fan modes - reversed: {self._fan_modes_reverse}",
+            ]
+
+            log_message = f"Initialized, {', '.join(log_messages)}"
+
+            _LOGGER.debug(log_message)
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -81,37 +79,39 @@ class ProductConfigurationManager:
         config = self._protocol_codes_configuration.get(product_id)
         entity_descriptions = self._entity_descriptions.get(product_id)
 
-        config_key = "default" if config is None else product_id
+        mapping_key = "default" if config is None else product_id
         entity_descriptions_key = (
             "default" if entity_descriptions is None else product_id
         )
 
         self._devices[device_code] = {
-            ProductParameter.CONFIG: config_key,
+            ProductParameter.MAPPING: mapping_key,
             ProductParameter.ENTITY_DESCRIPTION: entity_descriptions_key,
         }
 
         _LOGGER.info(
             f"Device {device_code} mapped to "
             f"Product ID {product_id}, "
-            f"Configuration: {config_key}, "
-            f"Parameters: {entity_descriptions_key}"
+            f"Mapping Key: {mapping_key}, "
+            f"Entity Description Key: {entity_descriptions_key}"
         )
 
     def get_supported_protocol_codes(self, device_code) -> list[str]:
-        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+        product_id = self._get_product_id(
+            device_code, ProductParameter.ENTITY_DESCRIPTION
+        )
         result = self._protocol_codes.get(product_id)
 
         return result
 
     def get_pc_key(self, device_code: str, key: str):
-        config = self._get_pc_configuration(device_code)
+        config = self._get_pc_mapping(device_code)
         protocol_code_key = config.get(key)
 
         return protocol_code_key
 
     def get_hvac_mode_pc_key(self, device_code: str, hvac_mode: str, key: str):
-        config = self._get_pc_configuration(device_code)
+        config = self._get_pc_mapping(device_code)
 
         hvac_modes = config.get(CONFIG_HVAC_MODES)
         hvac_mode_config = hvac_modes.get(hvac_mode)
@@ -120,21 +120,21 @@ class ProductConfigurationManager:
         return protocol_code_key
 
     def get_hvac_modes(self, device_code: str) -> list[str]:
-        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
 
         result = self._hvac_modes.get(product_id)
 
         return result
 
     def get_fan_modes(self, device_code: str) -> list[str]:
-        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
 
         result = self._fan_modes.get(product_id)
 
         return result
 
     def get_fan_reverse_mapping(self, device_code, fan_mode) -> str:
-        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
 
         fan_modes = self._fan_modes_reverse.get(product_id)
         result = fan_modes.get(fan_mode)
@@ -142,7 +142,7 @@ class ProductConfigurationManager:
         return result
 
     def get_hvac_reverse_mapping(self, device_code, hvac_mode) -> str:
-        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
 
         hvac_modes = self._hvac_modes_reverse.get(product_id)
         result = hvac_modes.get(hvac_mode)
@@ -195,10 +195,17 @@ class ProductConfigurationManager:
 
         return result
 
+    @staticmethod
+    def _get_product_file(parameter: ProductParameter, product_id):
+        config_file = f"../parameters/{parameter}.{product_id}.json"
+        file_path = os.path.join(os.path.dirname(__file__), config_file)
+
+        return file_path
+
     def _load_entity_descriptions(self, product_id: str):
         entities = copy(DEFAULT_ENTITY_DESCRIPTIONS)
-        file_path = os.path.join(
-            os.path.dirname(__file__), f"../parameters/{product_id}.json"
+        file_path = self._get_product_file(
+            ProductParameter.ENTITY_DESCRIPTION, product_id
         )
 
         if not os.path.exists(file_path):
@@ -246,10 +253,8 @@ class ProductConfigurationManager:
 
         self._entity_descriptions[product_id] = entities
 
-    def _load_protocol_codes(self, product_id: str):
-        file_path = os.path.join(
-            os.path.dirname(__file__), f"../parameters/{product_id}.config.json"
-        )
+    def _load_pc_mapping(self, product_id: str):
+        file_path = self._get_product_file(ProductParameter.MAPPING, product_id)
 
         if not os.path.exists(file_path):
             return
@@ -311,8 +316,8 @@ class ProductConfigurationManager:
 
         return product_id
 
-    def _get_pc_configuration(self, device_code) -> dict:
-        product_id = self._get_product_id(device_code, ProductParameter.CONFIG)
+    def _get_pc_mapping(self, device_code) -> dict:
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
 
         result = self._protocol_codes_configuration.get(product_id)
 

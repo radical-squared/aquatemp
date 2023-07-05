@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.17
+
+- Fix logic to extract protocol codes
+- Fix mappings of product ID 1442284873216843776
+
 ## v3.0.16
 
 - Optimize error handling for fetch device data
