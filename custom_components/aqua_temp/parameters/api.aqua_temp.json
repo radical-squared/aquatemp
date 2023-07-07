@@ -1,0 +1,20 @@
+{
+  "url": "https://cloud.linked-go.com:449/crmservice/api",
+  "user_name": "userName",
+  "user_id": "userId",
+  "suffix": "",
+  "object_result": "objectResult",
+  "keep_alive": false,
+  "product_id": "productId",
+  "product_ids": "productIds",
+  "page_index": "pageIndex",
+  "page_size": "pageSize",
+  "to_user": "toUser",
+  "device_code": "deviceCode",
+  "protocal_codes": "protocalCodes",
+  "protocol_code": "protocolCode",
+  "is_fault": "isFault",
+  "error_msg": "error_msg",
+  "device_nick_name": "deviceNickName",
+  "device_id": "deviceId"
+}

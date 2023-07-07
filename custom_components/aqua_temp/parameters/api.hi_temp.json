@@ -1,0 +1,20 @@
+{
+  "url": "https://cloud.linked-go.com/cloudservice/api",
+  "user_name": "user_name",
+  "user_id": "user_id",
+  "suffix": ".json",
+  "object_result": "object_result",
+  "keep_alive": true,
+  "product_id": "product_id",
+  "product_ids": "product_ids",
+  "page_index": "page_index",
+  "page_size": "page_size",
+  "to_user": "to_user",
+  "device_code": "device_code",
+  "protocal_codes": "protocal_codes",
+  "protocol_code": "protocol_code",
+  "is_fault": "is_fault",
+  "error_msg": "error_msg",
+  "device_nick_name": "device_nick_name",
+  "device_id": "device_id"
+}

@@ -18,64 +18,26 @@ class APIParam(StrEnum):
     DeviceCode = "device_code"
     ProtocalCodes = "protocal_codes"
     ProtocolCode = "protocol_code"
+    IsFault = "is_fault"
+    ErrorMessage = "error_msg"
+    ErrorCode = "error_code"
+    Nickname = ("device_nick_name",)
+    DeviceId = "device_id"
 
 
 class APIType(StrEnum):
-    AquaTemp = "1"
-    HiTemp = "2"
-    AquaTempOld = "99"
+    AquaTemp = "aqua_temp"
+    HiTemp = "hi_temp"
+    AquaTempOld = "aqua_temp_old"
 
 
-API_TYPES = {
-    str(APIType.AquaTemp): {
-        APIParam.URL: "https://cloud.linked-go.com:449/crmservice/api",
-        APIParam.Username: "userName",
-        APIParam.UserId: "userId",
-        APIParam.Suffix: "",
-        APIParam.ObjectResult: "objectResult",
-        APIParam.KeepAlive: False,
-        APIParam.ProductId: "productId",
-        APIParam.ProductIds: "productIds",
-        APIParam.PageIndex: "pageIndex",
-        APIParam.PageSize: "pageSize",
-        APIParam.ToUser: "toUser",
-        APIParam.DeviceCode: "deviceCode",
-        APIParam.ProtocalCodes: "protocalCodes",
-        APIParam.ProtocolCode: "protocolCode",
-    },
-    str(APIType.HiTemp): {
-        APIParam.URL: "https://cloud.linked-go.com/cloudservice/api",
-        APIParam.Username: "user_name",
-        APIParam.UserId: "user_id",
-        APIParam.Suffix: ".json",
-        APIParam.ObjectResult: "object_result",
-        APIParam.KeepAlive: True,
-        APIParam.ProductId: "product_id",
-        APIParam.ProductIds: "product_ids",
-        APIParam.PageIndex: "page_index",
-        APIParam.PageSize: "page_size",
-        APIParam.ToUser: "to_user",
-        APIParam.DeviceCode: "device_code",
-        APIParam.ProtocalCodes: "protocal_codes",
-        APIParam.ProtocolCode: "protocol_code",
-    },
-    str(APIType.AquaTempOld): {
-        APIParam.URL: "https://cloud.linked-go.com/cloudservice/api",
-        APIParam.Username: "user_name",
-        APIParam.UserId: "user_id",
-        APIParam.Suffix: ".json",
-        APIParam.ObjectResult: "object_result",
-        APIParam.KeepAlive: True,
-        APIParam.ProductId: "product_id",
-        APIParam.ProductIds: "product_ids",
-        APIParam.PageIndex: "page_index",
-        APIParam.PageSize: "page_size",
-        APIParam.ToUser: "to_user",
-        APIParam.DeviceCode: "device_code",
-        APIParam.ProtocalCodes: "protocal_codes",
-        APIParam.ProtocolCode: "protocol_code",
-    },
+API_TYPE_LEGACY = {
+    "1": APIType.AquaTemp,
+    "2": APIType.HiTemp,
+    "99": APIType.AquaTempOld,
 }
+
+API_TYPES = [str(t) for t in list(API_TYPE_LEGACY.values())]
 
 DEVICE_REQUEST_PARAMETERS = {
     APIParam.ProductIds: PRODUCT_IDS,

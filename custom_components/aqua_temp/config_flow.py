@@ -10,7 +10,6 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.helpers import selector
 
-from . import ProductConfigurationManager
 from .common.api_types import API_TYPES
 from .common.consts import CONF_API_TYPE, DEFAULT_NAME, DOMAIN
 from .common.exceptions import LoginError
@@ -38,9 +37,7 @@ class DomainFlowHandler(config_entries.ConfigFlow):
 
         if user_input is not None:
             try:
-                username = user_input.get(CONF_USERNAME)
                 password = user_input.get(CONF_PASSWORD)
-                account_type = user_input.get(CONF_API_TYPE)
 
                 password_bytes = bytes(password, "utf-8")
 
@@ -49,21 +46,16 @@ class DomainFlowHandler(config_entries.ConfigFlow):
 
                 password_hashed = md5hash.hexdigest()
 
+                user_input[CONF_PASSWORD] = password_hashed
+
                 config_manager = AquaTempConfigManager(self.hass, None)
-                config_manager.update_credentials(
-                    username, password_hashed, account_type
-                )
+                config_manager.update_credentials(user_input)
 
-                product_manager = ProductConfigurationManager()
-                product_manager.initialize()
-
-                api = AquaTempAPI(self.hass, config_manager, product_manager)
+                api = AquaTempAPI(self.hass, config_manager)
 
                 await api.initialize(True)
 
                 _LOGGER.debug("User inputs are valid")
-
-                user_input[CONF_PASSWORD] = password_hashed
 
                 return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
             except LoginError:
@@ -79,7 +71,7 @@ class DomainFlowHandler(config_entries.ConfigFlow):
             vol.Required(CONF_PASSWORD): str,
             vol.Required(CONF_API_TYPE): selector.SelectSelector(
                 selector.SelectSelectorConfig(
-                    options=list(API_TYPES.keys()),
+                    options=API_TYPES,
                     translation_key=CONF_API_TYPE,
                 ),
             ),

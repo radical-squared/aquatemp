@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.18
+
+- Add more parameters to API type configuration
+- Extract model for HA DeviceInfo from API
+
 ## v3.0.17
 
 - Fix logic to extract protocol codes

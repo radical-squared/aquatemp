@@ -14,7 +14,6 @@ from homeassistant.helpers.entity import EntityDescription
 
 @dataclass(slots=True)
 class AquaTempEntityDescription(EntityDescription):
-    category: str | None = None
     platform: Platform | None = None
     is_protocol_code: bool = True
 
@@ -60,38 +59,40 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
     AquaTempBinarySensorEntityDescription(
         key=API_STATUS,
         name="API Status",
-        category="Status parameters",
         entity_category=EntityCategory.DIAGNOSTIC,
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         on_value=True,
+        translation_key=API_STATUS
     ),
     AquaTempSelectEntityDescription(
         key="temperature_unit",
         name="Temperature Unit",
-        category="Status parameters",
         options=[UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT],
         entity_category=EntityCategory.CONFIG,
         is_protocol_code=False,
+        translation_key="temperature_unit"
     ),
     AquaTempBinarySensorEntityDescription(
         key="is_fault",
         name="Fault",
-        category="Status parameters",
         on_value=POWER_MODE_ON,
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.PROBLEM,
         attributes=["fault"],
+        translation_key="is_fault"
     ),
     AquaTempBinarySensorEntityDescription(
         key="device_status",
         name="Status",
-        category="Status parameters",
         on_value="ONLINE",
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
+        translation_key="device_status"
     ),
     AquaTempClimateEntityDescription(
-        key="Mode", name="HVAC Mode", category="Control parameters"
+        key="Mode",
+        name="HVAC Mode",
+        translation_key="mode"
     ),
 ]

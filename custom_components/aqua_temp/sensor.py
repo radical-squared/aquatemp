@@ -21,9 +21,9 @@ async def async_setup_entry(
     def _create(
         device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
     ) -> AquaTempSensorEntity:
-        product_configuration_manager = coordinator.product_configuration_manager
+        config_manager = coordinator.config_manager
 
-        entity_description = product_configuration_manager.find_entity_description(
+        entity_description = config_manager.find_entity_description(
             device_code, entity_description_key, Platform.SENSOR
         )
 

@@ -77,8 +77,8 @@ class Test:
 
                         parameters.extend(category_parameters)
 
-                with open(json_file_path, "w+") as json_file:
-                    json_file.write(json.dumps(parameters, indent=4))
+                # with open(json_file_path, "w+") as json_file:
+                #    json_file.write(json.dumps(parameters, indent=4))
 
                 _LOGGER.info(f"{device_name}: {parameters}")
 
