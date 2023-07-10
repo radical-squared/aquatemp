@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.19
+
+- Fix error handling when fetch data failed
+
 ## v3.0.18
 
 - Add more parameters to API type configuration
