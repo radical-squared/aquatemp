@@ -9,12 +9,11 @@ from .common.exceptions import LoginError
 from .managers.aqua_temp_api import AquaTempAPI
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
-from .managers.product_config_manager import ProductConfigurationManager
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup(hass, config):
+async def async_setup(_hass, _config):
     return True
 
 
@@ -23,23 +22,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     initialized = False
 
     try:
-        product_configuration_manager = ProductConfigurationManager()
-        product_configuration_manager.initialize()
-
         config_manager = AquaTempConfigManager(hass, entry)
         await config_manager.initialize()
 
-        api = AquaTempAPI(hass, config_manager, product_configuration_manager)
+        api = AquaTempAPI(hass, config_manager)
         await api.initialize()
 
-        coordinator = AquaTempCoordinator(
-            hass, api, config_manager, product_configuration_manager
-        )
+        coordinator = AquaTempCoordinator(hass, api, config_manager)
 
         hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
         await hass.config_entries.async_forward_entry_setups(
-            entry, product_configuration_manager.platforms
+            entry, config_manager.platforms
         )
 
         _LOGGER.info(f"Start loading {DOMAIN} integration, Entry ID: {entry.entry_id}")
@@ -68,7 +62,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     coordinator: AquaTempCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    platforms = coordinator.product_configuration_manager.platforms
+    platforms = coordinator.config_manager.platforms
 
     for platform in platforms:
         await hass.config_entries.async_forward_entry_unload(entry, platform)

@@ -29,9 +29,9 @@ async def async_setup_entry(
     def _create(
         device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
     ) -> AquaTempClimateEntity:
-        product_configuration_manager = coordinator.product_configuration_manager
+        config_manager = coordinator.config_manager
 
-        entity_description = product_configuration_manager.find_entity_description(
+        entity_description = config_manager.find_entity_description(
             device_code, entity_description_key, Platform.CLIMATE
         )
 
@@ -45,9 +45,8 @@ async def async_setup_entry(
     @callback
     def _async_device_new(device_code):
         coordinator = hass.data[DOMAIN][entry.entry_id]
-        product_configuration_manager = coordinator.product_configuration_manager
 
-        product_configuration_manager.async_handle_discovered_device(
+        coordinator.config_manager.async_handle_discovered_device(
             device_code,
             coordinator,
             Platform.CLIMATE,

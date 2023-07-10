@@ -4,11 +4,13 @@ import logging
 import os
 import sys
 
-from custom_components.aqua_temp import ProductConfigurationManager
+from custom_components.aqua_temp.common.api_types import APIType
+from custom_components.aqua_temp.common.consts import CONF_API_TYPE
 from custom_components.aqua_temp.managers.aqua_temp_api import AquaTempAPI
 from custom_components.aqua_temp.managers.aqua_temp_config_manager import (
     AquaTempConfigManager,
 )
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 
 DEBUG = str(os.environ.get("DEBUG", False)).lower() == str(True).lower()
 USERNAME = os.environ.get("USERNAME", False)
@@ -30,16 +32,25 @@ _LOGGER = logging.getLogger(__name__)
 
 class Test:
     def __init__(self):
-        self._product_config_manager = ProductConfigurationManager()
-
         config_manager = AquaTempConfigManager(None, None)
-        config_manager.update_credentials(USERNAME, PASSWORD)
-        self._api = AquaTempAPI(None, config_manager, self._product_config_manager)
+
+        data = {
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD,
+            CONF_API_TYPE: str(APIType.AquaTemp)
+        }
+
+        config_manager.update_credentials(data)
+
+        self._config_manager = config_manager
+        self._api = AquaTempAPI(None, config_manager)
 
     async def parameters_list(self):
         await self._api.initialize()
 
     async def list_data(self):
+        await self._config_manager.initialize()
+
         await self._api.initialize()
 
         await self._api.update()
