@@ -35,9 +35,8 @@ async def async_setup_entry(
     @callback
     def _async_device_new(device_code):
         coordinator = hass.data[DOMAIN][entry.entry_id]
-        product_configuration_manager = coordinator.product_configuration_manager
 
-        product_configuration_manager.async_handle_discovered_device(
+        coordinator.config_manager.async_handle_discovered_device(
             device_code,
             coordinator,
             Platform.SELECT,

@@ -18,9 +18,9 @@
   "selector": {
     "api_type": {
       "options": {
-        "1": "Aqua Temp",
-        "2": "HiTemp",
-        "99": "Aqua Temp (=<1.5.8)"
+        "aqua_temp": "Aqua Temp",
+        "hi_temp": "HiTemp",
+        "aqua_temp_old": "Aqua Temp (=<1.5.8)"
       }
     }
   },
