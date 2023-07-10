@@ -1,9 +1,10 @@
-# Home Assistant Aquatemp Heat Pump Climate Entity (custom component)
+# Home Assistant Aqua Temp & Hi Temp Heat Pumps
 
-This is Home Assistant's custom climate entity to control AquaTemp-compatible heat pumps through AquaTemp cloud API.
+This is Home Assistant's an integration for PHINX Aqua Temp / HiTemp compatible heat pumps.
 It allows controlling temperature, HVAC mode (heat, cool, auto, off) and fan mode (low, auto).
-It also reports temperatures, status, faults through binary sensors and sensors.
-AquaTemp's cloud protocol is based on dst6se's https://github.com/dst6se/aquatemp project with additional functionality.
+It also reports all parameters available in sensors and sensors.
+
+AquaTemp's cloud protocol is based on [aquatemp](https://github.com/dst6se/aquatemp) project with additional functionality.
 
 [Changelog](https://github.com/radical-squared/aquatemp/blob/master/CHANGELOG.md)
 
@@ -11,7 +12,12 @@ AquaTemp's cloud protocol is based on dst6se's https://github.com/dst6se/aquatem
 
 #### Requirements
 
-- Account for AquaTemp
+Account for AquaTemp / HiTemp
+
+##### Shared device to avoid token expiration when using the App parallel to Integration
+
+Aqua Temp / Hi Temp introduced in v1.5.9 single login "feature" by default, meaning, only one device can be logged in,
+Following a recommendation from [@dodg3r](https://github.com/@dodg3r) & [@kopierschnitte](https://github.com/@kopierschnitte), you can avoid it by creating additional account and sharing the device with that new account.
 
 #### Switching from 1.x/2.x to 3.x
 
@@ -106,6 +112,11 @@ logger:
   logs:
     custom_components.aqua_temp: debug
 ```
+
+Or use the HA capability in device page:
+Settings -> Devices & Services -> Aqua Temp -> 3 dots menu -> Enable debug logging
+When done and would like to extract the log:
+Settings -> Devices & Services -> Aqua Temp -> 3 dots menu -> Disable debug logging
 
 Please attach also diagnostic details of the integration, available in:
 Settings -> Devices & Services -> Aqua Temp -> 3 dots menu -> Download diagnostics
