@@ -1,4 +1,5 @@
 """Platform for climate integration."""
+from asyncio import sleep
 from copy import copy
 import logging
 import sys
@@ -165,6 +166,8 @@ class AquaTempAPI:
 
         if error is not None:
             if attempt < API_MAX_ATTEMPTS:
+                await sleep(1000)
+
                 await self._internal_update(attempt + 1)
 
             else:
@@ -208,14 +211,6 @@ class AquaTempAPI:
 
             else:
                 raise cre
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.error(
-                f"Failed to update device {device_code}, Error: {ex}, Line: {line_number}"
-            )
 
     def set_token(self, token: str | None = None):
         self._device_list_request_data = {}
