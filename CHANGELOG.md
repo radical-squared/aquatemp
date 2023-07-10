@@ -4,6 +4,7 @@
 
 - Add more parameters to API type configuration
 - Extract model for HA DeviceInfo from API
+- Add translation key to all components with name ready for translation
 
 ## v3.0.17
 

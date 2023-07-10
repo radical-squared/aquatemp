@@ -1,4 +1,5 @@
 from copy import copy
+import json
 import logging
 import os
 import sys
@@ -35,6 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 class Test:
     def __init__(self):
         self._component_handlers = ComponentHandlers()
+        self._translation_keys = {}
 
         self._devices = {
             "default": PARAMETER_MAPPING_DEFAULT,
@@ -46,6 +48,8 @@ class Test:
         for device in self._devices:
             parameter_mapping = self._devices[device]
             self.initialize_file(device, parameter_mapping)
+
+        _LOGGER.info(json.dumps(self._translation_keys, indent=4))
 
     def initialize_file(self, device, parameter_mapping):
         try:
@@ -78,6 +82,15 @@ class Test:
 
                 # with open(json_file_path, "w+") as json_file:
                 #    json_file.write(json.dumps(parameters, indent=4))
+
+                for parameter in parameters:
+                    parameter_key = parameter.get("key")
+                    parameter_name = parameter.get("name")
+
+                    key = f"{device_name}_{parameter_key}".lower()
+                    self._translation_keys[key] = {
+                        "name": parameter_name
+                    }
 
                 _LOGGER.info(f"{device_name}: {parameters}")
 

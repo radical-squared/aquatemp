@@ -299,8 +299,8 @@ class AquaTempConfigManager:
 
             for data_item in json_data:
                 platform = data_item.get("platform")
-                key: str = data_item.get("key")
-                translation_key: str = f"{product_id}_{key.lower()}"
+                key = data_item.get("key")
+                translation_key = f"{product_id}_{key}".lower()
 
                 if platform == Platform.SENSOR:
                     sensor_entity = AquaTempSensorEntityDescription(
@@ -328,9 +328,7 @@ class AquaTempConfigManager:
 
                 else:
                     entity = AquaTempEntityDescription(
-                        key=key,
-                        name=data_item.get("name"),
-                        translation_key=translation_key,
+                        key=key, name=data_item.get("name")
                     )
 
                     entities.append(entity)

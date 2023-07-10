@@ -23,5 +23,1326 @@
         "99": "Aqua Temp (=<1.5.8)"
       }
     }
+  },
+  "entity": {
+    "binary_sensor": {
+      "api_status": {
+        "name": "API Status"
+      },
+      "is_fault": {
+        "name": "Fault"
+      },
+      "device_status": {
+        "name": "Status"
+      }
+    },
+    "climate": {
+      "Mode": {
+        "name": "HVAC Mode"
+      }
+    },
+    "select": {
+      "temperature_unit": {
+        "name": "Temperature Unit"
+      }
+    },
+    "sensor": {
+      "default_power": {
+        "name": "Power"
+      },
+      "default_mode": {
+        "name": "Mode"
+      },
+      "default_manual-mute": {
+        "name": "Manual-mute"
+      },
+      "default_set_temp": {
+        "name": "Set_Temp"
+      },
+      "default_2074": {
+        "name": "2074"
+      },
+      "default_2075": {
+        "name": "2075"
+      },
+      "default_2076": {
+        "name": "2076"
+      },
+      "default_2077": {
+        "name": "2077"
+      },
+      "default_1158": {
+        "name": "1158"
+      },
+      "default_1159": {
+        "name": "1159"
+      },
+      "default_2064": {
+        "name": "2064"
+      },
+      "default_ver": {
+        "name": "Version"
+      },
+      "default_software_code": {
+        "name": "Software Code"
+      },
+      "default_d01": {
+        "name": "Stat Defrosting Temp [D01]"
+      },
+      "default_d01-bar": {
+        "name": "Start setp. [D01-bar]"
+      },
+      "default_d02": {
+        "name": "End Defrosting Temp [D02]"
+      },
+      "default_d03": {
+        "name": "Defrosting Cycle [D03]"
+      },
+      "default_d04": {
+        "name": "Max. Duration [D04]"
+      },
+      "default_d06": {
+        "name": "Defrost type [D06]"
+      },
+      "default_d07": {
+        "name": "Out Temp when Defrost [D07]"
+      },
+      "default_d08": {
+        "name": "Defrost Coil Temp. Deviation [D08]"
+      },
+      "default_d08-bar": {
+        "name": "Compensation offset [D08-bar]"
+      },
+      "default_d09": {
+        "name": "Defrost out Temp. Deviation [D09]"
+      },
+      "default_d10": {
+        "name": "Defrost ending coil temp. [D10]"
+      },
+      "default_d10-bar": {
+        "name": "Defrost ending pressure. [D10-bar]"
+      },
+      "default_e01": {
+        "name": "EEV Mode [E01]"
+      },
+      "default_e02": {
+        "name": "Super Heat [E02]"
+      },
+      "default_e03": {
+        "name": "Init. Place [E03]"
+      },
+      "default_e04": {
+        "name": "Min. Place [E04]"
+      },
+      "default_e05": {
+        "name": "Defrost Place [E05]"
+      },
+      "default_e06": {
+        "name": "Cooling Place [E06]"
+      },
+      "default_e07": {
+        "name": "EEV exhaust set temp. [E07]"
+      },
+      "default_e09": {
+        "name": "EEV step proportion value [E09]"
+      },
+      "default_e10": {
+        "name": "EEV step integral value [E10]"
+      },
+      "default_e11": {
+        "name": "EEV step differential value [E11]"
+      },
+      "default_e12": {
+        "name": "Super heatcompen. differ. [E12]"
+      },
+      "default_f01": {
+        "name": "Speed [F01]"
+      },
+      "default_f02": {
+        "name": "Max. cool [F02]"
+      },
+      "default_f02-bar": {
+        "name": "Cooling high speed pressure [F02-bar]"
+      },
+      "default_f03": {
+        "name": "Min. cool [F03]"
+      },
+      "default_f03-bar": {
+        "name": "Cooling low speed pressure [F03-bar]"
+      },
+      "default_f04": {
+        "name": "Stop cool [F04]"
+      },
+      "default_f04-bar": {
+        "name": "Cooling motor off pressure [F04-bar]"
+      },
+      "default_f05": {
+        "name": "Max. heat [F05]"
+      },
+      "default_f05-bar": {
+        "name": "Heating high speed pressure [F05-bar]"
+      },
+      "default_f06": {
+        "name": "Min. heat [F06]"
+      },
+      "default_f06-bar": {
+        "name": "Heating low speed pressure [F06-bar]"
+      },
+      "default_f07": {
+        "name": "Stop heat [F07]"
+      },
+      "default_f07-bar": {
+        "name": "Heating motor off pressure [F07-bar]"
+      },
+      "default_f10": {
+        "name": "Ctrl. probe [F10]"
+      },
+      "default_f11": {
+        "name": "Heating Max. Duty Ratio [F11]"
+      },
+      "default_f11-r": {
+        "name": "Fan Motor Heat Max. Speed [F11-r]"
+      },
+      "default_f12": {
+        "name": "Cooling Fan Duty Ratio [F12]"
+      },
+      "default_f12-r": {
+        "name": "Cooling Fan Motor Speed [F12-r]"
+      },
+      "default_f13": {
+        "name": "Heating Min. fan duty ratio [F13]"
+      },
+      "default_f13-r": {
+        "name": "Fan Motor Min. Speed in Heating [F13-r]"
+      },
+      "default_f14": {
+        "name": "Timer Mute Start [F14]"
+      },
+      "default_f15": {
+        "name": "Timer Mute End [F15]"
+      },
+      "default_f16": {
+        "name": "Duty Ratio of Mute Mode [F16]"
+      },
+      "default_f16-r": {
+        "name": "Mute Mode Speed [F16-r]"
+      },
+      "default_f17": {
+        "name": "Timer Mute ON/OFF [F17]"
+      },
+      "default_f18": {
+        "name": "Manual Fan motor Speed [F18]"
+      },
+      "default_f19": {
+        "name": "AC Fan Rated Duty Ratio [F19]"
+      },
+      "default_f19-r": {
+        "name": "DC/EC Fan Rated Speed [F19-r]"
+      },
+      "default_f20": {
+        "name": "PWM Detect/Antifreeze Temp. [F20]"
+      },
+      "default_h01": {
+        "name": "Power Down Memory [H01]"
+      },
+      "default_h02": {
+        "name": "Mode Type [H02]"
+      },
+      "default_h03": {
+        "name": "Temperature Unit [H03]"
+      },
+      "default_h06": {
+        "name": "Heating Min. frequency [H06]"
+      },
+      "default_h07": {
+        "name": "Cooling Min. frequency [H07]"
+      },
+      "default_h08": {
+        "name": "Heating Max frequency [H08]"
+      },
+      "default_h09": {
+        "name": "Cooling Max frequency [H09]"
+      },
+      "default_h10": {
+        "name": "Delay off time [H10]"
+      },
+      "default_h11": {
+        "name": "Auto mode restarting time [H11]"
+      },
+      "default_h12": {
+        "name": "Compressor type [H12]"
+      },
+      "default_h13": {
+        "name": "Comp. Defrost Frequency [H13]"
+      },
+      "default_h14": {
+        "name": "Frequency Cycle of 0.2\u2103 [H14]"
+      },
+      "default_h15": {
+        "name": "Comp. Overcurren Protect [H15]"
+      },
+      "default_h16": {
+        "name": "Refrigerant Type [H16]"
+      },
+      "default_h17": {
+        "name": "Cool start Compen. Low temp. [H17]"
+      },
+      "default_h18": {
+        "name": "Cool stop Compen. Low temp. [H18]"
+      },
+      "default_h19": {
+        "name": "Cool Max. Frequency low temp. [H19]"
+      },
+      "default_h20": {
+        "name": "Cool start Compen. high temp. [H20]"
+      },
+      "default_h21": {
+        "name": "Cool stop Compen. High temp. [H21]"
+      },
+      "default_h22": {
+        "name": "Cool stop Frequency high temp. [H22]"
+      },
+      "default_h23": {
+        "name": "Heat start Compen.low temp. [H23]"
+      },
+      "default_h24": {
+        "name": "Heat stop Compen.low temp. [H24]"
+      },
+      "default_h25": {
+        "name": "Heat Max.frequency low temp [H25]"
+      },
+      "default_h26": {
+        "name": "Heat start Compen.high temp. [H26]"
+      },
+      "default_h27": {
+        "name": "Heat stop Compen.high temp. [H27]"
+      },
+      "default_h28": {
+        "name": "Heat Max.frequency high temp. [H28]"
+      },
+      "default_h29": {
+        "name": "Max. Pressure Sensor Value [H29]"
+      },
+      "default_h30": {
+        "name": "Min. Pressure Sensor Value [H30]"
+      },
+      "default_h31": {
+        "name": "Ambient temp. before commpen. [H31]"
+      },
+      "default_h32": {
+        "name": "Ambient temp. after commpen. [H32]"
+      },
+      "default_h33": {
+        "name": "Max. Frequency silent comp. [H33]"
+      },
+      "default_h34": {
+        "name": "Comp. stop. [H34]"
+      },
+      "default_h35": {
+        "name": "Temp Difference of Start Freq. [H35]"
+      },
+      "default_h36": {
+        "name": "Start Frequency [H36]"
+      },
+      "default_h37": {
+        "name": "Unit Address [H37]"
+      },
+      "default_h38": {
+        "name": "Pressure Measurement [H38]"
+      },
+      "default_h39": {
+        "name": "Resonance 1 [H39]"
+      },
+      "default_h40": {
+        "name": "Resonance 2 [H40]"
+      },
+      "default_h41": {
+        "name": "Resonance 3 [H41]"
+      },
+      "default_h42": {
+        "name": "Fast Test Mode [H42]"
+      },
+      "default_h43": {
+        "name": "Dual Coil [H43]"
+      },
+      "default_o01": {
+        "name": "Compressor [O01]"
+      },
+      "default_o02": {
+        "name": "High fan [O02]"
+      },
+      "default_o03": {
+        "name": "Low fan [O03]"
+      },
+      "default_o04": {
+        "name": "Circulate pump [O04]"
+      },
+      "default_o05": {
+        "name": "4-way valve [O05]"
+      },
+      "default_o06": {
+        "name": "Exp. Valve [O06]"
+      },
+      "default_o07": {
+        "name": "Comp. Output frequency [O07]"
+      },
+      "default_o08": {
+        "name": "Compressor current [O08]"
+      },
+      "default_o09": {
+        "name": "IPM Temp. [O09]"
+      },
+      "default_p01": {
+        "name": "Mode [P01]"
+      },
+      "default_p02": {
+        "name": "Interval [P02]"
+      },
+      "default_p03": {
+        "name": "Duration [P03]"
+      },
+      "default_p04": {
+        "name": "Advance [P04]"
+      },
+      "default_p05": {
+        "name": "Water pump filtration [P05]"
+      },
+      "default_p06": {
+        "name": "Water Pump Filtration start Time1 [P06]"
+      },
+      "default_p07": {
+        "name": "Water Pump Filtration End Time1 [P07]"
+      },
+      "default_p08": {
+        "name": "Water Pump Filtration start Time2 [P08]"
+      },
+      "default_p09": {
+        "name": "Water Pump Filtration End Time 2 [P09]"
+      },
+      "default_r01": {
+        "name": "Cooling set [R01]"
+      },
+      "default_r02": {
+        "name": "Heating set [R02]"
+      },
+      "default_r03": {
+        "name": "Auto. Set [R03]"
+      },
+      "default_r04": {
+        "name": "Temp Difference [R04]"
+      },
+      "default_r05": {
+        "name": "Power Off Temp Difference [R05]"
+      },
+      "default_r08": {
+        "name": "Min. cool [R08]"
+      },
+      "default_r09": {
+        "name": "Max. cool [R09]"
+      },
+      "default_r10": {
+        "name": "Min. heat [R10]"
+      },
+      "default_r11": {
+        "name": "Max. heat [R11]"
+      },
+      "default_r12": {
+        "name": "Power on Difference [R12]"
+      },
+      "default_s01": {
+        "name": "HP switch [S01]"
+      },
+      "default_s02": {
+        "name": "LP switch [S02]"
+      },
+      "default_s03": {
+        "name": "Flow switch [S03]"
+      },
+      "default_s04": {
+        "name": "Remote switch [S04]"
+      },
+      "default_s05": {
+        "name": "Mode switch [S05]"
+      },
+      "default_s06": {
+        "name": "Master/Slave switch [S06]"
+      },
+      "default_t01": {
+        "name": "Suction Temp. [T01]"
+      },
+      "default_t02": {
+        "name": "Inlet water Temp. [T02]"
+      },
+      "default_t03": {
+        "name": "Outlet water Temp. [T03]"
+      },
+      "default_t04": {
+        "name": "Coil 1 Temp. [T04]"
+      },
+      "default_t05": {
+        "name": "Ambient Temp. [T05]"
+      },
+      "default_t06": {
+        "name": "Exhaust Temp. [T06]"
+      },
+      "default_t07": {
+        "name": "Compressor current Detect [T07]"
+      },
+      "default_t08": {
+        "name": "AC Fan Output [T08]"
+      },
+      "default_t09": {
+        "name": "Flow Rate Input [T09]"
+      },
+      "default_t10": {
+        "name": "Pressure Sensor [T10]"
+      },
+      "default_t11": {
+        "name": "Super heat [T11]"
+      },
+      "default_t12": {
+        "name": "Target speed of fan motor [T12]"
+      },
+      "default_t13": {
+        "name": "Over heat after commpen. [T13]"
+      },
+      "default_t14": {
+        "name": "Inverter plate AC voltage [T14]"
+      },
+      "default_t15": {
+        "name": "Antifreeze Temp. [T15]"
+      },
+      "default_t16": {
+        "name": "EC Fan motor Speed [T16]"
+      },
+      "default_t17": {
+        "name": "Speed of fan motor1 [T17]"
+      },
+      "default_t18": {
+        "name": "Speed of fan motor2 [T18]"
+      },
+      "default_t19": {
+        "name": "Buses voltage [T19]"
+      },
+      "default_t20": {
+        "name": "Limited Frequency Protect State [T20]"
+      },
+      "default_t21": {
+        "name": "Frequency Reduction Protect State [T21]"
+      },
+      "default_t22": {
+        "name": "Coil 2 Temp. [T22]"
+      },
+      "default_t23": {
+        "name": "driver board running state 1 [T23]"
+      },
+      "default_t24": {
+        "name": "driver board running state 2 [T24]"
+      },
+      "default_t25": {
+        "name": "driver board running state 3 [T25]"
+      },
+      "default_t26": {
+        "name": "driver board running state 4 [T26]"
+      },
+      "default_t27": {
+        "name": "driver board running state 5 [T27]"
+      },
+      "default_t28": {
+        "name": "Target frequency [T28]"
+      },
+      "1245226668902080512_power": {
+        "name": "Power"
+      },
+      "1245226668902080512_mode": {
+        "name": "Mode"
+      },
+      "1245226668902080512_manual-mute": {
+        "name": "Manual-mute"
+      },
+      "1245226668902080512_set_temp": {
+        "name": "Set_Temp"
+      },
+      "1245226668902080512_2074": {
+        "name": "2074"
+      },
+      "1245226668902080512_2075": {
+        "name": "2075"
+      },
+      "1245226668902080512_2076": {
+        "name": "2076"
+      },
+      "1245226668902080512_2077": {
+        "name": "2077"
+      },
+      "1245226668902080512_1158": {
+        "name": "1158"
+      },
+      "1245226668902080512_1159": {
+        "name": "1159"
+      },
+      "1245226668902080512_2064": {
+        "name": "2064"
+      },
+      "1245226668902080512_ver": {
+        "name": "Version"
+      },
+      "1245226668902080512_software_code": {
+        "name": "Software Code"
+      },
+      "1245226668902080512_/01": {
+        "name": "Usage of OUT 05 [/01]"
+      },
+      "1245226668902080512_/02": {
+        "name": "Usage of OUT 06 [/02]"
+      },
+      "1245226668902080512_d01": {
+        "name": "Defrosting startup temp [D01]"
+      },
+      "1245226668902080512_d02": {
+        "name": "Defrosting shutdown temp [D02]"
+      },
+      "1245226668902080512_d03": {
+        "name": "Duration of defrosting [D03]"
+      },
+      "1245226668902080512_d04": {
+        "name": "Longest duration of defrosting [D04]"
+      },
+      "1245226668902080512_d05": {
+        "name": "Shortest duration of defrosting [D05]"
+      },
+      "1245226668902080512_d06": {
+        "name": "Defrosting way [D06]"
+      },
+      "1245226668902080512_d07": {
+        "name": "Intelligent defrosting judgement [D07]"
+      },
+      "1245226668902080512_e01": {
+        "name": "EEV adjustment mode [E01]"
+      },
+      "1245226668902080512_e02": {
+        "name": "Target degree of supreheat [E02]"
+      },
+      "1245226668902080512_e03": {
+        "name": "Original position of EEV [E03]"
+      },
+      "1245226668902080512_e04": {
+        "name": "Minimal opening position of EEV [E04]"
+      },
+      "1245226668902080512_e05": {
+        "name": "Position of EEV for defrosting [E05]"
+      },
+      "1245226668902080512_g01": {
+        "name": "Disinfection target temp [G01]"
+      },
+      "1245226668902080512_g02": {
+        "name": "Duration of disinfection [G02]"
+      },
+      "1245226668902080512_g03": {
+        "name": "Startup point of disinfection [G03]"
+      },
+      "1245226668902080512_g04": {
+        "name": "Circle of disinfection [G04]"
+      },
+      "1245226668902080512_h01": {
+        "name": "Remenber the status of device when power down [H01]"
+      },
+      "1245226668902080512_h03": {
+        "name": "Heating source [H03]"
+      },
+      "1245226668902080512_h07": {
+        "name": "Temperature unit [H07]"
+      },
+      "1245226668902080512_h30": {
+        "name": "Device address [H30]"
+      },
+      "1245226668902080512_h31": {
+        "name": "Intelligent control mode [H31]"
+      },
+      "1245226668902080512_h32": {
+        "name": "Circle of submitting data to Cloud [H32]"
+      },
+      "1245226668902080512_h98": {
+        "name": "Adjustable range of target temperature [H98]"
+      },
+      "1245226668902080512_h99": {
+        "name": "Compensate to the shown temp [H99]"
+      },
+      "1245226668902080512_n01": {
+        "name": "The sensor to control solar water pump [N01]"
+      },
+      "1245226668902080512_n02": {
+        "name": "Longest running time of solar water pump [N02]"
+      },
+      "1245226668902080512_n03": {
+        "name": "Temp hysteresis of solar water pump [N03]"
+      },
+      "1245226668902080512_n04": {
+        "name": "Activate the nighttime temp decreases mode [N04]"
+      },
+      "1245226668902080512_n05": {
+        "name": "Startup point of the nighttime temp decreases mode [N05]"
+      },
+      "1245226668902080512_n06": {
+        "name": "Shutdown point of the nighttime temp decreases mode [N06]"
+      },
+      "1245226668902080512_n07": {
+        "name": "Startup temp of decreasing solar water temp [N07]"
+      },
+      "1245226668902080512_n08": {
+        "name": "Temp hysteresis of stopping decreasing solar water temp [N08]"
+      },
+      "1245226668902080512_n09": {
+        "name": "Solar water releasing temp [N09]"
+      },
+      "1245226668902080512_n10": {
+        "name": "Shutdown temp of solar water pump [N10]"
+      },
+      "1245226668902080512_n11": {
+        "name": "Working mode of solar water pump [N11]"
+      },
+      "1245226668902080512_r01": {
+        "name": "Target temp [R01]"
+      },
+      "1245226668902080512_r03": {
+        "name": "Hysteresis of heat pump startup(bottom sensor) [R03]"
+      },
+      "1245226668902080512_r04": {
+        "name": "Enable R05 as setpoint of booster? [R04]"
+      },
+      "1245226668902080512_r05": {
+        "name": "Setpoint of booster [R05]"
+      },
+      "1245226668902080512_r06": {
+        "name": "Booster startup delay [R06]"
+      },
+      "1245226668902080512_r07": {
+        "name": "Booster replaces heat pump? [R07]"
+      },
+      "1245226668902080512_r08": {
+        "name": "Setpoint of ambient temp to activate booster to replace heat pump [R08]"
+      },
+      "1245226668902080512_r09": {
+        "name": "Setpoint of ambient temp to activate booster without delay [R09]"
+      },
+      "1245226668902080512_r10": {
+        "name": "Setpoint of ambient temp to activate booster with delay [R10]"
+      },
+      "1245226668902080512_r12": {
+        "name": "Ambient temp of shutting down compressor compulsively [R12]"
+      },
+      "1245226668902080512_r14": {
+        "name": "The target temp of second heating source [R14]"
+      },
+      "1245226668902080512_r15": {
+        "name": "Maximal ambient temp of working compressor [R15]"
+      },
+      "1245226668902080512_r17": {
+        "name": "Enable top sensor to control compressor? [R17]"
+      },
+      "1245226668902080512_r18": {
+        "name": "Hysteresis of heat pump startup(top sensor) [R18]"
+      },
+      "1245226668902080512_r19": {
+        "name": "Setpoint 1 of ambient temp to stop compressor [R19]"
+      },
+      "1245226668902080512_r20": {
+        "name": "Setpoint 2 of ambient temp to stop compressor [R20]"
+      },
+      "1245226668902080512_o01": {
+        "name": "Compressor [O01]"
+      },
+      "1245226668902080512_o02": {
+        "name": "Electrical heater [O02]"
+      },
+      "1245226668902080512_o03": {
+        "name": "4-way valve [O03]"
+      },
+      "1245226668902080512_o04": {
+        "name": "Fan high speed [O04]"
+      },
+      "1245226668902080512_o05": {
+        "name": "Fan low speed [O05]"
+      },
+      "1245226668902080512_o06": {
+        "name": "Reserve/solar pump/solar valve pump [O06]"
+      },
+      "1245226668902080512_o07": {
+        "name": "EEV current position [O07]"
+      },
+      "1245226668902080512_o08": {
+        "name": "Accumulative running time of compressor [O08]"
+      },
+      "1245226668902080512_o09": {
+        "name": "Accumulative running time of booster [O09]"
+      },
+      "1245226668902080512_o10": {
+        "name": "3V_DE [O10]"
+      },
+      "1245226668902080512_o11": {
+        "name": "MV_DE [O11]"
+      },
+      "1245226668902080512_o12": {
+        "name": "shutDown [O12]"
+      },
+      "1245226668902080512_o13": {
+        "name": "DTU&WIFI\u662f\u5426\u4e0a\u7ebf [O13]"
+      },
+      "1245226668902080512_o14": {
+        "name": "\u9664\u971cDefrost [O14]"
+      },
+      "1245226668902080512_o15": {
+        "name": "\u7cfb\u7edf\u662f\u5426\u8fdb\u5165\u9ad8\u6e29\u70ed\u6c34\u9636\u6bb5 [O15]"
+      },
+      "1245226668902080512_s01": {
+        "name": "Remote ON/OFF switch [S01]"
+      },
+      "1245226668902080512_s02": {
+        "name": "Over heat protection switch [S02]"
+      },
+      "1245226668902080512_s03": {
+        "name": "Low pressure switch [S03]"
+      },
+      "1245226668902080512_s04": {
+        "name": "High pressure switch [S04]"
+      },
+      "1245226668902080512_s05": {
+        "name": "Accelerate the running time of heater [S05]"
+      },
+      "1245226668902080512_s06": {
+        "name": "Second heating source [S06]"
+      },
+      "1245226668902080512_t01": {
+        "name": "Ambient temperature [T01]"
+      },
+      "1245226668902080512_t02": {
+        "name": "Bottom temperature [T02]"
+      },
+      "1245226668902080512_t03": {
+        "name": "Top temperature [T03]"
+      },
+      "1245226668902080512_t04": {
+        "name": "Coil temperature [T04]"
+      },
+      "1245226668902080512_t05": {
+        "name": "Suction temperature [T05]"
+      },
+      "1245226668902080512_t06": {
+        "name": "Solar temperature [T06]"
+      },
+      "1245226668902080512_t10": {
+        "name": "Temperature value shown on APP/display [T10]"
+      },
+      "1245226668902080512_t11": {
+        "name": "\u8fdb\u5165\u53c2\u6570\u8d85\u8303\u56f4\u4fdd\u62a4\u6b21\u6570 [T11]"
+      },
+      "1245226668902080512_t12": {
+        "name": "\u8bb0\u5fc6\u82af\u7247EEPROM\u5b58\u50a8\u6b21\u6570 [T12]"
+      },
+      "1442284873216843776_power": {
+        "name": "Power"
+      },
+      "1442284873216843776_mode": {
+        "name": "Mode"
+      },
+      "1442284873216843776_manual-mute": {
+        "name": "Manual-mute"
+      },
+      "1442284873216843776_set_temp": {
+        "name": "Set_Temp"
+      },
+      "1442284873216843776_2074": {
+        "name": "2074"
+      },
+      "1442284873216843776_2075": {
+        "name": "2075"
+      },
+      "1442284873216843776_2076": {
+        "name": "2076"
+      },
+      "1442284873216843776_2077": {
+        "name": "2077"
+      },
+      "1442284873216843776_1158": {
+        "name": "1158"
+      },
+      "1442284873216843776_1159": {
+        "name": "1159"
+      },
+      "1442284873216843776_2064": {
+        "name": "2064"
+      },
+      "1442284873216843776_ver": {
+        "name": "Version"
+      },
+      "1442284873216843776_software_code": {
+        "name": "Software Code"
+      },
+      "1442284873216843776_d01": {
+        "name": "Stat Defrosting Temp [D01]"
+      },
+      "1442284873216843776_d01-bar": {
+        "name": "Start setp. [D01-bar]"
+      },
+      "1442284873216843776_d02": {
+        "name": "End Defrosting Temp [D02]"
+      },
+      "1442284873216843776_d03": {
+        "name": "Defrosting Cycle [D03]"
+      },
+      "1442284873216843776_d04": {
+        "name": "Max. Duration [D04]"
+      },
+      "1442284873216843776_d06": {
+        "name": "Defrost type [D06]"
+      },
+      "1442284873216843776_d07": {
+        "name": "Out Temp when Defrost [D07]"
+      },
+      "1442284873216843776_d08": {
+        "name": "Defrost Coil Temp. Deviation [D08]"
+      },
+      "1442284873216843776_d08-bar": {
+        "name": "Compensation offset [D08-bar]"
+      },
+      "1442284873216843776_d09": {
+        "name": "Defrost out Temp. Deviation [D09]"
+      },
+      "1442284873216843776_d10": {
+        "name": "Defrost ending coil temp. [D10]"
+      },
+      "1442284873216843776_d10-bar": {
+        "name": "Defrost ending pressure. [D10-bar]"
+      },
+      "1442284873216843776_e01": {
+        "name": "EEV Mode [E01]"
+      },
+      "1442284873216843776_e02": {
+        "name": "Super Heat [E02]"
+      },
+      "1442284873216843776_e03": {
+        "name": "Init. Place [E03]"
+      },
+      "1442284873216843776_e04": {
+        "name": "Min. Place [E04]"
+      },
+      "1442284873216843776_e05": {
+        "name": "Defrost Place [E05]"
+      },
+      "1442284873216843776_e06": {
+        "name": "Cooling Place [E06]"
+      },
+      "1442284873216843776_e07": {
+        "name": "EEV exhaust set temp. [E07]"
+      },
+      "1442284873216843776_e09": {
+        "name": "EEV step proportion value [E09]"
+      },
+      "1442284873216843776_e10": {
+        "name": "EEV step integral value [E10]"
+      },
+      "1442284873216843776_e11": {
+        "name": "EEV step differential value [E11]"
+      },
+      "1442284873216843776_e12": {
+        "name": "Super heatcompen. differ. [E12]"
+      },
+      "1442284873216843776_f01": {
+        "name": "Speed [F01]"
+      },
+      "1442284873216843776_f02": {
+        "name": "Max. cool [F02]"
+      },
+      "1442284873216843776_f02-bar": {
+        "name": "Cooling high speed pressure [F02-bar]"
+      },
+      "1442284873216843776_f03": {
+        "name": "Min. cool [F03]"
+      },
+      "1442284873216843776_f03-bar": {
+        "name": "Cooling low speed pressure [F03-bar]"
+      },
+      "1442284873216843776_f04": {
+        "name": "Stop cool [F04]"
+      },
+      "1442284873216843776_f04-bar": {
+        "name": "Cooling motor off pressure [F04-bar]"
+      },
+      "1442284873216843776_f05": {
+        "name": "Max. heat [F05]"
+      },
+      "1442284873216843776_f05-bar": {
+        "name": "Heating high speed pressure [F05-bar]"
+      },
+      "1442284873216843776_f06": {
+        "name": "Min. heat [F06]"
+      },
+      "1442284873216843776_f06-bar": {
+        "name": "Heating low speed pressure [F06-bar]"
+      },
+      "1442284873216843776_f07": {
+        "name": "Stop heat [F07]"
+      },
+      "1442284873216843776_f07-bar": {
+        "name": "Heating motor off pressure [F07-bar]"
+      },
+      "1442284873216843776_f10": {
+        "name": "Ctrl. probe [F10]"
+      },
+      "1442284873216843776_f11": {
+        "name": "Heating Max. Duty Ratio [F11]"
+      },
+      "1442284873216843776_f11-r": {
+        "name": "Fan Motor Heat Max. Speed [F11-r]"
+      },
+      "1442284873216843776_f12": {
+        "name": "Cooling Fan Duty Ratio [F12]"
+      },
+      "1442284873216843776_f12-r": {
+        "name": "Cooling Fan Motor Speed [F12-r]"
+      },
+      "1442284873216843776_f13": {
+        "name": "Heating Min. fan duty ratio [F13]"
+      },
+      "1442284873216843776_f13-r": {
+        "name": "Fan Motor Min. Speed in Heating [F13-r]"
+      },
+      "1442284873216843776_f14": {
+        "name": "Timer Mute Start [F14]"
+      },
+      "1442284873216843776_f15": {
+        "name": "Timer Mute End [F15]"
+      },
+      "1442284873216843776_f16": {
+        "name": "Duty Ratio of Mute Mode [F16]"
+      },
+      "1442284873216843776_f16-r": {
+        "name": "Mute Mode Speed [F16-r]"
+      },
+      "1442284873216843776_f17": {
+        "name": "Timer Mute ON/OFF [F17]"
+      },
+      "1442284873216843776_f18": {
+        "name": "Manual Fan motor Speed [F18]"
+      },
+      "1442284873216843776_f19": {
+        "name": "AC Fan Rated Duty Ratio [F19]"
+      },
+      "1442284873216843776_f19-r": {
+        "name": "DC/EC Fan Rated Speed [F19-r]"
+      },
+      "1442284873216843776_f20": {
+        "name": "PWM Detect/Antifreeze Temp. [F20]"
+      },
+      "1442284873216843776_h01": {
+        "name": "Power Down Memory [H01]"
+      },
+      "1442284873216843776_h02": {
+        "name": "Mode Type [H02]"
+      },
+      "1442284873216843776_h03": {
+        "name": "Temperature Unit [H03]"
+      },
+      "1442284873216843776_h06": {
+        "name": "Heating Min. frequency [H06]"
+      },
+      "1442284873216843776_h07": {
+        "name": "Cooling Min. frequency [H07]"
+      },
+      "1442284873216843776_h08": {
+        "name": "Heating Max frequency [H08]"
+      },
+      "1442284873216843776_h09": {
+        "name": "Cooling Max frequency [H09]"
+      },
+      "1442284873216843776_h10": {
+        "name": "Delay off time [H10]"
+      },
+      "1442284873216843776_h11": {
+        "name": "Auto mode restarting time [H11]"
+      },
+      "1442284873216843776_h12": {
+        "name": "Compressor type [H12]"
+      },
+      "1442284873216843776_h13": {
+        "name": "Comp. Defrost Frequency [H13]"
+      },
+      "1442284873216843776_h14": {
+        "name": "Frequency Cycle of 0.2\u2103 [H14]"
+      },
+      "1442284873216843776_h15": {
+        "name": "Comp. Overcurren Protect [H15]"
+      },
+      "1442284873216843776_h16": {
+        "name": "Refrigerant Type [H16]"
+      },
+      "1442284873216843776_h17": {
+        "name": "Cool start Compen. Low temp. [H17]"
+      },
+      "1442284873216843776_h18": {
+        "name": "Cool stop Compen. Low temp. [H18]"
+      },
+      "1442284873216843776_h19": {
+        "name": "Cool Max. Frequency low temp. [H19]"
+      },
+      "1442284873216843776_h20": {
+        "name": "Cool start Compen. high temp. [H20]"
+      },
+      "1442284873216843776_h21": {
+        "name": "Cool stop Compen. High temp. [H21]"
+      },
+      "1442284873216843776_h22": {
+        "name": "Cool stop Frequency high temp. [H22]"
+      },
+      "1442284873216843776_h23": {
+        "name": "Heat start Compen.low temp. [H23]"
+      },
+      "1442284873216843776_h24": {
+        "name": "Heat stop Compen.low temp. [H24]"
+      },
+      "1442284873216843776_h25": {
+        "name": "Heat Max.frequency low temp [H25]"
+      },
+      "1442284873216843776_h26": {
+        "name": "Heat start Compen.high temp. [H26]"
+      },
+      "1442284873216843776_h27": {
+        "name": "Heat stop Compen.high temp. [H27]"
+      },
+      "1442284873216843776_h28": {
+        "name": "Heat Max.frequency high temp. [H28]"
+      },
+      "1442284873216843776_h29": {
+        "name": "Max. Pressure Sensor Value [H29]"
+      },
+      "1442284873216843776_h30": {
+        "name": "Min. Pressure Sensor Value [H30]"
+      },
+      "1442284873216843776_h31": {
+        "name": "Ambient temp. before commpen. [H31]"
+      },
+      "1442284873216843776_h32": {
+        "name": "Ambient temp. after commpen. [H32]"
+      },
+      "1442284873216843776_h33": {
+        "name": "Max. Frequency silent comp. [H33]"
+      },
+      "1442284873216843776_h34": {
+        "name": "Comp. stop. [H34]"
+      },
+      "1442284873216843776_h35": {
+        "name": "Temp Difference of Start Freq. [H35]"
+      },
+      "1442284873216843776_h36": {
+        "name": "Start Frequency [H36]"
+      },
+      "1442284873216843776_h37": {
+        "name": "Unit Address [H37]"
+      },
+      "1442284873216843776_h38": {
+        "name": "Pressure Measurement [H38]"
+      },
+      "1442284873216843776_h39": {
+        "name": "Resonance 1 [H39]"
+      },
+      "1442284873216843776_h40": {
+        "name": "Resonance 2 [H40]"
+      },
+      "1442284873216843776_h41": {
+        "name": "Resonance 3 [H41]"
+      },
+      "1442284873216843776_h42": {
+        "name": "Fast Test Mode [H42]"
+      },
+      "1442284873216843776_h43": {
+        "name": "Dual Coil [H43]"
+      },
+      "1442284873216843776_o01": {
+        "name": "Compressor [O01]"
+      },
+      "1442284873216843776_o02": {
+        "name": "High fan [O02]"
+      },
+      "1442284873216843776_o03": {
+        "name": "Low fan [O03]"
+      },
+      "1442284873216843776_o04": {
+        "name": "Circulate pump [O04]"
+      },
+      "1442284873216843776_o05": {
+        "name": "4-way valve [O05]"
+      },
+      "1442284873216843776_o06": {
+        "name": "Exp. Valve [O06]"
+      },
+      "1442284873216843776_o07": {
+        "name": "Comp. Output frequency [O07]"
+      },
+      "1442284873216843776_o08": {
+        "name": "Compressor current [O08]"
+      },
+      "1442284873216843776_o09": {
+        "name": "IPM Temp. [O09]"
+      },
+      "1442284873216843776_p01": {
+        "name": "Mode [P01]"
+      },
+      "1442284873216843776_p02": {
+        "name": "Interval [P02]"
+      },
+      "1442284873216843776_p03": {
+        "name": "Duration [P03]"
+      },
+      "1442284873216843776_p04": {
+        "name": "Advance [P04]"
+      },
+      "1442284873216843776_p05": {
+        "name": "Water pump filtration [P05]"
+      },
+      "1442284873216843776_p06": {
+        "name": "Water Pump Filtration start Time1 [P06]"
+      },
+      "1442284873216843776_p07": {
+        "name": "Water Pump Filtration End Time1 [P07]"
+      },
+      "1442284873216843776_p08": {
+        "name": "Water Pump Filtration start Time2 [P08]"
+      },
+      "1442284873216843776_p09": {
+        "name": "Water Pump Filtration End Time 2 [P09]"
+      },
+      "1442284873216843776_r01": {
+        "name": "Cooling set [R01]"
+      },
+      "1442284873216843776_r02": {
+        "name": "Heating set [R02]"
+      },
+      "1442284873216843776_r03": {
+        "name": "Auto. Set [R03]"
+      },
+      "1442284873216843776_r04": {
+        "name": "Temp Difference [R04]"
+      },
+      "1442284873216843776_r05": {
+        "name": "Power Off Temp Difference [R05]"
+      },
+      "1442284873216843776_r08": {
+        "name": "Min. cool [R08]"
+      },
+      "1442284873216843776_r09": {
+        "name": "Max. cool [R09]"
+      },
+      "1442284873216843776_r10": {
+        "name": "Min. heat [R10]"
+      },
+      "1442284873216843776_r11": {
+        "name": "Max. heat [R11]"
+      },
+      "1442284873216843776_r12": {
+        "name": "Power on Difference [R12]"
+      },
+      "1442284873216843776_s01": {
+        "name": "HP switch [S01]"
+      },
+      "1442284873216843776_s02": {
+        "name": "LP switch [S02]"
+      },
+      "1442284873216843776_s03": {
+        "name": "Flow switch [S03]"
+      },
+      "1442284873216843776_s04": {
+        "name": "Remote switch [S04]"
+      },
+      "1442284873216843776_s05": {
+        "name": "Mode switch [S05]"
+      },
+      "1442284873216843776_s06": {
+        "name": "Master/Slave switch [S06]"
+      },
+      "1442284873216843776_t1": {
+        "name": "Suction Temp. [T1]"
+      },
+      "1442284873216843776_t2": {
+        "name": "Inlet water Temp. [T2]"
+      },
+      "1442284873216843776_t3": {
+        "name": "Outlet water Temp. [T3]"
+      },
+      "1442284873216843776_t4": {
+        "name": "Coil 1 Temp. [T4]"
+      },
+      "1442284873216843776_t5": {
+        "name": "Ambient Temp. [T5]"
+      },
+      "1442284873216843776_t6": {
+        "name": "Exhaust Temp. [T6]"
+      },
+      "1442284873216843776_t7": {
+        "name": "Compressor current Detect [T7]"
+      },
+      "1442284873216843776_t8": {
+        "name": "AC Fan Output [T8]"
+      },
+      "1442284873216843776_t9": {
+        "name": "Flow Rate Input [T9]"
+      },
+      "1442284873216843776_t10": {
+        "name": "Pressure Sensor [T10]"
+      },
+      "1442284873216843776_t11": {
+        "name": "Super heat [T11]"
+      },
+      "1442284873216843776_t12": {
+        "name": "Target speed of fan motor [T12]"
+      },
+      "1442284873216843776_t13": {
+        "name": "Over heat after commpen. [T13]"
+      },
+      "1442284873216843776_t14": {
+        "name": "Inverter plate AC voltage [T14]"
+      },
+      "1442284873216843776_t15": {
+        "name": "Antifreeze Temp. [T15]"
+      },
+      "1442284873216843776_t16": {
+        "name": "EC Fan motor Speed [T16]"
+      },
+      "1442284873216843776_t17": {
+        "name": "Speed of fan motor1 [T17]"
+      },
+      "1442284873216843776_t18": {
+        "name": "Speed of fan motor2 [T18]"
+      },
+      "1442284873216843776_t19": {
+        "name": "Buses voltage [T19]"
+      },
+      "1442284873216843776_t20": {
+        "name": "Limited Frequency Protect State [T20]"
+      },
+      "1442284873216843776_t21": {
+        "name": "Frequency Reduction Protect State [T21]"
+      },
+      "1442284873216843776_t22": {
+        "name": "Coil 2 Temp. [T22]"
+      },
+      "1442284873216843776_t23": {
+        "name": "driver board running state 1 [T23]"
+      },
+      "1442284873216843776_t24": {
+        "name": "driver board running state 2 [T24]"
+      },
+      "1442284873216843776_t25": {
+        "name": "driver board running state 3 [T25]"
+      },
+      "1442284873216843776_t26": {
+        "name": "driver board running state 4 [T26]"
+      },
+      "1442284873216843776_t27": {
+        "name": "driver board running state 5 [T27]"
+      },
+      "1442284873216843776_t28": {
+        "name": "Target frequency [T28]"
+      }
+    }
   }
 }
