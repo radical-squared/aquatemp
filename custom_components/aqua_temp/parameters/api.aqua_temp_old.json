@@ -16,5 +16,6 @@
   "is_fault": "is_fault",
   "error_msg": "error_msg",
   "device_nick_name": "device_nick_name",
-  "device_id": "device_id"
+  "device_id": "device_id",
+  "cust_model": "cust_model"
 }

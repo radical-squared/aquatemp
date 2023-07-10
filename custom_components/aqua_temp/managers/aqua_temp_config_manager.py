@@ -309,7 +309,7 @@ class AquaTempConfigManager:
                         device_class=data_item.get("device_class"),
                         native_unit_of_measurement=data_item.get("unit_of_measurement"),
                         entity_category=EntityCategory.DIAGNOSTIC,
-                        translation_key=translation_key
+                        translation_key=translation_key,
                     )
 
                     entities.append(sensor_entity)
@@ -321,7 +321,7 @@ class AquaTempConfigManager:
                         device_class=data_item.get("device_class"),
                         on_value=data_item.get("on_value"),
                         entity_category=EntityCategory.DIAGNOSTIC,
-                        translation_key=translation_key
+                        translation_key=translation_key,
                     )
 
                     entities.append(binary_sensor_entity)
@@ -330,7 +330,7 @@ class AquaTempConfigManager:
                     entity = AquaTempEntityDescription(
                         key=key,
                         name=data_item.get("name"),
-                        translation_key=translation_key
+                        translation_key=translation_key,
                     )
 
                     entities.append(entity)

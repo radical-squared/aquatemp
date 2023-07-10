@@ -58,11 +58,15 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     def get_device(self, device_code: str) -> DeviceInfo:
         param_nickname = self._config_manager.get_api_param(APIParam.Nickname)
         param_device_id = self._config_manager.get_api_param(APIParam.DeviceId)
+        param_custom_model = self._config_manager.get_api_param(APIParam.CustomModel)
 
         device_data = self.get_device_data(device_code)
-        device_nickname = device_data.get(param_nickname, device_code)
-        device_model = device_data.get("model")
+        device_nickname = device_data.get(param_nickname)
+        device_model = device_data.get(param_custom_model)
         device_id = device_data.get(param_device_id)
+
+        if param_custom_model in device_data:
+            device_model = device_data.get(param_custom_model)
 
         device_info = DeviceInfo(
             identifiers={(DOMAIN, device_id)},

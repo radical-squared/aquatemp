@@ -63,7 +63,7 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         on_value=True,
-        translation_key=API_STATUS
+        translation_key=API_STATUS,
     ),
     AquaTempSelectEntityDescription(
         key="temperature_unit",
@@ -71,7 +71,7 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
         options=[UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT],
         entity_category=EntityCategory.CONFIG,
         is_protocol_code=False,
-        translation_key="temperature_unit"
+        translation_key="temperature_unit",
     ),
     AquaTempBinarySensorEntityDescription(
         key="is_fault",
@@ -80,7 +80,7 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.PROBLEM,
         attributes=["fault"],
-        translation_key="is_fault"
+        translation_key="is_fault",
     ),
     AquaTempBinarySensorEntityDescription(
         key="device_status",
@@ -88,11 +88,9 @@ DEFAULT_ENTITY_DESCRIPTIONS: list[
         on_value="ONLINE",
         is_protocol_code=False,
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
-        translation_key="device_status"
+        translation_key="device_status",
     ),
     AquaTempClimateEntityDescription(
-        key="Mode",
-        name="HVAC Mode",
-        translation_key="mode"
+        key="Mode", name="HVAC Mode", translation_key="mode"
     ),
 ]
