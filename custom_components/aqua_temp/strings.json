@@ -38,7 +38,7 @@
     },
     "climate": {
       "mode": {
-        "name": "HVAC Mode"
+        "name": ""
       }
     },
     "select": {

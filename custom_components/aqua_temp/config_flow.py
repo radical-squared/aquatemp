@@ -51,6 +51,8 @@ class DomainFlowHandler(config_entries.ConfigFlow):
                 config_manager = AquaTempConfigManager(self.hass, None)
                 config_manager.update_credentials(user_input)
 
+                await config_manager.initialize()
+
                 api = AquaTempAPI(self.hass, config_manager)
 
                 await api.initialize(True)
@@ -58,6 +60,7 @@ class DomainFlowHandler(config_entries.ConfigFlow):
                 _LOGGER.debug("User inputs are valid")
 
                 return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
+
             except LoginError:
                 errors = {"base": "invalid_credentials"}
 

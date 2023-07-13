@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.21
+
+- Fix vacuum entity name
+- Fix add integration (config) error handling
+
 ## v3.0.20
 
 - Fix error handling when performing an action
