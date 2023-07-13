@@ -42,9 +42,9 @@ class AquaTempSelectEntity(BaseEntity, SelectEntity, ABC):
 
     def __init__(
         self,
-        device_code: str,
         entity_description: AquaTempSelectEntityDescription,
         coordinator: AquaTempCoordinator,
+        device_code: str,
     ):
         super().__init__(entity_description, coordinator, device_code)
 

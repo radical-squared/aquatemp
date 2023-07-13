@@ -51,9 +51,9 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
 
     def __init__(
         self,
-        device_code: str,
         entity_description: AquaTempClimateEntityDescription,
         coordinator: AquaTempCoordinator,
+        device_code: str,
     ):
         """Initialize the climate entity."""
         super().__init__(entity_description, coordinator, device_code)

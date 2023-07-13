@@ -14,6 +14,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import translation
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.json import JSONEncoder
@@ -110,6 +111,12 @@ class AquaTempConfigManager:
 
         self._load_api_config()
 
+        self._translations = await translation.async_get_translations(
+            self._hass, self._hass.config.language, "entity", {DOMAIN}
+        )
+
+        _LOGGER.debug(f"Translations loaded, Data: {json.dumps(self._translations)}")
+
         for key in local_data:
             value = local_data[key]
 
@@ -127,6 +134,17 @@ class AquaTempConfigManager:
 
         translated_name = self._translations.get(
             translation_key, entity_description.name
+        )
+
+        _LOGGER.debug(
+            f"Translations requested, Key: {translation_key}, "
+            f"Entity: {entity_description.name}, Value: {translated_name}"
+        )
+
+        entity_name = (
+            device_name
+            if translated_name is None or translated_name == ""
+            else f"{device_name} {translated_name}"
         )
 
         entity_name = f"{device_name} {translated_name}"

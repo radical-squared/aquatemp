@@ -50,7 +50,7 @@ def async_setup_entities(
 
 
 class BaseEntity(CoordinatorEntity):
-    _device_id: int
+    _device_code: str
     _entity_description: AquaTempEntityDescription
     _translations: dict
 
