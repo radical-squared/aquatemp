@@ -1,6 +1,7 @@
 """Platform for climate integration."""
 from asyncio import sleep
 from copy import copy
+import json
 import logging
 import sys
 
@@ -202,6 +203,7 @@ class AquaTempAPI:
                 async_dispatcher_send(
                     self._hass,
                     SIGNAL_AQUA_TEMP_DEVICE_NEW,
+                    self._config_manager.entry_id,
                     device_code,
                 )
 
@@ -357,8 +359,11 @@ class AquaTempAPI:
     async def _perform_action(
         self, request_data: dict, operation: str, attempt: int = 1
     ):
+        error = None
+
         try:
             param_error_msg = self._config_manager.get_api_param(APIParam.ErrorMessage)
+            param_error_code = self._config_manager.get_api_param(APIParam.ErrorCode)
 
             operation_response = await self._post_request(
                 Endpoints.DeviceControl, request_data
@@ -367,22 +372,34 @@ class AquaTempAPI:
             error_msg = operation_response.get(param_error_msg)
 
             if error_msg != "Success":
-                raise OperationFailedException(operation, request_data, error_msg)
+                error_code = operation_response.get(param_error_code)
+                if error_code == "-100":
+                    self.set_token()
 
-        except ClientResponseError as cre:
-            if cre.status == 401:
-                self.set_token()
-
-                if attempt < API_MAX_ATTEMPTS:
-                    await self._connect()
-
-                    await self._perform_action(request_data, operation, attempt + 1)
+                    error = InvalidTokenError(
+                        f"Perform operation {operation}, "
+                        f"Data: {json.dumps(request_data)}, "
+                        f"Attempt: {attempt}"
+                    )
 
                 else:
-                    raise InvalidTokenError(f"Perform action, Data: {request_data}")
+                    error = OperationFailedException(
+                        operation, request_data, f"{error_code}: {error_msg}"
+                    )
+
+        except Exception as ex:
+            error = ex
+
+        if error is not None:
+            if attempt < API_MAX_ATTEMPTS:
+                await sleep(1000)
+
+                await self._connect()
+
+                await self._perform_action(request_data, operation, attempt + 1)
 
             else:
-                raise cre
+                raise error
 
     async def _fetch_data(self, device_code: str):
         codes = self._config_manager.get_supported_protocol_codes(device_code)

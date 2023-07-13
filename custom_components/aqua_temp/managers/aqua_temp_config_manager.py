@@ -14,6 +14,8 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import translation
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
@@ -43,6 +45,7 @@ _LOGGER = logging.getLogger(__name__)
 class AquaTempConfigManager:
     _api_type: str | None
     _api_config: dict | None
+    _translations: dict | None
     _entry_title: str
 
     def __init__(self, hass: HomeAssistant | None, entry: ConfigEntry | None):
@@ -64,17 +67,21 @@ class AquaTempConfigManager:
         self._devices = {}
         self._api_type = None
         self._api_config = None
+        self._translations = None
 
         self._entry_data = {}
+        self._entry_id = None
 
         if entry is None:
             self._entry_data = {}
             self._entry_title = DEFAULT_NAME
             self._store = None
+            self._entry_id = DEFAULT_NAME
 
         else:
             self._entry_data = entry.data
             self._entry_title = entry.title
+            self._entry_id = entry.entry_id
 
             file_name = f"{DOMAIN}.config.json"
 
@@ -83,6 +90,10 @@ class AquaTempConfigManager:
     @property
     def name(self):
         return self._entry_title
+
+    @property
+    def entry_id(self):
+        return self._entry_id
 
     async def initialize(self):
         local_data = await self._load()
@@ -100,10 +111,45 @@ class AquaTempConfigManager:
 
         self._load_api_config()
 
+        self._translations = await translation.async_get_translations(
+            self._hass, self._hass.config.language, "entity", {DOMAIN}
+        )
+
+        _LOGGER.debug(f"Translations loaded, Data: {json.dumps(self._translations)}")
+
         for key in local_data:
             value = local_data[key]
 
             self.data[key] = value
+
+    def get_entity_name(
+        self, entity_description: AquaTempEntityDescription, device_info: DeviceInfo
+    ) -> str:
+        entity_key = entity_description.key
+        platform = entity_description.platform
+
+        device_name = device_info.get("name")
+
+        translation_key = f"component.{DOMAIN}.entity.{platform}.{entity_key}.name"
+
+        translated_name = self._translations.get(
+            translation_key, entity_description.name
+        )
+
+        _LOGGER.debug(
+            f"Translations requested, Key: {translation_key}, "
+            f"Entity: {entity_description.name}, Value: {translated_name}"
+        )
+
+        entity_name = (
+            device_name
+            if translated_name is None or translated_name == ""
+            else f"{device_name} {translated_name}"
+        )
+
+        entity_name = f"{device_name} {translated_name}"
+
+        return entity_name
 
     def update_credentials(self, entry_data: dict):
         self._entry_data = entry_data
@@ -204,7 +250,7 @@ class AquaTempConfigManager:
         try:
             entities = []
 
-            entity_descriptions = self._get_entity_descriptions(device_code)
+            entity_descriptions = self.get_entity_descriptions(device_code)
 
             for entity_description in entity_descriptions:
                 if entity_description.platform == platform:
@@ -271,7 +317,7 @@ class AquaTempConfigManager:
         await self._store.async_save(data)
 
     def find_entity_description(self, device_code: str, key: str, platform: Platform):
-        entity_descriptions = self._get_entity_descriptions(device_code)
+        entity_descriptions = self.get_entity_descriptions(device_code)
 
         entity_descriptions = [
             entity_description
@@ -425,7 +471,7 @@ class AquaTempConfigManager:
 
         return result
 
-    def _get_entity_descriptions(self, device_code):
+    def get_entity_descriptions(self, device_code):
         product_id = self._get_product_id(
             device_code, ProductParameter.ENTITY_DESCRIPTION
         )
