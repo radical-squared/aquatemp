@@ -2,7 +2,6 @@ from copy import copy
 import json
 import logging
 import os
-import sys
 
 from homeassistant.config_entries import STORAGE_VERSION, ConfigEntry
 from homeassistant.const import (
@@ -16,7 +15,6 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import translation
 from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
@@ -115,8 +113,6 @@ class AquaTempConfigManager:
             self._hass, self._hass.config.language, "entity", {DOMAIN}
         )
 
-        _LOGGER.debug(f"Translations loaded, Data: {json.dumps(self._translations)}")
-
         for key in local_data:
             value = local_data[key]
 
@@ -146,8 +142,6 @@ class AquaTempConfigManager:
             if translated_name is None or translated_name == ""
             else f"{device_name} {translated_name}"
         )
-
-        entity_name = f"{device_name} {translated_name}"
 
         return entity_name
 
@@ -239,39 +233,6 @@ class AquaTempConfigManager:
 
         return result
 
-    def async_handle_discovered_device(
-        self,
-        device_code: str,
-        coordinator,
-        platform: Platform,
-        entity_initializer,
-        async_add_entities: AddEntitiesCallback,
-    ):
-        try:
-            entities = []
-
-            entity_descriptions = self.get_entity_descriptions(device_code)
-
-            for entity_description in entity_descriptions:
-                if entity_description.platform == platform:
-                    entity = entity_initializer(
-                        device_code, entity_description.key, coordinator
-                    )
-
-                    entities.append(entity)
-
-            _LOGGER.debug(f"Setting up {platform} entities: {entities}")
-
-            async_add_entities(entities, True)
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.error(
-                f"Failed to initialize {platform}, Error: {ex}, Line: {line_number}"
-            )
-
     def get_api_param(self, param: APIParam):
         result = self._api_config.get(str(param))
 
@@ -315,19 +276,6 @@ class AquaTempConfigManager:
             data[key] = self.data[key]
 
         await self._store.async_save(data)
-
-    def find_entity_description(self, device_code: str, key: str, platform: Platform):
-        entity_descriptions = self.get_entity_descriptions(device_code)
-
-        entity_descriptions = [
-            entity_description
-            for entity_description in entity_descriptions
-            if entity_description.platform == platform and entity_description.key == key
-        ]
-
-        result = None if len(entity_descriptions) == 0 else entity_descriptions[0]
-
-        return result
 
     def _load_entity_descriptions(self, product_id: str):
         entities = copy(DEFAULT_ENTITY_DESCRIPTIONS)
