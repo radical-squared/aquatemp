@@ -1,5 +1,10 @@
 # Changelog
 
+## v3.0.20
+
+- Fix error handling when performing an action
+- Optimize components loading
+
 ## v3.0.19
 
 - Fix error handling when fetch data failed

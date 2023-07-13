@@ -50,12 +50,7 @@ class AquaTempSelectEntityDescription(
     platform: Platform | None = Platform.SELECT
 
 
-DEFAULT_ENTITY_DESCRIPTIONS: list[
-    AquaTempEntityDescription
-    | AquaTempSelectEntityDescription
-    | AquaTempSensorEntityDescription
-    | AquaTempBinarySensorEntityDescription
-] = [
+DEFAULT_ENTITY_DESCRIPTIONS: list[AquaTempEntityDescription] = [
     AquaTempBinarySensorEntityDescription(
         key=API_STATUS,
         name="API Status",

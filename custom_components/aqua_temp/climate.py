@@ -13,10 +13,9 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.util import slugify
 
-from .common.consts import DOMAIN, SIGNAL_AQUA_TEMP_DEVICE_NEW
+from .common.base_entity import BaseEntity, async_setup_entities
+from .common.consts import SIGNAL_AQUA_TEMP_DEVICE_NEW
 from .common.entity_descriptions import AquaTempClimateEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -26,41 +25,26 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities
 ):
-    def _create(
-        device_code: str, entity_description_key: str, coordinator: AquaTempCoordinator
-    ) -> AquaTempClimateEntity:
-        config_manager = coordinator.config_manager
-
-        entity_description = config_manager.find_entity_description(
-            device_code, entity_description_key, Platform.CLIMATE
-        )
-
-        entity_description.fan_modes = list(coordinator.get_fan_modes(device_code))
-        entity_description.hvac_modes = list(coordinator.get_hvac_modes(device_code))
-
-        entity = AquaTempClimateEntity(device_code, entity_description, coordinator)
-
-        return entity
-
     @callback
-    def _async_device_new(device_code):
-        coordinator = hass.data[DOMAIN][entry.entry_id]
+    def _async_device_new(entry_id: str, device_code: str):
+        if entry.entry_id != entry_id:
+            return
 
-        coordinator.config_manager.async_handle_discovered_device(
-            device_code,
-            coordinator,
+        async_setup_entities(
+            hass,
+            entry,
             Platform.CLIMATE,
-            _create,
+            device_code,
+            AquaTempClimateEntity,
             async_add_entities,
         )
 
-    """Set up the binary sensor platform."""
     entry.async_on_unload(
         async_dispatcher_connect(hass, SIGNAL_AQUA_TEMP_DEVICE_NEW, _async_device_new)
     )
 
 
-class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
+class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
     """Representation of a climate entity."""
 
     _attributes: dict
@@ -72,62 +56,40 @@ class AquaTempClimateEntity(CoordinatorEntity, ClimateEntity, ABC):
         coordinator: AquaTempCoordinator,
     ):
         """Initialize the climate entity."""
-        super().__init__(coordinator)
+        super().__init__(entity_description, coordinator, device_code)
 
-        device_info = coordinator.get_device(device_code)
-        device_name = device_info.get("name")
-        device_data = coordinator.get_device_data(device_code)
-
-        entity_name = f"{device_name}"
-
-        slugify_name = slugify(entity_name)
-
-        device_id = device_data.get("device_id")
-        unique_id = slugify(f"{entity_description.platform}_{slugify_name}_{device_id}")
-
-        self.entity_description = entity_description
-
-        self._device_code = device_code
-
-        self._attr_device_info = device_info
         self._attr_supported_features = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE
-        self._attr_fan_modes = entity_description.fan_modes
-        self._attr_hvac_modes = entity_description.hvac_modes
+        self._attr_fan_modes = list(coordinator.get_fan_modes(device_code))
+        self._attr_hvac_modes = list(coordinator.get_hvac_modes(device_code))
 
         self._attr_hvac_mode = HVACMode.OFF
         self._attr_fan_mode = FAN_AUTO
 
         self._attr_temperature_unit = coordinator.get_temperature_unit(device_code)
-        self._attr_name = entity_name
-        self._attr_unique_id = unique_id
-
-    @property
-    def _local_coordinator(self) -> AquaTempCoordinator:
-        return self.coordinator
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get("temperature")
         _LOGGER.debug(f"Set target temperature to: {temperature}")
 
-        await self._local_coordinator.set_temperature(self._device_code, temperature)
+        await self.local_coordinator.set_temperature(self.device_code, temperature)
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
         _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
 
-        await self._local_coordinator.set_hvac_mode(self._device_code, hvac_mode)
+        await self.local_coordinator.set_hvac_mode(self.device_code, hvac_mode)
 
     async def async_set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
         _LOGGER.debug(f"Set Fan Mode to: {fan_mode}")
 
-        await self._local_coordinator.set_fan_mode(self._device_code, fan_mode)
+        await self.local_coordinator.set_fan_mode(self.device_code, fan_mode)
 
     def _handle_coordinator_update(self) -> None:
         """Fetch new state parameters for the sensor."""
-        coordinator = self._local_coordinator
-        device_code = self._device_code
+        coordinator = self.local_coordinator
+        device_code = self.device_code
 
         hvac_mode = coordinator.get_device_hvac_mode(device_code)
         is_power_on = coordinator.get_device_power(device_code)
