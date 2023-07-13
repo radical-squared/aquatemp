@@ -125,7 +125,9 @@ class AquaTempConfigManager:
 
         translation_key = f"component.{DOMAIN}.entity.{platform}.{entity_key}.name"
 
-        translated_name = self._translations.get(translation_key, device_name)
+        translated_name = self._translations.get(
+            translation_key, entity_description.name
+        )
 
         entity_name = f"{device_name} {translated_name}"
 
