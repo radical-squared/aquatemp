@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.22
+
+- Fix binary sensor state evaluation
+
 ## v3.0.21
 
 - Fix vacuum entity name
