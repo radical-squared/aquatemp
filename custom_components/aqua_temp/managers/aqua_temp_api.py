@@ -16,7 +16,6 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 from ..common.api_types import DEVICE_LISTS, DEVICE_REQUEST_PARAMETERS, APIParam
 from ..common.consts import (
     API_MAX_ATTEMPTS,
-    API_STATUS,
     CONFIG_HVAC_MAXIMUM,
     CONFIG_HVAC_MINIMUM,
     CONFIG_HVAC_SET,
@@ -51,8 +50,6 @@ class AquaTempAPI:
     _token: str | None
     _hass: HomeAssistant | None
 
-    _api_status: bool
-
     def __init__(
         self, hass: HomeAssistant | None, config_manager: AquaTempConfigManager
     ):
@@ -70,8 +67,6 @@ class AquaTempAPI:
 
         self._dispatched_devices = []
         self._device_list_request_data = {}
-
-        self._api_status = False
 
     @property
     def is_connected(self):
@@ -217,8 +212,6 @@ class AquaTempAPI:
     def set_token(self, token: str | None = None):
         self._device_list_request_data = {}
         self._token = token
-
-        self._api_status = token is not None
 
         if token is None:
             if HTTP_HEADER_X_TOKEN in self._headers:
@@ -590,8 +583,6 @@ class AquaTempAPI:
 
     def get_device_data(self, device_code: str) -> dict | None:
         device_data = copy(self._devices.get(device_code))
-
-        device_data[API_STATUS] = self._api_status
 
         return device_data
 

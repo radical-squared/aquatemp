@@ -40,6 +40,10 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         self._config_manager = config_manager
 
     @property
+    def api_status(self):
+        return self._api.is_connected
+
+    @property
     def config_manager(self):
         return self._config_manager
 
