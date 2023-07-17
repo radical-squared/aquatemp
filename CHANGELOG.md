@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.23
+
+- Fix APIParam class, caused corrupted data on component creation and error code handling
+
 ## v3.0.22
 
 - Fix binary sensor state evaluation

@@ -21,8 +21,8 @@ class APIParam(StrEnum):
     IsFault = "is_fault"
     ErrorMessage = "error_msg"
     ErrorCode = "error_code"
-    Nickname = ("device_nick_name",)
-    DeviceId = ("device_id",)
+    Nickname = "device_nick_name"
+    DeviceId = "device_id"
     CustomModel = "cust_model"
 
 
