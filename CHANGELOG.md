@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.24
+
+- Add missing configuration for API param 'error_code'
+
 ## v3.0.23
 
 - Fix APIParam class, caused corrupted data on component creation and error code handling

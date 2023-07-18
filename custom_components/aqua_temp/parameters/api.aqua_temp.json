@@ -15,6 +15,7 @@
   "protocol_code": "protocolCode",
   "is_fault": "isFault",
   "error_msg": "error_msg",
+  "error_code": "error_code",
   "device_nick_name": "deviceNickName",
   "device_id": "deviceId",
   "cust_model": "custModel"
