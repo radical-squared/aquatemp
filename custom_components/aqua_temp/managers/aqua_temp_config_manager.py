@@ -18,12 +18,13 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-from ..common.api_types import API_TYPE_LEGACY, APIParam, APIType
+from ..common.api_types import APIParam
 from ..common.consts import (
-    CONF_API_TYPE,
     CONFIG_FAN_MODES,
     CONFIG_HVAC_MODES,
     CONFIG_HVAC_SET,
+    CONFIGURATION_FILE,
+    DEFAULT_ENTRY_ID,
     DEFAULT_NAME,
     DOMAIN,
     PRODUCT_ID_DEFAULT,
@@ -36,20 +37,23 @@ from ..common.entity_descriptions import (
     AquaTempEntityDescription,
     AquaTempSensorEntityDescription,
 )
+from ..models.config_data import ConfigData
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class AquaTempConfigManager:
-    _api_type: str | None
     _api_config: dict | None
     _translations: dict | None
+    _entry: ConfigEntry | None
+    _entry_id: str
     _entry_title: str
+    _config_data: ConfigData
 
     def __init__(self, hass: HomeAssistant | None, entry: ConfigEntry | None):
         self._hass = hass
 
-        self.data = {}
+        self._data = None
         self.platforms = []
 
         self._entity_descriptions = {}
@@ -63,49 +67,56 @@ class AquaTempConfigManager:
         self._fan_modes_reverse = {}
 
         self._devices = {}
-        self._api_type = None
         self._api_config = None
         self._translations = None
 
-        self._entry_data = {}
-        self._entry_id = None
+        self._entry = entry
+        self._entry_id = DEFAULT_ENTRY_ID if entry is None else entry.entry_id
+        self._entry_title = DEFAULT_NAME if entry is None else entry.title
 
-        if entry is None:
-            self._entry_data = {}
-            self._entry_title = DEFAULT_NAME
-            self._store = None
-            self._entry_id = DEFAULT_NAME
+        self._config_data = ConfigData()
 
-        else:
-            self._entry_data = entry.data
-            self._entry_title = entry.title
-            self._entry_id = entry.entry_id
+        self._is_initialized = False
 
-            file_name = f"{DOMAIN}.config.json"
-
-            self._store = Store(hass, STORAGE_VERSION, file_name, encoder=JSONEncoder)
+        if hass is not None:
+            self._store = Store(
+                hass, STORAGE_VERSION, CONFIGURATION_FILE, encoder=JSONEncoder
+            )
 
     @property
-    def name(self):
-        return self._entry_title
+    def is_initialized(self) -> bool:
+        is_initialized = self._is_initialized
+
+        return is_initialized
 
     @property
-    def entry_id(self):
-        return self._entry_id
+    def entry_id(self) -> str:
+        entry_id = self._entry_id
 
-    async def initialize(self):
-        local_data = await self._load()
+        return entry_id
 
-        self.data[CONF_USERNAME] = self._entry_data.get(CONF_USERNAME)
-        self.data[CONF_PASSWORD] = self._entry_data.get(CONF_PASSWORD)
+    @property
+    def entry_title(self) -> str:
+        entry_title = self._entry_title
 
-        api_type = self._entry_data.get(CONF_API_TYPE, str(APIType.AquaTempOld))
+        return entry_title
 
-        if api_type in API_TYPE_LEGACY:
-            api_type = str(API_TYPE_LEGACY.get(api_type))
+    @property
+    def entry(self) -> ConfigEntry:
+        entry = self._entry
 
-        self.data[CONF_API_TYPE] = api_type
-        self._api_type = api_type
+        return entry
+
+    @property
+    def config_data(self) -> ConfigData:
+        config_data = self._config_data
+
+        return config_data
+
+    async def initialize(self, entry_config: dict):
+        await self._load()
+
+        self._config_data.update(entry_config)
 
         self._load_api_config()
 
@@ -113,10 +124,28 @@ class AquaTempConfigManager:
             self._hass, self._hass.config.language, "entity", {DOMAIN}
         )
 
-        for key in local_data:
-            value = local_data[key]
+        self._is_initialized = True
 
-            self.data[key] = value
+    async def remove(self, entry_id: str):
+        if self._store is None:
+            return
+
+        store_data = await self._store.async_load()
+
+        entries = [DEFAULT_ENTRY_ID, entry_id]
+
+        if store_data is not None:
+            should_save = False
+            data = {key: store_data[key] for key in store_data}
+
+            for rm_entry_id in entries:
+                if rm_entry_id in store_data:
+                    data.pop(rm_entry_id)
+
+                    should_save = True
+
+            if should_save:
+                await self._store.async_save(data)
 
     def get_entity_name(
         self, entity_description: AquaTempEntityDescription, device_info: DeviceInfo
@@ -145,11 +174,10 @@ class AquaTempConfigManager:
 
         return entity_name
 
-    def update_credentials(self, entry_data: dict):
-        self._entry_data = entry_data
-
     async def update_temperature_unit(self, device_code: str, value: str):
-        self.data[CONF_TEMPERATURE_UNIT][device_code] = value
+        _LOGGER.debug(f"Set temperature unit for device '{device_code}' to {value}")
+
+        self._data[CONF_TEMPERATURE_UNIT][device_code] = value
 
         await self._save()
 
@@ -175,7 +203,7 @@ class AquaTempConfigManager:
         )
 
     def get_temperature_unit(self, device_code: str):
-        temperature_units = self.data.get(CONF_TEMPERATURE_UNIT, {})
+        temperature_units = self._data.get(CONF_TEMPERATURE_UNIT, {})
         temperature_unit = temperature_units.get(device_code, UnitOfTemperature.CELSIUS)
 
         return temperature_unit
@@ -238,7 +266,32 @@ class AquaTempConfigManager:
 
         return result
 
+    def get_debug_data(self) -> dict:
+        data = self._config_data.to_dict()
+
+        for key in self._data:
+            data[key] = self._data[key]
+
+        return data
+
     async def _load(self):
+        self._data = None
+
+        await self._load_config_from_file()
+
+        if self._data is None:
+            self._data = {}
+
+        default_configuration = self._get_defaults()
+
+        for key in default_configuration:
+            value = default_configuration[key]
+
+            if key not in self._data:
+                self._data[key] = value
+
+        await self._save()
+
         self._load_entity_descriptions("default")
         self._load_pc_mapping("default")
 
@@ -261,21 +314,61 @@ class AquaTempConfigManager:
 
         _LOGGER.debug(log_message)
 
-        result = None if self._store is None else await self._store.async_load()
+    async def _load_config_from_file(self):
+        if self._store is not None:
+            store_data = await self._store.async_load()
 
-        if result is None:
-            result = {
-                CONF_TEMPERATURE_UNIT: {},
-            }
+            if store_data is not None:
+                self._data = store_data.get(self._entry_id)
 
-        return result
+    @staticmethod
+    def _get_defaults() -> dict:
+        data = {CONF_TEMPERATURE_UNIT: {}}
+
+        return data
 
     async def _save(self):
-        data = {}
-        for key in [CONF_TEMPERATURE_UNIT]:
-            data[key] = self.data[key]
+        if self._store is None:
+            return
 
-        await self._store.async_save(data)
+        should_save = False
+        store_data = await self._store.async_load()
+
+        if store_data is None:
+            store_data = {}
+
+        entry_data = store_data.get(self._entry_id, {})
+
+        _LOGGER.debug(
+            f"Storing config data: {json.dumps(self._data)}, "
+            f"Exiting: {json.dumps(entry_data)}"
+        )
+
+        for key in self._data:
+            stored_value = entry_data.get(key)
+
+            if key in [CONF_PASSWORD, CONF_USERNAME]:
+                entry_data.pop(key)
+
+                if stored_value is not None:
+                    should_save = True
+
+            else:
+                current_value = self._data.get(key)
+
+                if stored_value != current_value:
+                    should_save = True
+
+                    entry_data[key] = self._data[key]
+
+        if DEFAULT_ENTRY_ID in store_data:
+            store_data.pop(DEFAULT_ENTRY_ID)
+            should_save = True
+
+        if should_save:
+            store_data[self._entry_id] = entry_data
+
+            await self._store.async_save(store_data)
 
     def _load_entity_descriptions(self, product_id: str):
         entities = copy(DEFAULT_ENTITY_DESCRIPTIONS)
@@ -375,7 +468,8 @@ class AquaTempConfigManager:
             self._fan_modes_reverse[product_id] = fan_mode_reverse_mapping
 
     def _load_api_config(self):
-        config_file = f"../parameters/api.{self._api_type}.json"
+        api_type = self._config_data.api_type
+        config_file = f"../parameters/api.{api_type}.json"
         file_path = os.path.join(os.path.dirname(__file__), config_file)
 
         if not os.path.exists(file_path):
