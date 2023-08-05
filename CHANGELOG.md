@@ -18,6 +18,7 @@ As result of that process, you need to re-setup the integration.
 - Add to set up configuration form new field of title to define the name of the integration
 - Add edit integration details - Title, Credentials and API Type
 - Refactor component initialization code to simplify process
+- Fix `UndefinedType._singleton` name for climate entity
 
 ## v3.0.24
 
