@@ -5,6 +5,7 @@
         "title": "Set up Aqua Temp integration",
         "description": "Set up your Aqua Temp credentials",
         "data": {
+          "title": "Title",
           "username": "Username",
           "password": "Password",
           "api_type": "API type"
@@ -12,7 +13,26 @@
       }
     },
     "error": {
-      "invalid_credentials": "Invalid credentials"
+      "invalid_credentials": "Invalid credentials",
+      "corrupted_encryption_key": "Corrupted encryption key, please follow steps in https://github.com/radical-squared/aquatemp#invalid-token"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Set up Aqua Temp integration",
+        "description": "Set up your Aqua Temp credentials",
+        "data": {
+          "title": "Title",
+          "username": "Username",
+          "password": "Password",
+          "api_type": "API type"
+        }
+      }
+    },
+    "error": {
+      "invalid_credentials": "Invalid credentials",
+      "corrupted_encryption_key": "Corrupted encryption key, please follow steps in https://github.com/radical-squared/aquatemp#invalid-token"
     }
   },
   "selector": {

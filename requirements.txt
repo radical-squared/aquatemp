@@ -1,4 +1,7 @@
-homeassistant~=2023.5.3
-aiohttp~=3.8.4
+homeassistant
+aiohttp
 
-voluptuous~=0.13.1
+voluptuous
+
+xmltodict
+cryptography

@@ -1,20 +1,14 @@
 """Config flow to configure."""
 from __future__ import annotations
 
-import hashlib
 import logging
 
-import voluptuous as vol
-
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-from homeassistant.helpers import selector
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import callback
 
-from .common.api_types import API_TYPES
-from .common.consts import CONF_API_TYPE, DEFAULT_NAME, DOMAIN
-from .common.exceptions import LoginError
-from .managers.aqua_temp_api import AquaTempAPI
-from .managers.aqua_temp_config_manager import AquaTempConfigManager
+from .common.consts import DOMAIN
+from .managers.flow_manager import IntegrationFlowManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,57 +23,32 @@ class DomainFlowHandler(config_entries.ConfigFlow):
     def __init__(self):
         super().__init__()
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        """Get the options flow for this handler."""
+        return DomainOptionsFlowHandler(config_entry)
+
     async def async_step_user(self, user_input=None):
         """Handle a flow start."""
-        _LOGGER.debug(f"Starting async_step_user of {DEFAULT_NAME}")
+        flow_manager = IntegrationFlowManager(self.hass, self)
 
-        errors = None
+        return await flow_manager.async_step(user_input)
 
-        if user_input is not None:
-            try:
-                password = user_input.get(CONF_PASSWORD)
 
-                password_bytes = bytes(password, "utf-8")
+class DomainOptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle domain options."""
 
-                md5hash = hashlib.new("md5")
-                md5hash.update(password_bytes)
+    _config_entry: ConfigEntry
 
-                password_hashed = md5hash.hexdigest()
+    def __init__(self, config_entry: ConfigEntry):
+        """Initialize domain options flow."""
+        super().__init__()
 
-                user_input[CONF_PASSWORD] = password_hashed
+        self._config_entry = config_entry
 
-                config_manager = AquaTempConfigManager(self.hass, None)
-                config_manager.update_credentials(user_input)
+    async def async_step_init(self, user_input=None):
+        """Manage the domain options."""
+        flow_manager = IntegrationFlowManager(self.hass, self, self._config_entry)
 
-                await config_manager.initialize()
-
-                api = AquaTempAPI(self.hass, config_manager)
-
-                await api.initialize(True)
-
-                _LOGGER.debug("User inputs are valid")
-
-                return self.async_create_entry(title=DEFAULT_NAME, data=user_input)
-
-            except LoginError:
-                errors = {"base": "invalid_credentials"}
-
-            if errors is not None:
-                error_message = errors.get("base")
-
-                _LOGGER.warning(f"Failed to create integration, Error: {error_message}")
-
-        new_user_input = {
-            vol.Required(CONF_USERNAME): str,
-            vol.Required(CONF_PASSWORD): str,
-            vol.Required(CONF_API_TYPE): selector.SelectSelector(
-                selector.SelectSelectorConfig(
-                    options=API_TYPES,
-                    translation_key=CONF_API_TYPE,
-                ),
-            ),
-        }
-
-        schema = vol.Schema(new_user_input)
-
-        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+        return await flow_manager.async_step(user_input)

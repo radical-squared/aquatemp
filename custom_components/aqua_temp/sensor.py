@@ -3,11 +3,9 @@ import logging
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.core import HomeAssistant
 
-from .common.base_entity import BaseEntity, async_setup_entities
-from .common.consts import SIGNAL_AQUA_TEMP_DEVICE_NEW
+from .common.base_entity import BaseEntity, async_setup_base_entry
 from .common.entity_descriptions import AquaTempSensorEntityDescription
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -17,22 +15,12 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities
 ):
-    @callback
-    def _async_device_new(entry_id: str, device_code: str):
-        if entry.entry_id != entry_id:
-            return
-
-        async_setup_entities(
-            hass,
-            entry,
-            Platform.SENSOR,
-            device_code,
-            AquaTempSensorEntity,
-            async_add_entities,
-        )
-
-    entry.async_on_unload(
-        async_dispatcher_connect(hass, SIGNAL_AQUA_TEMP_DEVICE_NEW, _async_device_new)
+    await async_setup_base_entry(
+        hass,
+        entry,
+        Platform.SENSOR,
+        AquaTempSensorEntity,
+        async_add_entities,
     )
 
 

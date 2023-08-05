@@ -1,14 +1,15 @@
 import logging
 import sys
 
+from custom_components.aqua_temp.models.exceptions import LoginError
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.core import HomeAssistant
 
-from .common.consts import DOMAIN
-from .common.exceptions import LoginError
-from .managers.aqua_temp_api import AquaTempAPI
+from .common.consts import DEFAULT_NAME, DOMAIN
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
+from .managers.password_manager import PasswordManager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,36 +23,42 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     initialized = False
 
     try:
+        entry_config = {key: entry.data[key] for key in entry.data}
+
+        await PasswordManager.decrypt(hass, entry_config, entry.entry_id)
+
         config_manager = AquaTempConfigManager(hass, entry)
-        await config_manager.initialize()
+        await config_manager.initialize(entry_config)
 
-        api = AquaTempAPI(hass, config_manager)
-        await api.initialize()
+        is_initialized = config_manager.is_initialized
 
-        coordinator = AquaTempCoordinator(hass, api, config_manager)
+        if is_initialized:
+            coordinator = AquaTempCoordinator(hass, config_manager)
 
-        hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
+            hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
-        await hass.config_entries.async_forward_entry_setups(
-            entry, config_manager.platforms
-        )
+            if hass.is_running:
+                await coordinator.initialize()
 
-        _LOGGER.info(f"Start loading {DOMAIN} integration, Entry ID: {entry.entry_id}")
+            else:
+                hass.bus.async_listen_once(
+                    EVENT_HOMEASSISTANT_START, coordinator.on_home_assistant_start
+                )
 
-        await coordinator.async_config_entry_first_refresh()
+            _LOGGER.info("Finished loading integration")
 
-        _LOGGER.info("Finished loading integration")
-
-        initialized = True
+        initialized = is_initialized
 
     except LoginError:
-        _LOGGER.info("Failed to login Aqua Temp API, cannot log integration")
+        _LOGGER.info(f"Failed to login {DEFAULT_NAME} API, cannot log integration")
 
     except Exception as ex:
         exc_type, exc_obj, tb = sys.exc_info()
         line_number = tb.tb_lineno
 
-        _LOGGER.error(f"Failed to load Aqua Temp, error: {ex}, line: {line_number}")
+        _LOGGER.error(
+            f"Failed to load {DEFAULT_NAME}, error: {ex}, line: {line_number}"
+        )
 
     return initialized
 
@@ -61,6 +68,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     _LOGGER.info(f"Unloading {DOMAIN} integration, Entry ID: {entry.entry_id}")
 
     coordinator: AquaTempCoordinator = hass.data[DOMAIN][entry.entry_id]
+
+    await coordinator.config_manager.remove(entry.entry_id)
 
     platforms = coordinator.config_manager.platforms
 

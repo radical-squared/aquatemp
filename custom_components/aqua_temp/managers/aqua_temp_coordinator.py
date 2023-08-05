@@ -2,6 +2,7 @@ from datetime import timedelta
 import logging
 
 from homeassistant.components.climate import HVACMode
+from homeassistant.core import Event
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -24,19 +25,18 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     def __init__(
         self,
         hass,
-        api: AquaTempAPI,
         config_manager: AquaTempConfigManager,
     ):
         """Initialize my coordinator."""
         super().__init__(
             hass,
             _LOGGER,
-            name=config_manager.name,
+            name=config_manager.entry_title,
             update_interval=timedelta(seconds=30),
             update_method=self._async_update_data,
         )
 
-        self._api = api
+        self._api = AquaTempAPI(hass, config_manager)
         self._config_manager = config_manager
 
     @property
@@ -55,9 +55,21 @@ class AquaTempCoordinator(DataUpdateCoordinator):
     def login_details(self):
         return self._api.login_details
 
-    @property
-    def config_data(self):
-        return self._config_manager.data
+    async def on_home_assistant_start(self, _event_data: Event):
+        await self.initialize()
+
+    async def initialize(self):
+        _LOGGER.debug("Initializing coordinator")
+
+        entry = self.config_manager.entry
+        platforms = self.config_manager.platforms
+        await self.hass.config_entries.async_forward_entry_setups(entry, platforms)
+
+        _LOGGER.info(f"Start loading {DOMAIN} integration, Entry ID: {entry.entry_id}")
+
+        await self._api.initialize()
+
+        await self.async_config_entry_first_refresh()
 
     def get_device(self, device_code: str) -> DeviceInfo:
         param_nickname = self._config_manager.get_api_param(APIParam.Nickname)
@@ -80,6 +92,17 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
         return device_info
 
+    def get_debug_data(self) -> dict:
+        config_data = self._config_manager.get_debug_data()
+
+        data = {
+            DATA_ITEM_DEVICES: self._api.devices,
+            DATA_ITEM_CONFIG: config_data,
+            DATA_ITEM_LOGIN_DETAILS: self._api.login_details,
+        }
+
+        return data
+
     async def _async_update_data(self):
         """Fetch parameters from API endpoint.
 
@@ -89,10 +112,12 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         try:
             await self._api.update()
 
+            config_data = self._config_manager.get_debug_data()
+
             return {
                 DATA_ITEM_DEVICES: self._api.devices,
                 DATA_ITEM_LOGIN_DETAILS: self._api.login_details,
-                DATA_ITEM_CONFIG: self.config_data,
+                DATA_ITEM_CONFIG: config_data,
             }
 
         except Exception as err:

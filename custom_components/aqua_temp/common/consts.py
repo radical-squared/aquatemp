@@ -4,9 +4,20 @@ from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 DOMAIN = "aqua_temp"
 DEFAULT_NAME = "Aqua Temp"
 SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
+CONFIGURATION_FILE = f"{DOMAIN}.config.json"
+LEGACY_KEY_FILE = f"{DOMAIN}.key"
+
+ADD_COMPONENT_SIGNALS = [SIGNAL_AQUA_TEMP_DEVICE_NEW]
+
+STORAGE_DATA_KEY = "key"
+
+INVALID_TOKEN_SECTION = "https://github.com/radical-squared/aquatemp#invalid-token"
+
+DEFAULT_ENTRY_ID = "config"
 
 HTTP_HEADER_X_TOKEN = "x-token"
 
+CONF_TITLE = "title"
 CONF_API_TYPE = "api_type"
 
 PRODUCT_IDS = [

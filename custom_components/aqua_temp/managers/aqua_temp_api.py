@@ -1,14 +1,19 @@
 """Platform for climate integration."""
 from asyncio import sleep
 from copy import copy
+import hashlib
 import json
 import logging
 import sys
 
 from aiohttp import ClientResponseError, ClientSession
 
+from custom_components.aqua_temp.models.exceptions import (
+    InvalidTokenError,
+    LoginError,
+    OperationFailedException,
+)
 from homeassistant.components.climate.const import HVACMode
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_send
@@ -35,7 +40,6 @@ from ..common.consts import (
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
-from ..common.exceptions import InvalidTokenError, LoginError, OperationFailedException
 from .aqua_temp_config_manager import AquaTempConfigManager
 
 _LOGGER = logging.getLogger(__name__)
@@ -88,6 +92,8 @@ class AquaTempAPI:
 
     async def initialize(self, throw_error: bool = False):
         try:
+            _LOGGER.debug(f"Initializing API, Throw Error: {throw_error}")
+
             if self._session is None:
                 if self._hass is None:
                     self._session = ClientSession()
@@ -115,6 +121,7 @@ class AquaTempAPI:
 
     async def _connect(self):
         if self._token is None:
+            _LOGGER.debug("No token available, Login AquaTemp API and fetching devices")
             await self._login()
 
             await self._load_devices()
@@ -478,17 +485,25 @@ class AquaTempAPI:
             device_data["fault"] = fault_description
 
     async def _login(self):
-        param_username = self._config_manager.get_api_param(APIParam.Username)
-        param_object_result = self._config_manager.get_api_param(APIParam.ObjectResult)
-
-        config_data = self._config_manager.data
-
-        username = config_data.get(CONF_USERNAME)
-        password = config_data.get(CONF_PASSWORD)
-
-        data = {param_username: username, "password": password}
-
         try:
+            param_username = self._config_manager.get_api_param(APIParam.Username)
+            param_object_result = self._config_manager.get_api_param(
+                APIParam.ObjectResult
+            )
+
+            config_data = self._config_manager.config_data
+
+            plain_password = config_data.password
+
+            password_bytes = bytes(plain_password, "utf-8")
+
+            md5hash = hashlib.new("md5")
+            md5hash.update(password_bytes)
+
+            password_hashed = md5hash.hexdigest()
+
+            data = {param_username: config_data.username, "password": password_hashed}
+
             login_response = await self._post_request(Endpoints.Login, data)
             object_result = login_response.get(param_object_result, {})
 
@@ -502,9 +517,11 @@ class AquaTempAPI:
                 await self._load_user_info()
 
         except Exception as ex:
-            self.set_token()
+            exc_type, exc_obj, tb = sys.exc_info()
+            line_number = tb.tb_lineno
 
-            _LOGGER.error(f"Failed to login, Error: {ex}")
+            _LOGGER.error(f"Failed to login, Error: {ex}, Line: {line_number}")
+            self.set_token()
 
         if self._token is None:
             raise LoginError()

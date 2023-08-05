@@ -1,5 +1,24 @@
 # Changelog
 
+## v3.0.25
+
+### Breaking Change
+
+Password store format changed, up until now, password saved as the hash being send to the API,
+
+To allow the enhanced functionality added, to edit Credentials and API Type, the password is now being saved encrypted and decrypted in 2 flows:
+
+1. Edit integration details
+2. On startup (hashed and sent to the API)
+
+As result of that process, you need to re-setup the integration.
+
+### Changes
+
+- Add to set up configuration form new field of title to define the name of the integration
+- Add edit integration details - Title, Credentials and API Type
+- Refactor component initialization code to simplify process
+
 ## v3.0.24
 
 - Add missing configuration for API param 'error_code'
