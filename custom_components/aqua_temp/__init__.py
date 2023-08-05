@@ -1,12 +1,14 @@
 import logging
 import sys
 
+from cryptography.fernet import InvalidToken
+
 from custom_components.aqua_temp.models.exceptions import LoginError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.core import HomeAssistant
 
-from .common.consts import DEFAULT_NAME, DOMAIN
+from .common.consts import DEFAULT_NAME, DOMAIN, INVALID_TOKEN_SECTION
 from .managers.aqua_temp_config_manager import AquaTempConfigManager
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 from .managers.password_manager import PasswordManager
@@ -49,8 +51,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
         initialized = is_initialized
 
+    except InvalidToken:
+        _LOGGER.error(
+            "Corrupted password or encryption key, "
+            f"please follow steps in {INVALID_TOKEN_SECTION}"
+        )
+
     except LoginError:
-        _LOGGER.info(f"Failed to login {DEFAULT_NAME} API, cannot log integration")
+        _LOGGER.error(f"Failed to login {DEFAULT_NAME} API, cannot log integration")
 
     except Exception as ex:
         exc_type, exc_obj, tb = sys.exc_info()

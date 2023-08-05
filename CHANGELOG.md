@@ -2,7 +2,7 @@
 
 ## v3.0.25
 
-### Breaking Change
+### Breaking Change!
 
 Password store format changed, up until now, password saved as the hash being send to the API,
 
