@@ -1,4 +1,3 @@
-from datetime import timedelta
 import logging
 
 from homeassistant.components.climate import HVACMode
@@ -12,6 +11,7 @@ from ..common.consts import (
     DATA_ITEM_DEVICES,
     DATA_ITEM_LOGIN_DETAILS,
     DOMAIN,
+    UPDATE_API_INTERVAL,
 )
 from .aqua_temp_api import AquaTempAPI
 from .aqua_temp_config_manager import AquaTempConfigManager
@@ -32,7 +32,7 @@ class AquaTempCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=config_manager.entry_title,
-            update_interval=timedelta(seconds=30),
+            update_interval=UPDATE_API_INTERVAL,
             update_method=self._async_update_data,
         )
 
