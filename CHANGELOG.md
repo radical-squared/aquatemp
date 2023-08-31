@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.0.26
+
+- Change API update from 30 seconds to 5 minutes, will update also when action is being performed
+- Redact sensitive details from diagnostic file
+- Fix diagnostic file creation process
+
 ## v3.0.25
 
 ### Breaking Change!

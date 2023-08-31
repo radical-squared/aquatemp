@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from homeassistant.backports.enum import StrEnum
 from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 
@@ -6,6 +8,8 @@ DEFAULT_NAME = "Aqua Temp"
 SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 CONFIGURATION_FILE = f"{DOMAIN}.config.json"
 LEGACY_KEY_FILE = f"{DOMAIN}.key"
+
+UPDATE_API_INTERVAL = timedelta(minutes=5)
 
 ADD_COMPONENT_SIGNALS = [SIGNAL_AQUA_TEMP_DEVICE_NEW]
 
@@ -71,6 +75,15 @@ CONFIG_FAN_LOW = "low"
 
 DEVICE_CONTROL_VALUE = "value"
 DEVICE_CONTROL_PARAM = "param"
+
+TO_REDACT = [
+    "userId",
+    "user_id",
+    "userName",
+    "user_name",
+    "accessKey",
+    HTTP_HEADER_X_TOKEN,
+]
 
 
 class ProductParameter(StrEnum):
