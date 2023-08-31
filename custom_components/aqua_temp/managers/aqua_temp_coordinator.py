@@ -96,7 +96,7 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         config_data = self._config_manager.get_debug_data()
 
         data = {
-            DATA_ITEM_DEVICES: self._api.devices,
+            DATA_ITEM_DEVICES: self.devices,
             DATA_ITEM_CONFIG: config_data,
             DATA_ITEM_LOGIN_DETAILS: self._api.login_details,
         }
@@ -115,7 +115,7 @@ class AquaTempCoordinator(DataUpdateCoordinator):
             config_data = self._config_manager.get_debug_data()
 
             return {
-                DATA_ITEM_DEVICES: self._api.devices,
+                DATA_ITEM_DEVICES: self.devices,
                 DATA_ITEM_LOGIN_DETAILS: self._api.login_details,
                 DATA_ITEM_CONFIG: config_data,
             }

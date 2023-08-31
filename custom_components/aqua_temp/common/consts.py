@@ -76,6 +76,15 @@ CONFIG_FAN_LOW = "low"
 DEVICE_CONTROL_VALUE = "value"
 DEVICE_CONTROL_PARAM = "param"
 
+TO_REDACT = [
+    "userId",
+    "user_id",
+    "userName",
+    "user_name",
+    "accessKey",
+    HTTP_HEADER_X_TOKEN,
+]
+
 
 class ProductParameter(StrEnum):
     MAPPING = "mapping"

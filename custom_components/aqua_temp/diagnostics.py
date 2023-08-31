@@ -4,16 +4,19 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntry
 
+from .common.api_types import APIParam
 from .common.consts import (
     DATA_ITEM_CONFIG,
     DATA_ITEM_DEVICES,
     DATA_ITEM_LOGIN_DETAILS,
     DOMAIN,
+    TO_REDACT,
 )
 from .managers.aqua_temp_coordinator import AquaTempCoordinator
 
@@ -50,11 +53,13 @@ def _async_get_diagnostics(
     """Return diagnostics for a config entry."""
     _LOGGER.debug("Getting diagnostic information")
 
-    debug_data = coordinator.get_debug_data()
+    debug_data = async_redact_data(coordinator.get_debug_data(), TO_REDACT)
 
     devices = debug_data.get(DATA_ITEM_DEVICES)
     config_data = debug_data.get(DATA_ITEM_CONFIG)
     login_details = debug_data.get(DATA_ITEM_LOGIN_DETAILS)
+
+    device_id_param = coordinator.config_manager.get_api_param(APIParam.DeviceId)
 
     data = {
         DATA_ITEM_LOGIN_DETAILS: login_details,
@@ -63,12 +68,12 @@ def _async_get_diagnostics(
         "disabled_polling": entry.pref_disable_polling,
     }
 
-    if device:
+    if device is not None:
         device_id = next(iter(device.identifiers))[1]
 
         for device_code in devices:
             device_details = devices[device_code]
-            if device_details.get("device_id") == device_id:
+            if device_details.get(device_id_param) == device_id:
                 data |= _async_device_as_dict(hass, device_details)
 
     else:
@@ -76,7 +81,9 @@ def _async_get_diagnostics(
 
         data.update(
             devices=[
-                _async_device_as_dict(hass, devices[device_code])
+                _async_device_as_dict(
+                    hass, devices[device_code][device_id_param], devices[device_code]
+                )
                 for device_code in devices
             ]
         )
@@ -85,23 +92,23 @@ def _async_get_diagnostics(
 
 
 @callback
-def _async_device_as_dict(hass: HomeAssistant, device_data: dict) -> dict[str, Any]:
+def _async_device_as_dict(
+    hass: HomeAssistant, device_id: str, device_data: dict
+) -> dict[str, Any]:
     """Represent a Shinobi monitor as a dictionary."""
     device_registry = dr.async_get(hass)
     entity_registry = er.async_get(hass)
 
-    unique_id = device_data.get("device_id")
-
-    ha_device = device_registry.async_get_device(identifiers={(DOMAIN, unique_id)})
+    ha_device = device_registry.async_get_device(identifiers={(DOMAIN, device_id)})
     data = {}
 
     if ha_device:
-        data["home_assistant"] = {
+        data["device"] = {
             "name": ha_device.name,
             "name_by_user": ha_device.name_by_user,
             "disabled": ha_device.disabled,
             "disabled_by": ha_device.disabled_by,
-            "parameters": device_data,
+            "data": device_data,
             "entities": [],
         }
 
@@ -120,7 +127,7 @@ def _async_device_as_dict(hass: HomeAssistant, device_data: dict) -> dict[str, A
                 # The context doesn't provide useful information in this case.
                 state_dict.pop("context", None)
 
-            data["home_assistant"]["entities"].append(
+            data["device"]["entities"].append(
                 {
                     "disabled": entity_entry.disabled,
                     "disabled_by": entity_entry.disabled_by,
