@@ -12,13 +12,13 @@ from homeassistant.const import EntityCategory, Platform, UnitOfTemperature
 from homeassistant.helpers.entity import EntityDescription
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, kw_only=True)
 class AquaTempEntityDescription(EntityDescription):
     platform: Platform | None = None
     is_protocol_code: bool = True
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, kw_only=True)
 class AquaTempClimateEntityDescription(
     ClimateEntityDescription, AquaTempEntityDescription
 ):
@@ -27,7 +27,7 @@ class AquaTempClimateEntityDescription(
     hvac_modes: list[HVACMode] | list[str] = None
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, kw_only=True)
 class AquaTempBinarySensorEntityDescription(
     BinarySensorEntityDescription, AquaTempEntityDescription
 ):
@@ -36,14 +36,14 @@ class AquaTempBinarySensorEntityDescription(
     attributes: list[str] | None = None
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, kw_only=True)
 class AquaTempSensorEntityDescription(
     SensorEntityDescription, AquaTempEntityDescription
 ):
     platform: Platform | None = Platform.SENSOR
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, kw_only=True)
 class AquaTempSelectEntityDescription(
     SelectEntityDescription, AquaTempEntityDescription
 ):
