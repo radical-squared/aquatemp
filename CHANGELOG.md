@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.27
+
+_Minimum HA Version: 2024.1.0_
+
+- Adjust code to 2024.1.0
+
 ## v3.0.26
 
 - Change API update from 30 seconds to 5 minutes, will update also when action is being performed
