@@ -4,7 +4,7 @@
 
 _Minimum HA Version: 2024.1.0_
 
-- Adjust code to 2024.1.0
+- Adjust code to HA 2024.1.0
 
 ## v3.0.26
 
