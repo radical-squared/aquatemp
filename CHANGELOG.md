@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.29
+
+- Replaced soon (2025) to get deprecated SUPPORT\_\* constant with ClimateEntityFeature
+
 ## 3.0.28
 
 _Minimum HA Version: 2024.1.0b0_
