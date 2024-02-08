@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.30
+
+- Fix error message `implicitly supporting turn_on/turn_off` introduced in v2024.2
+
 ## 3.0.29
 
 - Replaced soon (2025) to get deprecated SUPPORT\_\* constant with ClimateEntityFeature

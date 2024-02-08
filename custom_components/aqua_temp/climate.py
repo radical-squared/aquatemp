@@ -46,7 +46,10 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
         super().__init__(entity_description, coordinator, device_code)
 
         self._attr_supported_features = (
-            ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.FAN_MODE
+            ClimateEntityFeature.TURN_OFF
+            | ClimateEntityFeature.TURN_ON
+            | ClimateEntityFeature.TARGET_TEMPERATURE
+            | ClimateEntityFeature.FAN_MODE
         )
         self._attr_fan_modes = list(coordinator.get_fan_modes(device_code))
         self._attr_hvac_modes = list(coordinator.get_hvac_modes(device_code))
