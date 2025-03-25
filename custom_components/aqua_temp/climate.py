@@ -97,8 +97,18 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
             hvac_mode = HVACMode.OFF
             target_temperature = None
 
-        self._attr_min_temp = minimum_temperature
-        self._attr_max_temp = maximum_temperature
+        # Make sure that min_temp is always less than max_temp
+        if minimum_temperature is not None and maximum_temperature is not None:
+            if minimum_temperature > maximum_temperature:
+                self._attr_min_temp = maximum_temperature
+                self._attr_max_temp = minimum_temperature
+            else:
+                self._attr_min_temp = minimum_temperature
+                self._attr_max_temp = maximum_temperature
+        else:
+            self._attr_min_temp = minimum_temperature
+            self._attr_max_temp = maximum_temperature
+
         self._attr_hvac_mode = hvac_mode
         self._attr_fan_mode = fan_mode
         self._attr_target_temperature = target_temperature
