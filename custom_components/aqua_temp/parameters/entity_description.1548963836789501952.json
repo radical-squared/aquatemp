@@ -1,0 +1,330 @@
+[
+   {
+    "key": "Manual-mute",
+    "name": "Manual-mute",
+    "platform": null
+  },
+  {
+    "key": "State_power",
+    "name": "State_power",
+    "platform": "binary_sensor",
+    "device_class": "power",
+    "on_value": "1"
+  },
+  {
+    "key": "State_mode",
+    "name": "State_mode",
+    "platform": null
+  },
+  {
+    "key": "Material_Code",
+    "name": "Material_Code",
+    "platform": null
+  },
+  {
+    "key": "Prog_Version",
+    "name": "Prog_Version",
+    "platform": null
+  },
+  {
+    "key": "O01",
+    "name": "Compressor [O01]",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "O02",
+    "name": "Circulate Pump [O02]",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "O03",
+    "name": "Fan Motor [O03]",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "O04",
+    "name": "4-way Valve [O04]",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "S01",
+    "name": "HP Switch",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "S02",
+    "name": "LP Switch",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "S03",
+    "name": "Flow switch",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "T01",
+    "name": "Suction Temp. [T01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T02",
+    "name": "Inlet water Temp. [T02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T03",
+    "name": "Outlet water Temp. [T03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T04",
+    "name": "Pipe Temp. [T04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T05",
+    "name": "Ambient Temp. [T05]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T06",
+    "name": "Exhaust Temp. [T06]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D01",
+    "name": "Start Defrosting Temp [D01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D02",
+    "name": "Stop defrosting CT Temp. [D02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "D03",
+    "name": "Defrosting cycle [D03]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "D04",
+    "name": "Max.Duration [D04]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "D05",
+    "name": "Max. Duration [D05]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "D06",
+    "name": "Defrost type [D06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H01",
+    "name": "Power down memory [H01]",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "H02",
+    "name": "Temp. unit [H02]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H03",
+    "name": "Comp.stop [H03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "H04",
+    "name": "Exhaust Temp. High [H04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "H05",
+    "name": "Outlet Water Temperature Sensor [H05]",
+    "platform": "sensor",
+    "device_class": "binary_sensor",
+    "on_value": "1"
+  },
+  {
+    "key": "H06",
+    "name": "Mode type [H06]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "H09",
+    "name": "Unit Address [H09]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "Mode",
+    "name": "Mode [Mode]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "Power",
+    "name": "Power [Power]",
+    "platform": "binary_sensor",
+    "device_class": "power",
+    "on_value": "1"
+  },
+  {
+    "key": "P01",
+    "name": "Mode [P01]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": null
+  },
+  {
+    "key": "P02",
+    "name": "Inverval [P02]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "P04",
+    "name": "Water pump advance Comp. time [P04]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "P03",
+    "name": "Duration [P03]",
+    "platform": "sensor",
+    "device_class": "duration",
+    "unit_of_measurement": "min"
+  },
+  {
+    "key": "R01",
+    "name": "Heat target Temp. [R01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R02",
+    "name": "Temp difference.heat [R02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R03",
+    "name": "Power off temp difference (Heating) [R03]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R04",
+    "name": "Min.heat [R04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R05",
+    "name": "Max.heat [R05]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R06",
+    "name": "Cool target Temp. [R06]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R07",
+    "name": "Temp difference.cool [R07]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R08",
+    "name": "Power off temp difference (Cooling) [R08]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R09",
+    "name": "Min.Cool [R09]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R10",
+    "name": "Max.Cool [R10]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R11",
+    "name": "Auto. target Temp. [R11]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  }
+]
