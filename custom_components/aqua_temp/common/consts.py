@@ -41,6 +41,7 @@ PRODUCT_IDS = [
     "1669159229372477440",  # Aqua Temp
     "1650758828508766208",  # Aqua Temp
     "1664085465655808000",  # Aqua Temp
+    "1501438265440362496",  # Trianco Activair High Temp 9kw
 ]
 
 MANUAL_MUTE_AUTO = "0"

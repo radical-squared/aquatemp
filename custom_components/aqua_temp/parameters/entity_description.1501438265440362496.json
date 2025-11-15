@@ -1,0 +1,158 @@
+[
+  {
+    "key": "Power",
+    "name": "Power",
+    "platform": "binary_sensor",
+    "device_class": "power",
+    "on_value": "1"
+  },
+  {
+    "key": "Mode",
+    "name": "Mode",
+    "platform": null
+  },
+  {
+    "key": "Set_Temp",
+    "name": "Set_Temp",
+    "platform": null
+  },
+  {
+    "key": "R01",
+    "name": "DHW Target Temp [R01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R02",
+    "name": "Heating Target Temp [R02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R08",
+    "name": "Min. cool [R08]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R09",
+    "name": "Max. cool [R09]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R10",
+    "name": "Min. heat [R10]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R11",
+    "name": "Max. heat [R11]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R36",
+    "name": "Min. DHW [R36]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "R37",
+    "name": "Max. DHW [R37]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T01",
+    "name": "Inlet water temp. [T01]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T02",
+    "name": "Outlet water Temp. [T02]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T04",
+    "name": "Ambient Temp. [T04]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T08",
+    "name": "DHW tank Temp. [T08]",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "T15",
+    "name": "Low Pressure [T15]",
+    "platform": "sensor",
+    "device_class": "pressure",
+    "unit_of_measurement": "bar"
+  },
+  {
+    "key": "T27",
+    "name": "speed of fan motor1 [T27]",
+    "platform": "sensor",
+    "device_class": null,
+    "unit_of_measurement": "rpm"
+  },
+  {
+    "key": "T34",
+    "name": "AC input voltage [T34]",
+    "platform": "sensor",
+    "device_class": "voltage",
+    "unit_of_measurement": "V"
+  },
+  {
+    "key": "T35",
+    "name": "AC input current [T35]",
+    "platform": "sensor",
+    "device_class": "current",
+    "unit_of_measurement": "A"
+  },
+  {
+    "key": "T39",
+    "name": "Water Flow [T39]",
+    "platform": "sensor",
+    "device_class": "volume_flow_rate",
+    "unit_of_measurement": "m³/h"
+  },
+  {
+    "key": "2014",
+    "name": "AT Target Temp",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  },
+  {
+    "key": "compensate_slope",
+    "name": "AT Compensate Slope",
+    "platform": "sensor",
+    "device_class": null
+  },
+  {
+    "key": "compensate_offset",
+    "name": "AT Compensate Offset",
+    "platform": "sensor",
+    "device_class": "temperature",
+    "unit_of_measurement": "\u00b0C"
+  }
+]
