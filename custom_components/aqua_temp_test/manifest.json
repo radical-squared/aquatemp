@@ -1,6 +1,6 @@
 {
   "domain": "aqua_temp_test",
-  "name": "Aqua Temp (Test)",
+  "name": "Aqua Temp - Indol PV300 Fix",
   "codeowners": ["@radical-squared", "@elad-bar"],
   "config_flow": true,
   "dependencies": [],
