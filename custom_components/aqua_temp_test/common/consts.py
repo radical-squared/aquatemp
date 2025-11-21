@@ -3,7 +3,7 @@ from enum import StrEnum
 
 from homeassistant.components.climate.const import FAN_AUTO, FAN_LOW, HVACMode
 
-DOMAIN = "aqua_temp"
+DOMAIN = "aqua_temp_test"
 DEFAULT_NAME = "Aqua Temp"
 SIGNAL_AQUA_TEMP_DEVICE_NEW = f"signal_{DOMAIN}_device_new"
 CONFIGURATION_FILE = f"{DOMAIN}.config.json"

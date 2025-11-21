@@ -1,6 +1,6 @@
 {
-  "domain": "aqua_temp",
-  "name": "Aqua Temp",
+  "domain": "aqua_temp_test",
+  "name": "Aqua Temp (Test)",
   "codeowners": ["@radical-squared", "@elad-bar"],
   "config_flow": true,
   "dependencies": [],
