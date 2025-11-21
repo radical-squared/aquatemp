@@ -1,27 +1,5 @@
 [
   {
-    "key": "Power",
-    "name": "Power",
-    "platform": "binary_sensor",
-    "device_class": "power",
-    "on_value": "1"
-  },
-  {
-    "key": "Mode",
-    "name": "Mode",
-    "platform": null
-  },
-  {
-    "key": "Manual-mute",
-    "name": "Manual-mute",
-    "platform": null
-  },
-  {
-    "key": "Set_Temp",
-    "name": "Set_Temp",
-    "platform": null
-  },
-  {
     "key": "2074",
     "name": "2074",
     "platform": null
