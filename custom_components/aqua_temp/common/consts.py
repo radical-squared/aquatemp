@@ -41,7 +41,19 @@ PRODUCT_IDS = [
     "1669159229372477440",  # Aqua Temp
     "1650758828508766208",  # Aqua Temp
     "1664085465655808000",  # Aqua Temp
+    "1726502484782837760",  # Hitemp - Cairox R-AQUA HPB R290 (HPB-S 300A)
 ]
+
+# Fallback temperature limits for products where the device-reported min/max
+# heat protocol codes (e.g. R10/R11) are unreliable (e.g. report 0 / empty).
+# Maps product_id -> {"minimum": <float>, "maximum": <float>}.
+# Only keys present in the override are applied; others keep using the
+# device-reported value.
+PRODUCT_TEMPERATURE_OVERRIDES = {
+    # Cairox R-AQUA HPB R290 (HPB-S 300A) - R11 (Max heat) reports 0 on this
+    # device, which would make the climate entity reject any setpoint.
+    "1726502484782837760": {"maximum": 60.0},
+}
 
 MANUAL_MUTE_AUTO = "0"
 MANUAL_MUTE_LOW = "1"

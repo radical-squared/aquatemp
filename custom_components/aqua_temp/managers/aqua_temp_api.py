@@ -37,6 +37,7 @@ from ..common.consts import (
     HTTP_HEADER_X_TOKEN,
     POWER_MODE_OFF,
     POWER_MODE_ON,
+    PRODUCT_TEMPERATURE_OVERRIDES,
     SIGNAL_AQUA_TEMP_DEVICE_NEW,
 )
 from ..common.endpoints import Endpoints
@@ -651,6 +652,12 @@ class AquaTempAPI:
         if temperature is not None:
             temperature = float(str(temperature))
 
+        if temperature is None or temperature <= 0:
+            override = self._get_temperature_override(device_code, "minimum")
+
+            if override is not None:
+                temperature = override
+
         return temperature
 
     def get_device_maximum_temperature(self, device_code: str) -> float | None:
@@ -670,7 +677,25 @@ class AquaTempAPI:
         if temperature is not None:
             temperature = float(str(temperature))
 
+        if temperature is None or temperature <= 0:
+            override = self._get_temperature_override(device_code, "maximum")
+
+            if override is not None:
+                temperature = override
+
         return temperature
+
+    def _get_temperature_override(
+        self, device_code: str, limit_key: str
+    ) -> float | None:
+        """Return a fallback min/max temperature for products whose device-
+        reported R10/R11 protocol codes are missing or report 0 (e.g. the
+        Cairox R-AQUA HPB R290 / HPB-S 300A reports Max heat [R11] as 0).
+        """
+        product_id = self._config_manager.get_product_id(device_code)
+        overrides = PRODUCT_TEMPERATURE_OVERRIDES.get(product_id, {})
+
+        return overrides.get(limit_key)
 
     def get_device_hvac_mode(self, device_code: str) -> HVACMode:
         device_data = self.get_device_data(device_code)
@@ -680,6 +705,18 @@ class AquaTempAPI:
         hvac_mode = self._config_manager.get_hvac_reverse_mapping(
             device_code, device_mode
         )
+
+        if hvac_mode is None:
+            # Unknown / unmapped device mode value - fall back to HEAT instead of
+            # crashing with "ValueError: None is not a valid HVACMode".
+            # Relevant for water-heater-only devices (e.g. R290 models) where the
+            # raw "Mode" value isn't part of the default cool/heat/auto mapping.
+            _LOGGER.warning(
+                f"Device {device_code} reported unmapped mode value "
+                f"'{device_mode}', falling back to HVACMode.HEAT"
+            )
+            hvac_mode = str(HVACMode.HEAT)
+
         result = HVACMode(hvac_mode)
 
         return result

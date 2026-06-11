@@ -219,6 +219,11 @@ class AquaTempConfigManager:
 
         return result
 
+    def get_product_id(self, device_code: str) -> str | None:
+        result = self._get_product_id(device_code, ProductParameter.MAPPING)
+
+        return result
+
     def get_pc_key(self, device_code: str, key: str):
         config = self._get_pc_mapping(device_code)
         protocol_code_key = config.get(key)
