@@ -680,6 +680,18 @@ class AquaTempAPI:
         hvac_mode = self._config_manager.get_hvac_reverse_mapping(
             device_code, device_mode
         )
+
+        if hvac_mode is None:
+            # Unknown / unmapped device mode value - fall back to HEAT instead of
+            # crashing with "ValueError: None is not a valid HVACMode".
+            # Relevant for water-heater-only devices (e.g. R290 models) where the
+            # raw "Mode" value isn't part of the default cool/heat/auto mapping.
+            _LOGGER.warning(
+                f"Device {device_code} reported unmapped mode value "
+                f"'{device_mode}', falling back to HVACMode.HEAT"
+            )
+            hvac_mode = str(HVACMode.HEAT)
+
         result = HVACMode(hvac_mode)
 
         return result
