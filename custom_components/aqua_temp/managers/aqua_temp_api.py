@@ -169,7 +169,7 @@ class AquaTempAPI:
 
         if error is not None:
             if attempt < API_MAX_ATTEMPTS:
-                await sleep(1000)
+                await sleep(1)
 
                 await self._internal_update(attempt + 1)
 
@@ -177,6 +177,8 @@ class AquaTempAPI:
                 _LOGGER.error(
                     f"Failed to update (Attempt #{attempt}), Error: {error}, Line: {line_number}"
                 )
+
+                raise error
 
     async def _update_device(self, device_code: str):
         _LOGGER.debug(f"Starting to update device: {device_code}")
@@ -392,7 +394,7 @@ class AquaTempAPI:
 
         if error is not None:
             if attempt < API_MAX_ATTEMPTS:
-                await sleep(1000)
+                await sleep(1)
 
                 await self._connect()
 
