@@ -756,45 +756,32 @@ class AquaTempAPI:
     def _get_effective_target_temperature_pc(
         self, device_code: str, hvac_mode: HVACMode, target_temperature_pc: str | None
     ) -> str | None:
-        """Work around devices whose HEAT-mode target register is stale/unused.
+        """Work around devices whose HEAT-mode target register is non-functional.
 
         Some devices without a dedicated product ID mapping file (falling
-        back to mapping.default.json) don't actually use their own heat
-        target register (e.g. R02) for the live heat setpoint; instead, the
-        setpoint the app shows and accepts lives in the cool-mode target
-        register (e.g. R01), regardless of the active HVAC mode.
+        back to mapping.default.json) accept writes to their own heat target
+        register (e.g. R02) -- the value is stored and read back fine -- but
+        it has no effect at all on the physical unit; the register that
+        actually drives the device (both for the vendor app's display and
+        for real setpoint changes) is the cool-mode target register (e.g.
+        R01), regardless of the active HVAC mode. A plausibility/range check
+        on the heat register's value can't catch this, since the device
+        happily stores an in-range value there that still does nothing.
 
         To avoid ever affecting cool mode or devices whose mapping is
-        already correct, this only kicks in when ALL of these hold:
+        already correct, this unconditionally swaps to the cool-mode target
+        register whenever BOTH of these hold:
           - the HVAC mode is HEAT (cool mode is never touched)
           - the device is using the generic default mapping (devices with a
             dedicated, verified mapping file are never touched)
-          - the heat register's own current value is missing, or falls
-            outside the device's own (already-validated) min/max range for
-            heat mode -- i.e. it's clearly implausible, not just "unusual"
 
-        Only then does it fall back to the cool-mode target register for
-        both reading (get_device_target_temperature) and writing
+        Applies to both reading (get_device_target_temperature) and writing
         (set_temperature), since both go through this method.
         """
         if hvac_mode != HVACMode.HEAT:
             return target_temperature_pc
 
         if not self._config_manager.is_default_mapping(device_code):
-            return target_temperature_pc
-
-        device_data = self.get_device_data(device_code)
-        raw_value = self._get_temperature_value(device_data, target_temperature_pc)
-
-        minimum_temperature, maximum_temperature = self._get_device_temperature_range(
-            device_code
-        )
-
-        is_implausible = raw_value is None or (
-            minimum_temperature is not None and raw_value < minimum_temperature
-        ) or (maximum_temperature is not None and raw_value > maximum_temperature)
-
-        if not is_implausible:
             return target_temperature_pc
 
         cool_target_pc = self._config_manager.get_hvac_mode_pc_key(
@@ -805,11 +792,11 @@ class AquaTempAPI:
             return target_temperature_pc
 
         _LOGGER.warning(
-            f"Device {device_code} heat-mode target register "
-            f"{target_temperature_pc} = {raw_value} is missing or outside the "
-            f"valid heat range ({minimum_temperature}-{maximum_temperature}). "
-            f"Falling back to the cool-mode target register {cool_target_pc} "
-            f"for reading/writing the heat setpoint."
+            f"Device {device_code} is using the default mapping, whose "
+            f"heat-mode target register {target_temperature_pc} is known to "
+            f"have no effect on this class of device. Using the cool-mode "
+            f"target register {cool_target_pc} instead for reading/writing "
+            f"the heat setpoint."
         )
 
         return cool_target_pc
