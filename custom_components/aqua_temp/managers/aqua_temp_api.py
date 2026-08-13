@@ -745,9 +745,74 @@ class AquaTempAPI:
             device_code, hvac_mode, CONFIG_HVAC_TARGET
         )
 
+        target_temperature_pc = self._get_effective_target_temperature_pc(
+            device_code, hvac_mode, target_temperature_pc
+        )
+
         _LOGGER.debug(f"Target temp PC {target_temperature_pc}, HA Mode: {hvac_mode}")
 
         return target_temperature_pc
+
+    def _get_effective_target_temperature_pc(
+        self, device_code: str, hvac_mode: HVACMode, target_temperature_pc: str | None
+    ) -> str | None:
+        """Work around devices whose HEAT-mode target register is stale/unused.
+
+        Some devices without a dedicated product ID mapping file (falling
+        back to mapping.default.json) don't actually use their own heat
+        target register (e.g. R02) for the live heat setpoint; instead, the
+        setpoint the app shows and accepts lives in the cool-mode target
+        register (e.g. R01), regardless of the active HVAC mode.
+
+        To avoid ever affecting cool mode or devices whose mapping is
+        already correct, this only kicks in when ALL of these hold:
+          - the HVAC mode is HEAT (cool mode is never touched)
+          - the device is using the generic default mapping (devices with a
+            dedicated, verified mapping file are never touched)
+          - the heat register's own current value is missing, or falls
+            outside the device's own (already-validated) min/max range for
+            heat mode -- i.e. it's clearly implausible, not just "unusual"
+
+        Only then does it fall back to the cool-mode target register for
+        both reading (get_device_target_temperature) and writing
+        (set_temperature), since both go through this method.
+        """
+        if hvac_mode != HVACMode.HEAT:
+            return target_temperature_pc
+
+        if not self._config_manager.is_default_mapping(device_code):
+            return target_temperature_pc
+
+        device_data = self.get_device_data(device_code)
+        raw_value = self._get_temperature_value(device_data, target_temperature_pc)
+
+        minimum_temperature, maximum_temperature = self._get_device_temperature_range(
+            device_code
+        )
+
+        is_implausible = raw_value is None or (
+            minimum_temperature is not None and raw_value < minimum_temperature
+        ) or (maximum_temperature is not None and raw_value > maximum_temperature)
+
+        if not is_implausible:
+            return target_temperature_pc
+
+        cool_target_pc = self._config_manager.get_hvac_mode_pc_key(
+            device_code, HVACMode.COOL, CONFIG_HVAC_TARGET
+        )
+
+        if cool_target_pc is None or cool_target_pc == target_temperature_pc:
+            return target_temperature_pc
+
+        _LOGGER.warning(
+            f"Device {device_code} heat-mode target register "
+            f"{target_temperature_pc} = {raw_value} is missing or outside the "
+            f"valid heat range ({minimum_temperature}-{maximum_temperature}). "
+            f"Falling back to the cool-mode target register {cool_target_pc} "
+            f"for reading/writing the heat setpoint."
+        )
+
+        return cool_target_pc
 
     def _get_device_product_id(self, device_data: dict):
         param = self._config_manager.get_api_param(APIParam.ProductId)

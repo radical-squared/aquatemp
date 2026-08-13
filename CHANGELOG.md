@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.39
+
+- Fix heat-mode target temperature not reaching the device on some devices without a dedicated product ID mapping, by falling back to the cool-mode target register when the heat register's own value is missing or out of range (HEAT mode + default mapping only; cool mode is never affected)
+
 ## 3.0.38
 
 - Fix invalid climate min/max temperature range (minimum > maximum) reported by some devices without a dedicated product ID mapping, by automatically swapping the values
