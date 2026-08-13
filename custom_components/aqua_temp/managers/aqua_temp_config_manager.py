@@ -225,6 +225,13 @@ class AquaTempConfigManager:
 
         return protocol_code_key
 
+    def is_default_mapping(self, device_code: str) -> bool:
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
+
+        result = product_id in (None, PRODUCT_ID_DEFAULT)
+
+        return result
+
     def get_hvac_mode_pc_key(self, device_code: str, hvac_mode: str, key: str):
         config = self._get_pc_mapping(device_code)
 

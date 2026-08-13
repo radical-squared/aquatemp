@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.0.40
+
+- Always use the cool-mode target register instead of the heat-mode one when writing/reading the heat setpoint on devices with the default mapping, since real-device testing showed the heat-mode register is accepted but has no effect on the physical unit (not just occasionally stale)
+
+## 3.0.39
+
+- Fix heat-mode target temperature not reaching the device on some devices without a dedicated product ID mapping, by falling back to the cool-mode target register when the heat register's own value is missing or out of range (HEAT mode + default mapping only; cool mode is never affected)
+
+## 3.0.38
+
+- Fix invalid climate min/max temperature range (minimum > maximum) reported by some devices without a dedicated product ID mapping, by automatically swapping the values
+
 ## 3.0.37
 
 - Initialize data using `async_request_refresh` instead of `async_config_entry_first_refresh` to remove warning message

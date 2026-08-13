@@ -636,32 +636,66 @@ class AquaTempAPI:
         return current_temperature
 
     def get_device_minimum_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
-
-        hvac_mode = self.get_device_hvac_mode(device_code)
-        key = self._config_manager.get_hvac_mode_pc_key(
-            device_code, hvac_mode, CONFIG_HVAC_MINIMUM
+        minimum_temperature, _maximum_temperature = self._get_device_temperature_range(
+            device_code
         )
 
-        temperature = device_data.get(key)
-
-        if temperature == "":
-            temperature = None
-
-        if temperature is not None:
-            temperature = float(str(temperature))
-
-        return temperature
+        return minimum_temperature
 
     def get_device_maximum_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
+        _minimum_temperature, maximum_temperature = self._get_device_temperature_range(
+            device_code
+        )
 
+        return maximum_temperature
+
+    def _get_device_temperature_range(
+        self, device_code: str
+    ) -> tuple[float | None, float | None]:
+        """Get the minimum / maximum temperature for the device's current HVAC mode.
+
+        Some devices (typically ones without a dedicated product ID mapping
+        file) report their minimum and maximum registers the wrong way round,
+        which would otherwise result in an invalid range (minimum > maximum)
+        being handed to the climate entity. Guard against that here, so the
+        entity always receives a valid range regardless of whether the
+        device's product ID is correctly recognized.
+        """
+        device_data = self.get_device_data(device_code)
         hvac_mode = self.get_device_hvac_mode(device_code)
 
-        key = self._config_manager.get_hvac_mode_pc_key(
+        minimum_key = self._config_manager.get_hvac_mode_pc_key(
+            device_code, hvac_mode, CONFIG_HVAC_MINIMUM
+        )
+        maximum_key = self._config_manager.get_hvac_mode_pc_key(
             device_code, hvac_mode, CONFIG_HVAC_MAXIMUM
         )
 
+        minimum_temperature = self._get_temperature_value(device_data, minimum_key)
+        maximum_temperature = self._get_temperature_value(device_data, maximum_key)
+
+        if (
+            minimum_temperature is not None
+            and maximum_temperature is not None
+            and minimum_temperature > maximum_temperature
+        ):
+            _LOGGER.warning(
+                f"Device {device_code} reported an invalid temperature range "
+                f"for HVAC mode {hvac_mode} (minimum register {minimum_key} = "
+                f"{minimum_temperature} is greater than maximum register "
+                f"{maximum_key} = {maximum_temperature}). Swapping the two "
+                f"values so a valid range is used."
+            )
+
+            minimum_temperature, maximum_temperature = (
+                maximum_temperature,
+                minimum_temperature,
+            )
+
+        return minimum_temperature, maximum_temperature
+
+    @staticmethod
+    def _get_temperature_value(device_data: dict, key: str | None) -> float | None:
         temperature = device_data.get(key)
 
         if temperature == "":
@@ -711,9 +745,61 @@ class AquaTempAPI:
             device_code, hvac_mode, CONFIG_HVAC_TARGET
         )
 
+        target_temperature_pc = self._get_effective_target_temperature_pc(
+            device_code, hvac_mode, target_temperature_pc
+        )
+
         _LOGGER.debug(f"Target temp PC {target_temperature_pc}, HA Mode: {hvac_mode}")
 
         return target_temperature_pc
+
+    def _get_effective_target_temperature_pc(
+        self, device_code: str, hvac_mode: HVACMode, target_temperature_pc: str | None
+    ) -> str | None:
+        """Work around devices whose HEAT-mode target register is non-functional.
+
+        Some devices without a dedicated product ID mapping file (falling
+        back to mapping.default.json) accept writes to their own heat target
+        register (e.g. R02) -- the value is stored and read back fine -- but
+        it has no effect at all on the physical unit; the register that
+        actually drives the device (both for the vendor app's display and
+        for real setpoint changes) is the cool-mode target register (e.g.
+        R01), regardless of the active HVAC mode. A plausibility/range check
+        on the heat register's value can't catch this, since the device
+        happily stores an in-range value there that still does nothing.
+
+        To avoid ever affecting cool mode or devices whose mapping is
+        already correct, this unconditionally swaps to the cool-mode target
+        register whenever BOTH of these hold:
+          - the HVAC mode is HEAT (cool mode is never touched)
+          - the device is using the generic default mapping (devices with a
+            dedicated, verified mapping file are never touched)
+
+        Applies to both reading (get_device_target_temperature) and writing
+        (set_temperature), since both go through this method.
+        """
+        if hvac_mode != HVACMode.HEAT:
+            return target_temperature_pc
+
+        if not self._config_manager.is_default_mapping(device_code):
+            return target_temperature_pc
+
+        cool_target_pc = self._config_manager.get_hvac_mode_pc_key(
+            device_code, HVACMode.COOL, CONFIG_HVAC_TARGET
+        )
+
+        if cool_target_pc is None or cool_target_pc == target_temperature_pc:
+            return target_temperature_pc
+
+        _LOGGER.warning(
+            f"Device {device_code} is using the default mapping, whose "
+            f"heat-mode target register {target_temperature_pc} is known to "
+            f"have no effect on this class of device. Using the cool-mode "
+            f"target register {cool_target_pc} instead for reading/writing "
+            f"the heat setpoint."
+        )
+
+        return cool_target_pc
 
     def _get_device_product_id(self, device_data: dict):
         param = self._config_manager.get_api_param(APIParam.ProductId)
