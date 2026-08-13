@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.38
+
+- Fix invalid climate min/max temperature range (minimum > maximum) reported by some devices without a dedicated product ID mapping, by automatically swapping the values
+
 ## 3.0.37
 
 - Initialize data using `async_request_refresh` instead of `async_config_entry_first_refresh` to remove warning message

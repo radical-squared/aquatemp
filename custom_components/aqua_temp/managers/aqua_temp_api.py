@@ -636,32 +636,66 @@ class AquaTempAPI:
         return current_temperature
 
     def get_device_minimum_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
-
-        hvac_mode = self.get_device_hvac_mode(device_code)
-        key = self._config_manager.get_hvac_mode_pc_key(
-            device_code, hvac_mode, CONFIG_HVAC_MINIMUM
+        minimum_temperature, _maximum_temperature = self._get_device_temperature_range(
+            device_code
         )
 
-        temperature = device_data.get(key)
-
-        if temperature == "":
-            temperature = None
-
-        if temperature is not None:
-            temperature = float(str(temperature))
-
-        return temperature
+        return minimum_temperature
 
     def get_device_maximum_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
+        _minimum_temperature, maximum_temperature = self._get_device_temperature_range(
+            device_code
+        )
 
+        return maximum_temperature
+
+    def _get_device_temperature_range(
+        self, device_code: str
+    ) -> tuple[float | None, float | None]:
+        """Get the minimum / maximum temperature for the device's current HVAC mode.
+
+        Some devices (typically ones without a dedicated product ID mapping
+        file) report their minimum and maximum registers the wrong way round,
+        which would otherwise result in an invalid range (minimum > maximum)
+        being handed to the climate entity. Guard against that here, so the
+        entity always receives a valid range regardless of whether the
+        device's product ID is correctly recognized.
+        """
+        device_data = self.get_device_data(device_code)
         hvac_mode = self.get_device_hvac_mode(device_code)
 
-        key = self._config_manager.get_hvac_mode_pc_key(
+        minimum_key = self._config_manager.get_hvac_mode_pc_key(
+            device_code, hvac_mode, CONFIG_HVAC_MINIMUM
+        )
+        maximum_key = self._config_manager.get_hvac_mode_pc_key(
             device_code, hvac_mode, CONFIG_HVAC_MAXIMUM
         )
 
+        minimum_temperature = self._get_temperature_value(device_data, minimum_key)
+        maximum_temperature = self._get_temperature_value(device_data, maximum_key)
+
+        if (
+            minimum_temperature is not None
+            and maximum_temperature is not None
+            and minimum_temperature > maximum_temperature
+        ):
+            _LOGGER.warning(
+                f"Device {device_code} reported an invalid temperature range "
+                f"for HVAC mode {hvac_mode} (minimum register {minimum_key} = "
+                f"{minimum_temperature} is greater than maximum register "
+                f"{maximum_key} = {maximum_temperature}). Swapping the two "
+                f"values so a valid range is used."
+            )
+
+            minimum_temperature, maximum_temperature = (
+                maximum_temperature,
+                minimum_temperature,
+            )
+
+        return minimum_temperature, maximum_temperature
+
+    @staticmethod
+    def _get_temperature_value(device_data: dict, key: str | None) -> float | None:
         temperature = device_data.get(key)
 
         if temperature == "":
