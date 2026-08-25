@@ -146,6 +146,13 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
         await self.async_request_refresh()
 
+    def get_mode_profile(self, device_code: str) -> str | None:
+        return self._api.get_device_mode_profile(device_code)
+
+    async def set_mode_profile(self, device_code: str, option: str):
+        await self._api.set_mode_profile(device_code, option)
+        await self.async_request_refresh()
+
     def get_device_data(self, device_code: str) -> dict | None:
         device_data = self._api.get_device_data(device_code)
 

@@ -42,6 +42,7 @@ from ..common.entity_descriptions import (
     AquaTempBinarySensorEntityDescription,
     AquaTempEntityDescription,
     AquaTempSensorEntityDescription,
+    AquaTempSelectEntityDescription,
 )
 from ..models.config_data import ConfigData
 
@@ -264,6 +265,9 @@ class AquaTempConfigManager:
 
         return result
 
+    def get_mode_profiles(self, device_code: str) -> dict[str, str]:
+        return self._get_pc_mapping(device_code).get("mode_profiles", {})
+
     def get_fan_reverse_mapping(self, device_code, fan_mode) -> str:
         product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
 
@@ -432,6 +436,16 @@ class AquaTempConfigManager:
                 )
 
                 entities.append(binary_sensor_entity)
+
+            elif platform == Platform.SELECT:
+                entities.append(AquaTempSelectEntityDescription(
+                    key=key,
+                    name=data_item.get("name"),
+                    options=data_item.get("options", []),
+                    entity_category=EntityCategory.CONFIG,
+                    is_protocol_code=False,
+                    translation_key=translation_key,
+                ))
 
             else:
                 entity = AquaTempEntityDescription(key=key, name=data_item.get("name"))

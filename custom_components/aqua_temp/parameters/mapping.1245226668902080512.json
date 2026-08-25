@@ -1,5 +1,11 @@
 {
   "mode": "mode_real",
+  "mode_profiles": {
+    "Intelligent Mode": "0",
+    "Eco Mode": "2",
+    "Hybrid Mode": "3",
+    "Fast Heating Mode": "4"
+  },
   "power": "Power",
   "temperature": "R01",
   "fan": "M17",

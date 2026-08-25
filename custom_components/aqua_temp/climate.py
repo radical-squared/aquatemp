@@ -52,15 +52,20 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
             | ClimateEntityFeature.TURN_ON
             | ClimateEntityFeature.TARGET_TEMPERATURE
             | ClimateEntityFeature.FAN_MODE
+            | ClimateEntityFeature.PRESET_MODE
         )
         self._attr_fan_modes = list(coordinator.get_fan_modes(device_code))
         self._attr_hvac_modes = list(coordinator.get_hvac_modes(device_code))
+        self._attr_preset_modes = list(
+            coordinator.config_manager.get_mode_profiles(device_code)
+        )
 
         self._attr_hvac_mode = HVACMode.OFF
         self._last_valid_hvac_mode = next(
             (mode for mode in self._attr_hvac_modes if mode != HVACMode.OFF), None
         )
         self._attr_fan_mode = FAN_AUTO
+        self._attr_preset_mode = None
 
         self._attr_temperature_unit = coordinator.get_temperature_unit(device_code)
 
@@ -101,6 +106,11 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
 
         await self.local_coordinator.set_fan_mode(self.device_code, fan_mode)
 
+    async def async_set_preset_mode(self, preset_mode):
+        """Set the controller operating-mode profile."""
+        _LOGGER.debug("Set preset mode to: %s", preset_mode)
+        await self.local_coordinator.set_mode_profile(self.device_code, preset_mode)
+
     def _handle_coordinator_update(self) -> None:
         """Fetch new state parameters for the sensor."""
         coordinator = self.local_coordinator
@@ -109,6 +119,7 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
         hvac_mode = coordinator.get_device_hvac_mode(device_code)
         is_power_on = coordinator.get_device_power(device_code)
         fan_mode = coordinator.get_device_fan_mode(device_code)
+        preset_mode = coordinator.get_mode_profile(device_code)
         current_temperature = coordinator.get_device_current_temperature(device_code)
         target_temperature = coordinator.get_device_target_temperature(device_code)
         minimum_temperature = coordinator.get_device_minimum_temperature(device_code)
@@ -124,6 +135,7 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
         self._attr_max_temp = maximum_temperature
         self._attr_hvac_mode = hvac_mode
         self._attr_fan_mode = fan_mode
+        self._attr_preset_mode = preset_mode
         self._attr_target_temperature = target_temperature
         self._attr_current_temperature = current_temperature
 
