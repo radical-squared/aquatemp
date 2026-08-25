@@ -83,7 +83,7 @@ Additional components are according to following mapping:
 
 ### Requirements
 
-- Python 3.10
+- Python 3.14 or newer
 - Python virtual environment
 - Install all dependencies, using `pip install -r requirements.txt` command
 

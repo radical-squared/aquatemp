@@ -1,4 +1,5 @@
 """Platform for climate integration."""
+
 from asyncio import sleep
 from copy import copy
 import hashlib
@@ -271,24 +272,41 @@ class AquaTempAPI:
 
         await self._perform_action(request_data, set_temp_pc_key)
 
+    async def set_mode_profile(self, device_code: str, option: str):
+        mode_pc_key = self._config_manager.get_pc_key(device_code, CONFIG_SET_MODE)
+        profiles = self._config_manager.get_mode_profiles(device_code)
+        value = profiles.get(option)
+        if value is None:
+            raise ValueError(f"Unsupported controller mode profile: {option}")
+        await self._set_protocol_value(device_code, mode_pc_key, value)
+
     async def _set_power_mode(self, device_code: str, value):
         """Set new target power mode."""
         power_pc_key = self._config_manager.get_pc_key(device_code, CONFIG_SET_POWER)
 
+        await self._set_protocol_value(device_code, power_pc_key, value)
+
+    async def _set_protocol_value(
+        self, device_code: str, protocol_code: str, value: str
+    ):
+        """Send one DeviceControl protocol value after validating its inputs."""
+        if not protocol_code:
+            raise ValueError("A DeviceControl protocol code is required")
+        if value is None:
+            raise ValueError("A DeviceControl value is required")
+
         param_device_code = self._config_manager.get_api_param(APIParam.DeviceCode)
         param_protocol_code = self._config_manager.get_api_param(APIParam.ProtocolCode)
-
         request_data = {
             DEVICE_CONTROL_PARAM: [
                 {
                     param_device_code: device_code,
-                    param_protocol_code: power_pc_key.lower(),
+                    param_protocol_code: protocol_code,
                     DEVICE_CONTROL_VALUE: value,
                 }
             ]
         }
-
-        await self._perform_action(request_data, power_pc_key)
+        await self._perform_action(request_data, protocol_code)
 
     async def _set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         """Set new target hvac mode."""
@@ -314,19 +332,31 @@ class AquaTempAPI:
         param_device_code = self._config_manager.get_api_param(APIParam.DeviceCode)
         param_protocol_code = self._config_manager.get_api_param(APIParam.ProtocolCode)
 
-        set_target_temp = {
-            param_device_code: device_code,
-            param_protocol_code: set_temp_pc_key,
-            DEVICE_CONTROL_VALUE: target_temperature,
-        }
+        if target_temperature is not None:
+            set_target_temp = {
+                param_device_code: device_code,
+                param_protocol_code: set_temp_pc_key,
+                DEVICE_CONTROL_VALUE: target_temperature,
+            }
 
-        control_params.append(set_target_temp)
+            control_params.append(set_target_temp)
 
         if mode_pc_key != set_temp_pc_key:
+            # Profile-aware products expose several recognised operating
+            # profiles through the same mode_real control.  Reuse the
+            # currently selected profile when switching HVAC mode so a power
+            # transition does not silently reset it to the generic heat value.
+            mode_value = action_pc_key
+            current_profile = self.get_device_mode_profile(device_code)
+            if current_profile is not None:
+                mode_value = self._config_manager.get_mode_profiles(device_code)[
+                    current_profile
+                ]
+
             set_mode = {
                 param_device_code: device_code,
                 param_protocol_code: mode_pc_key,
-                DEVICE_CONTROL_VALUE: action_pc_key,
+                DEVICE_CONTROL_VALUE: mode_value,
             }
 
             control_params.append(set_mode)
@@ -339,22 +369,8 @@ class AquaTempAPI:
         """Set new target fan mode."""
         fan_pc_key = self._config_manager.get_pc_key(device_code, CONFIG_SET_FAN)
 
-        param_device_code = self._config_manager.get_api_param(APIParam.DeviceCode)
-        param_protocol_code = self._config_manager.get_api_param(APIParam.ProtocolCode)
-
         value = FAN_MODE_MAPPING.get(fan_mode)
-
-        request_data = {
-            DEVICE_CONTROL_PARAM: [
-                {
-                    param_device_code: device_code,
-                    param_protocol_code: fan_pc_key,
-                    DEVICE_CONTROL_VALUE: value,
-                }
-            ]
-        }
-
-        await self._perform_action(request_data, fan_pc_key)
+        await self._set_protocol_value(device_code, fan_pc_key, value)
 
     async def _perform_action(
         self, request_data: dict, operation: str, attempt: int = 1
@@ -586,7 +602,16 @@ class AquaTempAPI:
         url = f"{param_url}/{endpoint}{param_suffix}"
 
         if endpoint == Endpoints.DeviceControl:
-            _LOGGER.info(f"Sending request to control device, Data: {data}")
+            device_param = self._config_manager.get_api_param(APIParam.DeviceCode)
+            control_params = (data or {}).get(DEVICE_CONTROL_PARAM, [])
+            device_code = (
+                control_params[0].get(device_param, "") if control_params else ""
+            )
+            _LOGGER.debug(
+                "Sending DeviceControl request for device …%s (protocols=%s)",
+                str(device_code)[-4:],
+                len(control_params),
+            )
 
         async with self._session.post(
             url, headers=self._headers, json=data, ssl=False
@@ -677,12 +702,29 @@ class AquaTempAPI:
         pc_key = self._config_manager.get_pc_key(device_code, CONFIG_SET_MODE)
         device_mode = device_data.get(pc_key)
 
+        # Controller operating profiles all represent heating to the climate
+        # entity.  Keep the profile label/value available through the select
+        # entity, while preserving the climate entity's existing HVAC contract.
+        mode_profiles = self._config_manager.get_mode_profile_reverse_mapping(
+            device_code
+        )
+        if str(device_mode) in mode_profiles:
+            return HVACMode.HEAT
+
         hvac_mode = self._config_manager.get_hvac_reverse_mapping(
             device_code, device_mode
         )
         result = HVACMode(hvac_mode)
 
         return result
+
+    def get_device_mode_profile(self, device_code: str) -> str | None:
+        device_data = self.get_device_data(device_code)
+        mode_pc_key = self._config_manager.get_pc_key(device_code, CONFIG_SET_MODE)
+        value = device_data.get(mode_pc_key)
+        return self._config_manager.get_mode_profile_reverse_mapping(device_code).get(
+            str(value)
+        )
 
     def get_device_fan_mode(self, device_code: str) -> str:
         device_data = self.get_device_data(device_code)
@@ -701,6 +743,14 @@ class AquaTempAPI:
 
         power = device_data.get(pc_key)
         is_on = power == POWER_MODE_ON
+
+        _LOGGER.debug(
+            "Power state for device %s: protocol=%s raw=%r is_on=%s",
+            device_code,
+            pc_key,
+            power,
+            is_on,
+        )
 
         return is_on
 
