@@ -1,5 +1,7 @@
 [tool.black]
-target-version = ["py39", "py310"]
+# Black does not yet expose a py314 target; py313 covers syntax checks while
+# the project runtime and CI baseline remain Python 3.14+.
+target-version = ["py313"]
 extend-exclude = "/generated/"
 
 [tool.isort]
@@ -17,7 +19,7 @@ forced_separate = [
 combine_as_imports = true
 
 [tool.pylint.MAIN]
-py-version = "3.9"
+py-version = "3.14"
 ignore = [
     "tests",
 ]

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Raise the supported development and validation baseline to Python 3.14 or newer.
+- Update formatting, static-analysis, security, and pre-commit tooling for Python 3.14.
+
 ## 3.0.37
 
 - Initialize data using `async_request_refresh` instead of `async_config_entry_first_refresh` to remove warning message

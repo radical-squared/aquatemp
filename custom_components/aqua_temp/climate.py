@@ -1,4 +1,5 @@
 """Platform for climate integration."""
+
 from abc import ABC
 import logging
 

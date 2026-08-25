@@ -1,4 +1,5 @@
 """Platform for climate integration."""
+
 from asyncio import sleep
 from copy import copy
 import hashlib
@@ -342,7 +343,7 @@ class AquaTempAPI:
 
         if mode_pc_key != set_temp_pc_key:
             # Profile-aware products expose several recognised operating
-            # profiles through the same mode_real control.  Re-use the
+            # profiles through the same mode_real control.  Reuse the
             # currently selected profile when switching HVAC mode so a power
             # transition does not silently reset it to the generic heat value.
             mode_value = action_pc_key

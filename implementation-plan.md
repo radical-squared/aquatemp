@@ -44,11 +44,11 @@
 - [x] Replace repeated single-protocol DeviceControl request construction with one validated helper.
 - [x] Centralise profile/reverse-profile lookup and avoid rebuilding it during state refreshes.
 - [x] Reduce controller-request logging to redacted debug diagnostics.
-- [ ] Run the repository formatting, static-analysis, JSON, and behavioural validation suite; document any unavailable tooling.
+- [x] Run the repository formatting, static-analysis, JSON, and behavioural validation suite; document any unavailable tooling.
 
 # Python 3.14+ compatibility plan
 
-- [ ] Update the supported Python baseline and developer documentation to Python 3.14+.
-- [ ] Modernise pinned pre-commit hooks and CI actions for Python 3.14.
-- [ ] Run the complete formatting, static-analysis, security, JSON, and integration validation suite under Python 3.14.
-- [ ] Record the support-policy change in the release notes.
+- [x] Update the supported Python baseline and developer documentation to Python 3.14+.
+- [x] Modernise pinned pre-commit hooks and CI actions for Python 3.14.
+- [x] Run the complete formatting, static-analysis, security, JSON, and integration validation suite under Python 3.14.
+- [x] Record the support-policy change in the release notes.
