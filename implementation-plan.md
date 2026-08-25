@@ -37,3 +37,18 @@
 - [x] Display `sensor.water_heater_tank_average_temperature` as the Water Heater temperature in the controls area.
 - [x] Preserve the selected controller preset when the climate entity or hot-water automations turn heating on.
 - [x] Validate and deploy the storage dashboard, then verify the live card configuration.
+
+# Post-review reliability and maintainability plan
+
+- [x] Advertise climate presets only where the product defines controller profiles.
+- [x] Replace repeated single-protocol DeviceControl request construction with one validated helper.
+- [x] Centralise profile/reverse-profile lookup and avoid rebuilding it during state refreshes.
+- [x] Reduce controller-request logging to redacted debug diagnostics.
+- [ ] Run the repository formatting, static-analysis, JSON, and behavioural validation suite; document any unavailable tooling.
+
+# Python 3.14+ compatibility plan
+
+- [ ] Update the supported Python baseline and developer documentation to Python 3.14+.
+- [ ] Modernise pinned pre-commit hooks and CI actions for Python 3.14.
+- [ ] Run the complete formatting, static-analysis, security, JSON, and integration validation suite under Python 3.14.
+- [ ] Record the support-policy change in the release notes.

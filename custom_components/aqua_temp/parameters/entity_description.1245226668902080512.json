@@ -15,7 +15,12 @@
     "key": "controller_mode",
     "name": "Controller Mode",
     "platform": "select",
-    "options": ["Intelligent Mode", "Eco Mode", "Hybrid Mode", "Fast Heating Mode"]
+    "options": [
+      "Intelligent Mode",
+      "Eco Mode",
+      "Hybrid Mode",
+      "Fast Heating Mode"
+    ]
   },
   {
     "key": "Manual-mute",

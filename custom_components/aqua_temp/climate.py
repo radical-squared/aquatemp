@@ -52,13 +52,14 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
             | ClimateEntityFeature.TURN_ON
             | ClimateEntityFeature.TARGET_TEMPERATURE
             | ClimateEntityFeature.FAN_MODE
-            | ClimateEntityFeature.PRESET_MODE
         )
         self._attr_fan_modes = list(coordinator.get_fan_modes(device_code))
         self._attr_hvac_modes = list(coordinator.get_hvac_modes(device_code))
         self._attr_preset_modes = list(
             coordinator.config_manager.get_mode_profiles(device_code)
         )
+        if self._attr_preset_modes:
+            self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
 
         self._attr_hvac_mode = HVACMode.OFF
         self._last_valid_hvac_mode = next(
@@ -91,7 +92,9 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
             )
 
         if hvac_mode is None:
-            _LOGGER.warning("No supported HVAC mode is available to turn on %s", self.device_code)
+            _LOGGER.warning(
+                "No supported HVAC mode is available to turn on %s", self.device_code
+            )
             return
 
         await self.async_set_hvac_mode(hvac_mode)

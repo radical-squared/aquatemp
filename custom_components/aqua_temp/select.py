@@ -3,8 +3,7 @@ import logging
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
-from homeassistant.const import UnitOfTemperature
+from homeassistant.const import Platform, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 
 from .common.base_entity import BaseEntity, async_setup_base_entry
@@ -42,7 +41,11 @@ class AquaTempSelectEntity(BaseEntity, SelectEntity, ABC):
 
     def _get_options(self):
         if self._entity_description.key == "controller_mode":
-            return list(self.local_coordinator.config_manager.get_mode_profiles(self._device_code))
+            return list(
+                self.local_coordinator.config_manager.get_mode_profiles(
+                    self._device_code
+                )
+            )
         return [UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT]
 
     def _get_current_option(self):
