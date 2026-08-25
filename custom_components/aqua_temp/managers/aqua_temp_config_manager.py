@@ -24,8 +24,11 @@ from homeassistant.helpers.storage import Store
 from ..common.api_types import APIParam
 from ..common.consts import (
     CONFIG_FAN_MODES,
+    CONFIG_HVAC_MAXIMUM,
+    CONFIG_HVAC_MINIMUM,
     CONFIG_HVAC_MODES,
     CONFIG_HVAC_SET,
+    CONFIG_HVAC_TARGET,
     CONFIGURATION_FILE,
     DEFAULT_ENTRY_ID,
     DEFAULT_NAME,
@@ -38,6 +41,7 @@ from ..common.entity_descriptions import (
     DEFAULT_ENTITY_DESCRIPTIONS,
     AquaTempBinarySensorEntityDescription,
     AquaTempEntityDescription,
+    AquaTempSelectEntityDescription,
     AquaTempSensorEntityDescription,
 )
 from ..models.config_data import ConfigData
@@ -68,6 +72,11 @@ class AquaTempConfigManager:
 
         self._fan_modes = {}
         self._fan_modes_reverse = {}
+
+        # Profile mappings are immutable after configuration loading. Keep both
+        # directions ready so state refreshes do not repeatedly scan the JSON.
+        self._mode_profiles = {}
+        self._mode_profiles_reverse = {}
 
         self._devices = {}
         self._api_config = None
@@ -215,7 +224,20 @@ class AquaTempConfigManager:
         product_id = self._get_product_id(
             device_code, ProductParameter.ENTITY_DESCRIPTION
         )
-        result = self._protocol_codes.get(product_id)
+        result = list(self._protocol_codes.get(product_id) or [])
+        mapping = self._get_pc_mapping(device_code) or {}
+
+        for key in ("mode", "power", "temperature", "fan", "current_temperature"):
+            protocol_code = mapping.get(key)
+            if protocol_code and protocol_code not in result:
+                result.append(protocol_code)
+
+        hvac_modes = mapping.get(CONFIG_HVAC_MODES) or {}
+        for hvac_mode in hvac_modes.values():
+            for key in (CONFIG_HVAC_TARGET, CONFIG_HVAC_MINIMUM, CONFIG_HVAC_MAXIMUM):
+                protocol_code = (hvac_mode or {}).get(key)
+                if protocol_code and protocol_code not in result:
+                    result.append(protocol_code)
 
         return result
 
@@ -247,6 +269,18 @@ class AquaTempConfigManager:
         result = self._fan_modes.get(product_id)
 
         return result
+
+    def get_mode_profiles(self, device_code: str) -> dict[str, str]:
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
+        return self._mode_profiles.get(product_id) or self._mode_profiles.get(
+            PRODUCT_ID_DEFAULT, {}
+        )
+
+    def get_mode_profile_reverse_mapping(self, device_code: str) -> dict[str, str]:
+        product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
+        return self._mode_profiles_reverse.get(
+            product_id
+        ) or self._mode_profiles_reverse.get(PRODUCT_ID_DEFAULT, {})
 
     def get_fan_reverse_mapping(self, device_code, fan_mode) -> str:
         product_id = self._get_product_id(device_code, ProductParameter.MAPPING)
@@ -417,6 +451,18 @@ class AquaTempConfigManager:
 
                 entities.append(binary_sensor_entity)
 
+            elif platform == Platform.SELECT:
+                entities.append(
+                    AquaTempSelectEntityDescription(
+                        key=key,
+                        name=data_item.get("name"),
+                        options=data_item.get("options", []),
+                        entity_category=EntityCategory.CONFIG,
+                        is_protocol_code=False,
+                        translation_key=translation_key,
+                    )
+                )
+
             else:
                 entity = AquaTempEntityDescription(key=key, name=data_item.get("name"))
 
@@ -445,6 +491,11 @@ class AquaTempConfigManager:
 
         json_data = json.loads(json_str)
 
+        mode_profiles = json_data.get("mode_profiles") or {}
+        mode_profiles_reverse = {
+            str(value): name for name, value in mode_profiles.items()
+        }
+
         self._protocol_codes_configuration[product_id] = json_data
 
         hvac_modes = json_data.get(CONFIG_HVAC_MODES)
@@ -469,6 +520,8 @@ class AquaTempConfigManager:
 
         self._fan_modes[product_id] = fan_mode_mapping
         self._fan_modes_reverse[product_id] = fan_mode_reverse_mapping
+        self._mode_profiles[product_id] = mode_profiles
+        self._mode_profiles_reverse[product_id] = mode_profiles_reverse
 
     async def _load_api_config(self):
         api_type = self._config_data.api_type
