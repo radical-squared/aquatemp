@@ -282,7 +282,7 @@ class AquaTempAPI:
             DEVICE_CONTROL_PARAM: [
                 {
                     param_device_code: device_code,
-                    param_protocol_code: power_pc_key.lower(),
+                    param_protocol_code: power_pc_key,
                     DEVICE_CONTROL_VALUE: value,
                 }
             ]
@@ -314,13 +314,14 @@ class AquaTempAPI:
         param_device_code = self._config_manager.get_api_param(APIParam.DeviceCode)
         param_protocol_code = self._config_manager.get_api_param(APIParam.ProtocolCode)
 
-        set_target_temp = {
-            param_device_code: device_code,
-            param_protocol_code: set_temp_pc_key,
-            DEVICE_CONTROL_VALUE: target_temperature,
-        }
+        if target_temperature is not None:
+            set_target_temp = {
+                param_device_code: device_code,
+                param_protocol_code: set_temp_pc_key,
+                DEVICE_CONTROL_VALUE: target_temperature,
+            }
 
-        control_params.append(set_target_temp)
+            control_params.append(set_target_temp)
 
         if mode_pc_key != set_temp_pc_key:
             set_mode = {
@@ -701,6 +702,14 @@ class AquaTempAPI:
 
         power = device_data.get(pc_key)
         is_on = power == POWER_MODE_ON
+
+        _LOGGER.debug(
+            "Power state for device %s: protocol=%s raw=%r is_on=%s",
+            device_code,
+            pc_key,
+            power,
+            is_on,
+        )
 
         return is_on
 

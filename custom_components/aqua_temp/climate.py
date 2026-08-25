@@ -57,6 +57,9 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
         self._attr_hvac_modes = list(coordinator.get_hvac_modes(device_code))
 
         self._attr_hvac_mode = HVACMode.OFF
+        self._last_valid_hvac_mode = next(
+            (mode for mode in self._attr_hvac_modes if mode != HVACMode.OFF), None
+        )
         self._attr_fan_mode = FAN_AUTO
 
         self._attr_temperature_unit = coordinator.get_temperature_unit(device_code)
@@ -73,6 +76,24 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
         _LOGGER.debug(f"Set HVAC Mode to: {hvac_mode}")
 
         await self.local_coordinator.set_hvac_mode(self.device_code, hvac_mode)
+
+    async def async_turn_on(self, **kwargs):
+        """Turn the controller on using its last or first supported HVAC mode."""
+        hvac_mode = self._last_valid_hvac_mode
+        if hvac_mode not in self._attr_hvac_modes:
+            hvac_mode = next(
+                (mode for mode in self._attr_hvac_modes if mode != HVACMode.OFF), None
+            )
+
+        if hvac_mode is None:
+            _LOGGER.warning("No supported HVAC mode is available to turn on %s", self.device_code)
+            return
+
+        await self.async_set_hvac_mode(hvac_mode)
+
+    async def async_turn_off(self, **kwargs):
+        """Turn the controller off through the existing HVAC API path."""
+        await self.async_set_hvac_mode(HVACMode.OFF)
 
     async def async_set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
@@ -96,6 +117,8 @@ class AquaTempClimateEntity(BaseEntity, ClimateEntity, ABC):
         if not is_power_on:
             hvac_mode = HVACMode.OFF
             target_temperature = None
+        elif hvac_mode in self._attr_hvac_modes and hvac_mode != HVACMode.OFF:
+            self._last_valid_hvac_mode = hvac_mode
 
         self._attr_min_temp = minimum_temperature
         self._attr_max_temp = maximum_temperature

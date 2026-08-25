@@ -1,6 +1,6 @@
 {
   "mode": "mode_real",
-  "power": "MO6",
+  "power": "Power",
   "temperature": "R01",
   "fan": "M17",
   "current_temperature": "T10",

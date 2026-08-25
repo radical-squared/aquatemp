@@ -25,7 +25,10 @@ from ..common.api_types import APIParam
 from ..common.consts import (
     CONFIG_FAN_MODES,
     CONFIG_HVAC_MODES,
+    CONFIG_HVAC_MAXIMUM,
+    CONFIG_HVAC_MINIMUM,
     CONFIG_HVAC_SET,
+    CONFIG_HVAC_TARGET,
     CONFIGURATION_FILE,
     DEFAULT_ENTRY_ID,
     DEFAULT_NAME,
@@ -215,7 +218,20 @@ class AquaTempConfigManager:
         product_id = self._get_product_id(
             device_code, ProductParameter.ENTITY_DESCRIPTION
         )
-        result = self._protocol_codes.get(product_id)
+        result = list(self._protocol_codes.get(product_id) or [])
+        mapping = self._get_pc_mapping(device_code) or {}
+
+        for key in ("mode", "power", "temperature", "fan", "current_temperature"):
+            protocol_code = mapping.get(key)
+            if protocol_code and protocol_code not in result:
+                result.append(protocol_code)
+
+        hvac_modes = mapping.get(CONFIG_HVAC_MODES) or {}
+        for hvac_mode in hvac_modes.values():
+            for key in (CONFIG_HVAC_TARGET, CONFIG_HVAC_MINIMUM, CONFIG_HVAC_MAXIMUM):
+                protocol_code = (hvac_mode or {}).get(key)
+                if protocol_code and protocol_code not in result:
+                    result.append(protocol_code)
 
         return result
 
