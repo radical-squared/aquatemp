@@ -7,7 +7,7 @@ from homeassistant.helpers import selector
 from ..common.api_types import API_TYPE_LEGACY, API_TYPES, APIType
 from ..common.consts import CONF_API_TYPE, CONF_TITLE, DEFAULT_NAME
 
-DATA_KEYS = [CONF_USERNAME, CONF_PASSWORD]
+DATA_KEYS = [CONF_USERNAME, CONF_PASSWORD, CONF_API_TYPE]
 
 
 class ConfigData:
