@@ -8,6 +8,10 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.components.climate import ClimateEntityDescription, HVACMode
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import SensorEntityDescription
+try:
+    from homeassistant.components.water_heater import WaterHeaterEntityDescription
+except ImportError:
+    from homeassistant.helpers.entity import EntityDescription as WaterHeaterEntityDescription
 from homeassistant.const import EntityCategory, Platform, UnitOfTemperature
 from homeassistant.helpers.entity import EntityDescription
 
@@ -48,6 +52,14 @@ class AquaTempSelectEntityDescription(
     SelectEntityDescription, AquaTempEntityDescription
 ):
     platform: Platform | None = Platform.SELECT
+
+
+@dataclass(frozen=True, kw_only=True)
+class AquaTempWaterHeaterEntityDescription(
+    WaterHeaterEntityDescription, AquaTempEntityDescription
+):
+    platform: Platform | None = Platform.WATER_HEATER
+    operation_list: list[str] | None = None
 
 
 DEFAULT_ENTITY_DESCRIPTIONS: list[AquaTempEntityDescription] = [

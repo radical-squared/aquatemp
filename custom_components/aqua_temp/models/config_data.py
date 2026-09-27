@@ -7,7 +7,7 @@ from homeassistant.helpers import selector
 from ..common.api_types import API_TYPE_LEGACY, API_TYPES, APIType
 from ..common.consts import CONF_API_TYPE, CONF_TITLE, DEFAULT_NAME
 
-DATA_KEYS = [CONF_USERNAME, CONF_PASSWORD]
+DATA_KEYS = [CONF_USERNAME, CONF_PASSWORD, CONF_API_TYPE]
 
 
 class ConfigData:
@@ -42,7 +42,7 @@ class ConfigData:
         self._password = data.get(CONF_PASSWORD)
         self._username = data.get(CONF_USERNAME)
 
-        api_type = data.get(CONF_API_TYPE, str(APIType.AquaTempOld))
+        api_type = data.get(CONF_API_TYPE, str(APIType.AquaTemp))
 
         if api_type in API_TYPE_LEGACY:
             api_type = str(API_TYPE_LEGACY.get(api_type))

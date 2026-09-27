@@ -71,8 +71,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return initialized
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Unload a config entry."""
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry.
+
+    Uses async_unload_platforms (instead of looping async_forward_entry_unload)
+    so we don't ValueError when a platform was never loaded — which happens if
+    the previous setup raised before async_forward_entry_setups ran (e.g. a DNS
+    timeout in coordinator.initialize).
+    """
     _LOGGER.info(f"Unloading {DOMAIN} integration, Entry ID: {entry.entry_id}")
 
     coordinator: AquaTempCoordinator = hass.data[DOMAIN][entry.entry_id]
@@ -81,9 +87,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     platforms = coordinator.config_manager.platforms
 
-    for platform in platforms:
-        await hass.config_entries.async_forward_entry_unload(entry, platform)
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, platforms)
 
-    del hass.data[DOMAIN][entry.entry_id]
+    if unload_ok:
+        del hass.data[DOMAIN][entry.entry_id]
 
-    return True
+    return unload_ok

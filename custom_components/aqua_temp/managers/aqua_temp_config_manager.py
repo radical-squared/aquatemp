@@ -39,6 +39,7 @@ from ..common.entity_descriptions import (
     AquaTempBinarySensorEntityDescription,
     AquaTempEntityDescription,
     AquaTempSensorEntityDescription,
+    AquaTempWaterHeaterEntityDescription,
 )
 from ..models.config_data import ConfigData
 
@@ -228,8 +229,14 @@ class AquaTempConfigManager:
     def get_hvac_mode_pc_key(self, device_code: str, hvac_mode: str, key: str):
         config = self._get_pc_mapping(device_code)
 
-        hvac_modes = config.get(CONFIG_HVAC_MODES)
-        hvac_mode_config = hvac_modes.get(hvac_mode)
+        hvac_modes = config.get(CONFIG_HVAC_MODES) or {}
+        hvac_mode_str = hvac_mode.value if hasattr(hvac_mode, "value") else str(hvac_mode)
+        hvac_mode_config = (
+            hvac_modes.get(hvac_mode_str)
+            or hvac_modes.get(str(hvac_mode))
+            or hvac_modes.get(hvac_mode_str.lower() if isinstance(hvac_mode_str, str) else "")
+            or {}
+        )
         protocol_code_key = hvac_mode_config.get(key)
 
         return protocol_code_key
@@ -374,7 +381,6 @@ class AquaTempConfigManager:
             await self._store.async_save(store_data)
 
     async def _load_entity_descriptions(self, product_id: str):
-        entities = copy(DEFAULT_ENTITY_DESCRIPTIONS)
         file_path = self._get_product_file(
             ProductParameter.ENTITY_DESCRIPTION, product_id
         )
@@ -387,6 +393,17 @@ class AquaTempConfigManager:
         await file.close()
 
         json_data = json.loads(json_str)
+
+        has_water_heater = any(
+            data_item.get("platform") == Platform.WATER_HEATER
+            for data_item in json_data
+        )
+
+        entities = [
+            copy(e)
+            for e in DEFAULT_ENTITY_DESCRIPTIONS
+            if not (has_water_heater and e.platform == Platform.CLIMATE)
+        ]
 
         for data_item in json_data:
             platform = data_item.get("platform")
@@ -416,6 +433,16 @@ class AquaTempConfigManager:
                 )
 
                 entities.append(binary_sensor_entity)
+
+            elif platform == Platform.WATER_HEATER:
+                water_heater_entity = AquaTempWaterHeaterEntityDescription(
+                    key=key,
+                    name=data_item.get("name"),
+                    is_protocol_code=False,
+                    translation_key=translation_key,
+                )
+
+                entities.append(water_heater_entity)
 
             else:
                 entity = AquaTempEntityDescription(key=key, name=data_item.get("name"))

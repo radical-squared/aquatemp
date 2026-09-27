@@ -41,6 +41,8 @@ PRODUCT_IDS = [
     "1669159229372477440",  # Aqua Temp
     "1650758828508766208",  # Aqua Temp
     "1664085465655808000",  # Aqua Temp
+    "1845987289788989441",  # Aqua Temp
+    "1726502484782837760",  # Daitsu Heatank 300 (HiTemp ACS)
 ]
 
 MANUAL_MUTE_AUTO = "0"

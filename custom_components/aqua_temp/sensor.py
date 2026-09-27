@@ -52,7 +52,10 @@ class AquaTempSensorEntity(BaseEntity, SensorEntity):
         state = device_data.get(self.entity_description.key)
 
         if isinstance(state, str):
-            state = float(state)
+            try:
+                state = float(state)
+            except ValueError:
+                pass
 
         self._attr_native_value = state
 

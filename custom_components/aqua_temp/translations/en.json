@@ -1362,6 +1362,299 @@
       },
       "1442284873216843776_t28": {
         "name": "Target frequency [T28]"
+      },
+      "1726502484782837760_power": {
+        "name": "Power"
+      },
+      "1726502484782837760_mode": {
+        "name": "Mode"
+      },
+      "1726502484782837760_manual-mute": {
+        "name": "Manual-mute"
+      },
+      "1726502484782837760_set_temp": {
+        "name": "Set_Temp"
+      },
+      "1726502484782837760_2074": {
+        "name": "2074"
+      },
+      "1726502484782837760_2075": {
+        "name": "2075"
+      },
+      "1726502484782837760_2076": {
+        "name": "2076"
+      },
+      "1726502484782837760_2077": {
+        "name": "2077"
+      },
+      "1726502484782837760_1158": {
+        "name": "1158"
+      },
+      "1726502484782837760_1159": {
+        "name": "1159"
+      },
+      "1726502484782837760_2064": {
+        "name": "2064"
+      },
+      "1726502484782837760_ver": {
+        "name": "Version"
+      },
+      "1726502484782837760_software_code": {
+        "name": "Software Code"
+      },
+      "1726502484782837760_01": {
+        "name": "Usage of OUT 05 [/01]"
+      },
+      "1726502484782837760_02": {
+        "name": "Usage of OUT 06 [/02]"
+      },
+      "1726502484782837760_d01": {
+        "name": "Defrosting startup temp [D01]"
+      },
+      "1726502484782837760_d02": {
+        "name": "Defrosting shutdown temp [D02]"
+      },
+      "1726502484782837760_d03": {
+        "name": "Duration of defrosting [D03]"
+      },
+      "1726502484782837760_d04": {
+        "name": "Longest duration of defrosting [D04]"
+      },
+      "1726502484782837760_d05": {
+        "name": "Shortest duration of defrosting [D05]"
+      },
+      "1726502484782837760_d06": {
+        "name": "Defrosting way [D06]"
+      },
+      "1726502484782837760_d07": {
+        "name": "Intelligent defrosting judgement [D07]"
+      },
+      "1726502484782837760_e01": {
+        "name": "EEV adjustment mode [E01]"
+      },
+      "1726502484782837760_e02": {
+        "name": "Target degree of supreheat [E02]"
+      },
+      "1726502484782837760_e03": {
+        "name": "Original position of EEV [E03]"
+      },
+      "1726502484782837760_e04": {
+        "name": "Minimal opening position of EEV [E04]"
+      },
+      "1726502484782837760_e05": {
+        "name": "Position of EEV for defrosting [E05]"
+      },
+      "1726502484782837760_g01": {
+        "name": "Disinfection target temp [G01]"
+      },
+      "1726502484782837760_g02": {
+        "name": "Duration of disinfection [G02]"
+      },
+      "1726502484782837760_g03": {
+        "name": "Startup point of disinfection [G03]"
+      },
+      "1726502484782837760_g04": {
+        "name": "Circle of disinfection [G04]"
+      },
+      "1726502484782837760_h01": {
+        "name": "Remenber the status of device when power down [H01]"
+      },
+      "1726502484782837760_h03": {
+        "name": "Heating source [H03]"
+      },
+      "1726502484782837760_h07": {
+        "name": "Temperature unit [H07]"
+      },
+      "1726502484782837760_h30": {
+        "name": "Device address [H30]"
+      },
+      "1726502484782837760_h31": {
+        "name": "Intelligent control mode [H31]"
+      },
+      "1726502484782837760_h32": {
+        "name": "Circle of submitting data to Cloud [H32]"
+      },
+      "1726502484782837760_h98": {
+        "name": "Adjustable range of target temperature [H98]"
+      },
+      "1726502484782837760_h99": {
+        "name": "Compensate to the shown temp [H99]"
+      },
+      "1726502484782837760_n01": {
+        "name": "The sensor to control solar water pump [N01]"
+      },
+      "1726502484782837760_n02": {
+        "name": "Longest running time of solar water pump [N02]"
+      },
+      "1726502484782837760_n03": {
+        "name": "Temp hysteresis of solar water pump [N03]"
+      },
+      "1726502484782837760_n04": {
+        "name": "Activate the nighttime temp decreases mode [N04]"
+      },
+      "1726502484782837760_n05": {
+        "name": "Startup point of the nighttime temp decreases mode [N05]"
+      },
+      "1726502484782837760_n06": {
+        "name": "Shutdown point of the nighttime temp decreases mode [N06]"
+      },
+      "1726502484782837760_n07": {
+        "name": "Startup temp of decreasing solar water temp [N07]"
+      },
+      "1726502484782837760_n08": {
+        "name": "Temp hysteresis of stopping decreasing solar water temp [N08]"
+      },
+      "1726502484782837760_n09": {
+        "name": "Solar water releasing temp [N09]"
+      },
+      "1726502484782837760_n10": {
+        "name": "Shutdown temp of solar water pump [N10]"
+      },
+      "1726502484782837760_n11": {
+        "name": "Working mode of solar water pump [N11]"
+      },
+      "1726502484782837760_r01": {
+        "name": "Target temp [R01]"
+      },
+      "1726502484782837760_r03": {
+        "name": "Hysteresis of heat pump startup(bottom sensor) [R03]"
+      },
+      "1726502484782837760_r04": {
+        "name": "Enable R05 as setpoint of booster? [R04]"
+      },
+      "1726502484782837760_r05": {
+        "name": "Setpoint of booster [R05]"
+      },
+      "1726502484782837760_r06": {
+        "name": "Booster startup delay [R06]"
+      },
+      "1726502484782837760_r07": {
+        "name": "Booster replaces heat pump? [R07]"
+      },
+      "1726502484782837760_r08": {
+        "name": "Setpoint of ambient temp to activate booster to replace heat pump [R08]"
+      },
+      "1726502484782837760_r09": {
+        "name": "Setpoint of ambient temp to activate booster without delay [R09]"
+      },
+      "1726502484782837760_r10": {
+        "name": "Setpoint of ambient temp to activate booster with delay [R10]"
+      },
+      "1726502484782837760_r12": {
+        "name": "Ambient temp of shutting down compressor compulsively [R12]"
+      },
+      "1726502484782837760_r14": {
+        "name": "The target temp of second heating source [R14]"
+      },
+      "1726502484782837760_r15": {
+        "name": "Maximal ambient temp of working compressor [R15]"
+      },
+      "1726502484782837760_r17": {
+        "name": "Enable top sensor to control compressor? [R17]"
+      },
+      "1726502484782837760_r18": {
+        "name": "Hysteresis of heat pump startup(top sensor) [R18]"
+      },
+      "1726502484782837760_r19": {
+        "name": "Setpoint 1 of ambient temp to stop compressor [R19]"
+      },
+      "1726502484782837760_r20": {
+        "name": "Setpoint 2 of ambient temp to stop compressor [R20]"
+      },
+      "1726502484782837760_o01": {
+        "name": "Compressor [O01]"
+      },
+      "1726502484782837760_o02": {
+        "name": "Electrical heater [O02]"
+      },
+      "1726502484782837760_o03": {
+        "name": "4-way valve [O03]"
+      },
+      "1726502484782837760_o04": {
+        "name": "Fan high speed [O04]"
+      },
+      "1726502484782837760_o05": {
+        "name": "Fan low speed [O05]"
+      },
+      "1726502484782837760_o06": {
+        "name": "Reserve/solar pump/solar valve pump [O06]"
+      },
+      "1726502484782837760_o07": {
+        "name": "EEV current position [O07]"
+      },
+      "1726502484782837760_o08": {
+        "name": "Accumulative running time of compressor [O08]"
+      },
+      "1726502484782837760_o09": {
+        "name": "Accumulative running time of booster [O09]"
+      },
+      "1726502484782837760_o10": {
+        "name": "3V_DE [O10]"
+      },
+      "1726502484782837760_o11": {
+        "name": "MV_DE [O11]"
+      },
+      "1726502484782837760_o12": {
+        "name": "shutDown [O12]"
+      },
+      "1726502484782837760_o13": {
+        "name": "DTU&WIFI\u662f\u5426\u4e0a\u7ebf [O13]"
+      },
+      "1726502484782837760_o14": {
+        "name": "\u9664\u971cDefrost [O14]"
+      },
+      "1726502484782837760_o15": {
+        "name": "\u7cfb\u7edf\u662f\u5426\u8fdb\u5165\u9ad8\u6e29\u70ed\u6c34\u9636\u6bb5 [O15]"
+      },
+      "1726502484782837760_s01": {
+        "name": "Remote ON/OFF switch [S01]"
+      },
+      "1726502484782837760_s02": {
+        "name": "Over heat protection switch [S02]"
+      },
+      "1726502484782837760_s03": {
+        "name": "Low pressure switch [S03]"
+      },
+      "1726502484782837760_s04": {
+        "name": "High pressure switch [S04]"
+      },
+      "1726502484782837760_s05": {
+        "name": "Accelerate the running time of heater [S05]"
+      },
+      "1726502484782837760_s06": {
+        "name": "Second heating source [S06]"
+      },
+      "1726502484782837760_t01": {
+        "name": "Ambient temperature [T01]"
+      },
+      "1726502484782837760_t02": {
+        "name": "Bottom temperature [T02]"
+      },
+      "1726502484782837760_t03": {
+        "name": "Top temperature [T03]"
+      },
+      "1726502484782837760_t04": {
+        "name": "Coil temperature [T04]"
+      },
+      "1726502484782837760_t05": {
+        "name": "Suction temperature [T05]"
+      },
+      "1726502484782837760_t06": {
+        "name": "Solar temperature [T06]"
+      },
+      "1726502484782837760_t10": {
+        "name": "Temperature value shown on APP/display [T10]"
+      },
+      "1726502484782837760_t11": {
+        "name": "\u8fdb\u5165\u53c2\u6570\u8d85\u8303\u56f4\u4fdd\u62a4\u6b21\u6570 [T11]"
+      },
+      "1726502484782837760_t12": {
+        "name": "\u8bb0\u5fc6\u82af\u7247EEPROM\u5b58\u50a8\u6b21\u6570 [T12]"
+      }
+    },
+    "water_heater": {
+      "waterheater": {
+        "name": ""
       }
     }
   }

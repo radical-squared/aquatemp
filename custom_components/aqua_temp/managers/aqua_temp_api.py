@@ -5,6 +5,7 @@ import hashlib
 import json
 import logging
 import sys
+import unicodedata
 
 from aiohttp import ClientResponseError, ClientSession
 
@@ -91,33 +92,26 @@ class AquaTempAPI:
         return result
 
     async def initialize(self, throw_error: bool = False):
-        try:
-            _LOGGER.debug(f"Initializing API, Throw Error: {throw_error}")
+        _LOGGER.debug(f"Initializing API, Throw Error: {throw_error}")
 
-            if self._session is None:
-                if self._hass is None:
-                    self._session = ClientSession()
-                else:
-                    self._session = async_create_clientsession(hass=self._hass)
-
-                await self._connect()
-
-        except LoginError as lex:
-            if throw_error:
-                raise lex
-
+        if self._session is None:
+            if self._hass is None:
+                self._session = ClientSession()
             else:
-                _LOGGER.error(
-                    "Failed to login, Please update credentials and try again"
-                )
+                self._session = async_create_clientsession(hass=self._hass)
 
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
+        try:
+            await self._connect()
 
-            _LOGGER.warning(
-                f"Failed to initialize session, Error: {ex}, Line: {line_number}"
-            )
+        except LoginError:
+            if throw_error:
+                raise
+            _LOGGER.error("Failed to login, Please update credentials and try again")
+
+        except Exception:
+            if throw_error:
+                raise
+            _LOGGER.warning("Failed to initialize session", exc_info=True)
 
     async def _connect(self):
         if self._token is None:
@@ -134,49 +128,48 @@ class AquaTempAPI:
         """Fetch new state parameters for the sensor."""
         await self._internal_update()
 
-    async def _internal_update(self, attempt: int = 1):
-        """Fetch new state parameters for the sensor."""
-        error = None
-        line_number = None
+    async def _internal_update(self):
+        """Fetch new state with up to API_MAX_ATTEMPTS retries.
 
-        try:
-            await self._connect()
+        Always clears the token between failed attempts so the next try goes
+        through a full re-login, re-loads user info, and re-loads devices.
+        Without that, a partial failure (e.g. network error after _login set
+        the token but before _load_user_info populated _device_list_request_data)
+        would leave _devices empty and self._token set; subsequent ticks would
+        iterate an empty for-loop, raise no error, and silently report success
+        forever — a "stuck token" state.
 
-            for device_code in self._devices:
-                await self._update_device(device_code)
+        AquaTemp's cloud only allows one active session per credential, so if
+        another client (phone app, second HA) is also logging in with the same
+        account we'll fight an unwinnable war. The README workaround is to use
+        a second account and share the device to it.
+        """
+        last_error: Exception | None = None
+        last_line: int | None = None
 
-        except LoginError as lex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
+        for attempt in range(1, API_MAX_ATTEMPTS + 1):
+            try:
+                await self._connect()
 
-            self.set_token()
+                for device_code in self._devices:
+                    await self._update_device(device_code)
 
-            error = lex
+                return
 
-        except InvalidTokenError as itex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
+            except Exception as ex:
+                _, _, tb = sys.exc_info()
+                last_line = tb.tb_lineno if tb is not None else None
+                last_error = ex
+                self.set_token()
 
-            self.set_token()
-
-            error = itex
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            error = ex
-
-        if error is not None:
             if attempt < API_MAX_ATTEMPTS:
-                await sleep(1000)
+                await sleep(1)
 
-                await self._internal_update(attempt + 1)
-
-            else:
-                _LOGGER.error(
-                    f"Failed to update (Attempt #{attempt}), Error: {error}, Line: {line_number}"
-                )
+        _LOGGER.error(
+            f"Failed to update after {API_MAX_ATTEMPTS} attempts, "
+            f"Error: {last_error}, Line: {last_line}"
+        )
+        raise last_error
 
     async def _update_device(self, device_code: str):
         _LOGGER.debug(f"Starting to update device: {device_code}")
@@ -254,22 +247,28 @@ class AquaTempAPI:
         param_device_code = self._config_manager.get_api_param(APIParam.DeviceCode)
         param_protocol_code = self._config_manager.get_api_param(APIParam.ProtocolCode)
 
+        pcs_to_update = []
+        for pc in [target_temperature_pc, set_temp_pc_key]:
+            if pc and pc not in pcs_to_update:
+                pcs_to_update.append(pc)
+
         request_data = {
             DEVICE_CONTROL_PARAM: [
                 {
                     param_device_code: device_code,
-                    param_protocol_code: target_temperature_pc,
+                    param_protocol_code: pc,
                     DEVICE_CONTROL_VALUE: temperature,
-                },
-                {
-                    param_device_code: device_code,
-                    param_protocol_code: set_temp_pc_key,
-                    DEVICE_CONTROL_VALUE: temperature,
-                },
+                }
+                for pc in pcs_to_update
             ]
         }
 
-        await self._perform_action(request_data, set_temp_pc_key)
+        op_name = target_temperature_pc or set_temp_pc_key or "Set_Temp"
+        await self._perform_action(request_data, op_name)
+
+        if device_code in self._devices:
+            for pc in pcs_to_update:
+                self._devices[device_code][pc] = str(temperature)
 
     async def _set_power_mode(self, device_code: str, value):
         """Set new target power mode."""
@@ -282,13 +281,90 @@ class AquaTempAPI:
             DEVICE_CONTROL_PARAM: [
                 {
                     param_device_code: device_code,
-                    param_protocol_code: power_pc_key.lower(),
+                    param_protocol_code: power_pc_key,
                     DEVICE_CONTROL_VALUE: value,
                 }
             ]
         }
 
         await self._perform_action(request_data, power_pc_key)
+
+        if device_code in self._devices:
+            self._devices[device_code][power_pc_key] = str(value)
+
+    async def set_power(self, device_code: str, is_on: bool):
+        """Set device power state directly."""
+        power_mode = POWER_MODE_ON if is_on else POWER_MODE_OFF
+        await self._set_power_mode(device_code, power_mode)
+
+    async def set_operation_mode(self, device_code: str, operation_value: str):
+        """Set device operation mode directly (e.g. for water heater)."""
+        mode_pc_key = (
+            self._config_manager.get_pc_key(device_code, CONFIG_SET_MODE)
+            or "Mode"
+        )
+        set_temp_pc_key = (
+            self._config_manager.get_pc_key(device_code, CONFIG_SET_TEMPERATURE)
+            or "R01"
+        )
+        param_device_code = self._config_manager.get_api_param(APIParam.DeviceCode)
+        param_protocol_code = self._config_manager.get_api_param(APIParam.ProtocolCode)
+
+        is_on = self.get_device_power(device_code)
+
+        target_temperature = self.get_device_target_temperature(device_code)
+        if target_temperature is None:
+            device_data = self.get_device_data(device_code) or {}
+            raw_temp = (
+                device_data.get(set_temp_pc_key)
+                or device_data.get("R01")
+                or device_data.get("Set_Temp")
+            )
+            if raw_temp not in (None, ""):
+                try:
+                    target_temperature = float(str(raw_temp))
+                except (ValueError, TypeError):
+                    target_temperature = 50.0
+            else:
+                target_temperature = 50.0
+
+        control_params = []
+
+        if not is_on:
+            power_pc_key = (
+                self._config_manager.get_pc_key(device_code, CONFIG_SET_POWER)
+                or "Power"
+            )
+            control_params.append({
+                param_device_code: device_code,
+                param_protocol_code: power_pc_key,
+                DEVICE_CONTROL_VALUE: POWER_MODE_ON,
+            })
+
+        if set_temp_pc_key and target_temperature is not None:
+            control_params.append({
+                param_device_code: device_code,
+                param_protocol_code: set_temp_pc_key,
+                DEVICE_CONTROL_VALUE: target_temperature,
+            })
+
+        control_params.append({
+            param_device_code: device_code,
+            param_protocol_code: mode_pc_key,
+            DEVICE_CONTROL_VALUE: str(operation_value),
+        })
+
+        request_data = {DEVICE_CONTROL_PARAM: control_params}
+        await self._perform_action(request_data, mode_pc_key)
+
+        if device_code in self._devices:
+            self._devices[device_code][mode_pc_key] = str(operation_value)
+            if not is_on:
+                power_pc_key = (
+                    self._config_manager.get_pc_key(device_code, CONFIG_SET_POWER)
+                    or "Power"
+                )
+                self._devices[device_code][power_pc_key] = POWER_MODE_ON
 
     async def _set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         """Set new target hvac mode."""
@@ -383,6 +459,11 @@ class AquaTempAPI:
                     )
 
                 else:
+                    _LOGGER.error(
+                        f"DeviceControl failed for {operation}, "
+                        f"Code: {error_code}, Msg: {error_msg}, "
+                        f"Request: {request_data}"
+                    )
                     error = OperationFailedException(
                         operation, request_data, f"{error_code}: {error_msg}"
                     )
@@ -392,7 +473,7 @@ class AquaTempAPI:
 
         if error is not None:
             if attempt < API_MAX_ATTEMPTS:
-                await sleep(1000)
+                await sleep(1)
 
                 await self._connect()
 
@@ -485,46 +566,61 @@ class AquaTempAPI:
             device_data["fault"] = fault_description
 
     async def _login(self):
-        try:
-            param_username = self._config_manager.get_api_param(APIParam.Username)
-            param_object_result = self._config_manager.get_api_param(
-                APIParam.ObjectResult
+        param_username = self._config_manager.get_api_param(APIParam.Username)
+        param_object_result = self._config_manager.get_api_param(APIParam.ObjectResult)
+
+        config_data = self._config_manager.config_data
+
+        password_hashed = hashlib.md5(
+            config_data.password.encode("utf-8")
+        ).hexdigest()
+
+        data = {param_username: config_data.username, "password": password_hashed}
+
+        login_response = await self._post_request(Endpoints.Login, data)
+        object_result = login_response.get(param_object_result, {})
+
+        self._login_details = object_result
+
+        token = object_result.get(HTTP_HEADER_X_TOKEN)
+
+        if token is None:
+            _LOGGER.warning(
+                "Login failed (no x-token in response). "
+                "error_code=%s, error_msg=%s, error_msg_code=%s",
+                login_response.get("error_code"),
+                login_response.get("error_msg"),
+                login_response.get("error_msg_code"),
             )
-
-            config_data = self._config_manager.config_data
-
-            plain_password = config_data.password
-
-            password_bytes = bytes(plain_password, "utf-8")
-
-            md5hash = hashlib.new("md5")
-            md5hash.update(password_bytes)
-
-            password_hashed = md5hash.hexdigest()
-
-            data = {param_username: config_data.username, "password": password_hashed}
-
-            login_response = await self._post_request(Endpoints.Login, data)
-            object_result = login_response.get(param_object_result, {})
-
-            self._login_details = object_result
-
-            token = object_result.get(HTTP_HEADER_X_TOKEN)
-
-            self.set_token(token)
-
-            if token is not None:
-                await self._load_user_info()
-
-        except Exception as ex:
-            exc_type, exc_obj, tb = sys.exc_info()
-            line_number = tb.tb_lineno
-
-            _LOGGER.error(f"Failed to login, Error: {ex}, Line: {line_number}")
+            # Shape-only diagnostics (no credential content), at DEBUG.
+            # If chars != utf8_bytes the password has multibyte unicode; if
+            # nfc_utf8_bytes differs again the input was non-NFC-normalized;
+            # leading/trailing_ws and all_printable catch hidden whitespace
+            # and zero-width chars from copy-paste.
+            pw = config_data.password
+            un = config_data.username
+            _LOGGER.debug(
+                "Login failure diagnostics (shape only): "
+                "password chars=%d, utf8_bytes=%d, nfc_utf8_bytes=%d, "
+                "leading_ws=%s, trailing_ws=%s, all_printable=%s, all_ascii=%s; "
+                "username chars=%d, utf8_bytes=%d, has_plus=%s, has_uppercase=%s",
+                len(pw),
+                len(pw.encode("utf-8")),
+                len(unicodedata.normalize("NFC", pw).encode("utf-8")),
+                pw != pw.lstrip(),
+                pw != pw.rstrip(),
+                all(c.isprintable() for c in pw),
+                pw.isascii(),
+                len(un),
+                len(un.encode("utf-8")),
+                "+" in un,
+                un != un.lower(),
+            )
             self.set_token()
-
-        if self._token is None:
             raise LoginError()
+
+        self.set_token(token)
+        await self._load_user_info()
 
     async def _load_user_info(self):
         param_object_result = self._config_manager.get_api_param(APIParam.ObjectResult)
@@ -577,6 +673,48 @@ class AquaTempAPI:
 
                 _LOGGER.info(f"Discovering device {device_code}")
 
+        if not self._devices:
+            await self._load_devices_unfiltered(param_object_result)
+
+    async def _load_devices_unfiltered(self, param_object_result):
+        param_product_ids = self._config_manager.get_api_param(APIParam.ProductIds)
+
+        _LOGGER.warning(
+            "No devices matched the PRODUCT_IDS allow-list — retrying device discovery without productIds filter"
+        )
+
+        for device_list_url in DEVICE_LISTS:
+            request_data = {
+                k: v
+                for k, v in self._device_list_request_data[device_list_url].items()
+                if k != param_product_ids
+            }
+
+            try:
+                device_code_response = await self._post_request(
+                    device_list_url, request_data
+                )
+            except Exception as ex:
+                _LOGGER.debug(
+                    f"Unfiltered discovery to {device_list_url} failed: {ex}"
+                )
+                continue
+
+            devices = device_code_response.get(param_object_result, [])
+
+            for device in devices:
+                device_code = self._get_device_id(device)
+                product_id = self._get_device_product_id(device)
+
+                _LOGGER.warning(
+                    f"Unfiltered discovery: device {device_code} productId={product_id} (not in PRODUCT_IDS allow-list)"
+                )
+                _LOGGER.debug(
+                    f"Discover device: {device_code} by {device_list_url}, Data: {device}"
+                )
+
+                self._devices[device_code] = device
+
     async def _post_request(
         self, endpoint: Endpoints, data: dict | list | None = None
     ) -> dict | None:
@@ -604,73 +742,107 @@ class AquaTempAPI:
         return device_data
 
     def get_device_target_temperature(self, device_code: str) -> float | None:
+        device_data = self.get_device_data(device_code) or {}
         hvac_mode = self.get_device_hvac_mode(device_code)
         target_temperature_pc = self._get_target_temperature_protocol_code(
             device_code, hvac_mode
         )
 
-        device_data = self.get_device_data(device_code)
-        target_temperature = device_data.get(target_temperature_pc)
+        target_temperature = (
+            device_data.get(target_temperature_pc) if target_temperature_pc else None
+        )
 
-        if target_temperature == "":
-            target_temperature = None
+        if target_temperature in ("", None):
+            set_temp_pc = self._config_manager.get_pc_key(
+                device_code, CONFIG_SET_TEMPERATURE
+            )
+            if set_temp_pc:
+                target_temperature = device_data.get(set_temp_pc)
 
-        if target_temperature is not None:
-            target_temperature = float(str(target_temperature))
+        if target_temperature in ("", None):
+            for fallback_code in ["R01", "Set_Temp"]:
+                val = device_data.get(fallback_code)
+                if val not in ("", None):
+                    target_temperature = val
+                    break
+
+        if target_temperature not in ("", None):
+            try:
+                target_temperature = float(str(target_temperature))
+            except (ValueError, TypeError):
+                target_temperature = None
 
         return target_temperature
 
     def get_device_current_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
+        device_data = self.get_device_data(device_code) or {}
         pc_key = self._config_manager.get_pc_key(
             device_code, CONFIG_SET_CURRENT_TEMPERATURE
         )
-        current_temperature = device_data.get(pc_key)
+        current_temperature = device_data.get(pc_key) if pc_key else None
 
-        if current_temperature == "":
-            current_temperature = None
+        if current_temperature in ("", None):
+            for fallback_code in ["T10", "T02"]:
+                val = device_data.get(fallback_code)
+                if val not in ("", None):
+                    current_temperature = val
+                    break
 
-        if current_temperature is not None:
-            current_temperature = float(str(current_temperature))
+        if current_temperature not in ("", None):
+            try:
+                current_temperature = float(str(current_temperature))
+            except (ValueError, TypeError):
+                current_temperature = None
 
         return current_temperature
 
     def get_device_minimum_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
-
+        device_data = self.get_device_data(device_code) or {}
         hvac_mode = self.get_device_hvac_mode(device_code)
         key = self._config_manager.get_hvac_mode_pc_key(
             device_code, hvac_mode, CONFIG_HVAC_MINIMUM
         )
 
-        temperature = device_data.get(key)
+        temperature = None
+        if key is not None and key in device_data:
+            temperature = device_data.get(key)
+        elif key is not None and (
+            isinstance(key, (int, float))
+            or (isinstance(key, str) and key.replace(".", "", 1).isdigit())
+        ):
+            temperature = key
 
-        if temperature == "":
-            temperature = None
+        if temperature in ("", None):
+            temperature = 30.0
 
-        if temperature is not None:
-            temperature = float(str(temperature))
-
-        return temperature
+        try:
+            return float(str(temperature))
+        except (ValueError, TypeError):
+            return 30.0
 
     def get_device_maximum_temperature(self, device_code: str) -> float | None:
-        device_data = self.get_device_data(device_code)
-
+        device_data = self.get_device_data(device_code) or {}
         hvac_mode = self.get_device_hvac_mode(device_code)
-
         key = self._config_manager.get_hvac_mode_pc_key(
             device_code, hvac_mode, CONFIG_HVAC_MAXIMUM
         )
 
-        temperature = device_data.get(key)
+        temperature = None
+        if key is not None and key in device_data:
+            temperature = device_data.get(key)
+        elif key is not None and (
+            isinstance(key, (int, float))
+            or (isinstance(key, str) and key.replace(".", "", 1).isdigit())
+        ):
+            temperature = key
 
-        if temperature == "":
-            temperature = None
+        if temperature in ("", None):
+            temperature = 65.0
 
-        if temperature is not None:
-            temperature = float(str(temperature))
-
-        return temperature
+        try:
+            return float(str(temperature))
+        except (ValueError, TypeError):
+            return 65.0
 
     def get_device_hvac_mode(self, device_code: str) -> HVACMode:
         device_data = self.get_device_data(device_code)
@@ -680,7 +852,15 @@ class AquaTempAPI:
         hvac_mode = self._config_manager.get_hvac_reverse_mapping(
             device_code, device_mode
         )
-        result = HVACMode(hvac_mode)
+        if hvac_mode is None:
+            if not self.get_device_power(device_code):
+                return HVACMode.OFF
+            return HVACMode.HEAT
+
+        try:
+            result = HVACMode(hvac_mode)
+        except (ValueError, TypeError):
+            result = HVACMode.HEAT
 
         return result
 

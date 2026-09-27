@@ -4,6 +4,7 @@ import sys
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import slugify
@@ -33,6 +34,43 @@ async def async_setup_base_entry(
             config_manager = coordinator.config_manager
 
             entity_descriptions = config_manager.get_entity_descriptions(device_code)
+
+            if platform == Platform.CLIMATE:
+                has_water_heater = any(
+                    ed.platform == Platform.WATER_HEATER
+                    for ed in entity_descriptions
+                )
+                if has_water_heater:
+                    try:
+                        ent_reg = er.async_get(hass)
+                        unique_id = slugify(f"{DOMAIN}_{Platform.CLIMATE}_Mode_{device_code}")
+                        entity_id = ent_reg.async_get_entity_id(
+                            Platform.CLIMATE, DOMAIN, unique_id
+                        )
+                        if entity_id:
+                            _LOGGER.info(
+                                f"Removing obsolete climate entity {entity_id} "
+                                f"(device uses water_heater platform)"
+                            )
+                            ent_reg.async_remove(entity_id)
+                    except Exception as err:
+                        _LOGGER.debug(f"Failed to remove obsolete climate entity: {err}")
+
+            if platform == Platform.WATER_HEATER:
+                try:
+                    ent_reg = er.async_get(hass)
+                    wh_unique_id = slugify(
+                        f"{DOMAIN}_{Platform.WATER_HEATER}_WaterHeater_{device_code}"
+                    )
+                    wh_entity_id = ent_reg.async_get_entity_id(
+                        Platform.WATER_HEATER, DOMAIN, wh_unique_id
+                    )
+                    if wh_entity_id:
+                        ent_reg.async_update_entity(
+                            wh_entity_id, has_entity_name=True, name=None
+                        )
+                except Exception as err:
+                    _LOGGER.debug(f"Failed to update water heater entity in registry: {err}")
 
             entities = [
                 entity_type(entity_description, coordinator, device_code)
@@ -107,3 +145,9 @@ class BaseEntity(CoordinatorEntity):
     @property
     def data(self) -> dict | None:
         return self._data
+
+    async def async_added_to_hass(self) -> None:
+        """When entity is added to hass, register listener and update attributes immediately."""
+        await super().async_added_to_hass()
+        if hasattr(self, "_handle_coordinator_update"):
+            self._handle_coordinator_update()

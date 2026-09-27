@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from homeassistant.components.climate import HVACMode
@@ -13,6 +14,7 @@ from ..common.consts import (
     DOMAIN,
     UPDATE_API_INTERVAL,
 )
+from ..models.exceptions import LoginError
 from .aqua_temp_api import AquaTempAPI
 from .aqua_temp_config_manager import AquaTempConfigManager
 
@@ -59,15 +61,36 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         await self.initialize()
 
     async def initialize(self):
+        """Initialize the integration.
+
+        LoginError (bad credentials) is allowed to propagate so async_setup_entry
+        can mark the integration as failed and surface a re-auth prompt to the
+        user. Any other exception (DNS timeout, transient network error, AquaTemp
+        cloud blip) is caught and logged so platform setup still proceeds — the
+        coordinator's regular 5-min update tick will retry the login. Without
+        this, a brief network hiccup at HA boot leaves the integration
+        permanently broken until a manual reload.
+        """
         _LOGGER.debug("Initializing coordinator")
 
         entry = self.config_manager.entry
         platforms = self.config_manager.platforms
+
+        try:
+            await self._api.initialize(throw_error=True)
+
+        except LoginError:
+            raise
+
+        except Exception as ex:
+            _LOGGER.warning(
+                f"Initial API connect failed; coordinator will retry on next "
+                f"update. Error: {ex}"
+            )
+
         await self.hass.config_entries.async_forward_entry_setups(entry, platforms)
 
         _LOGGER.info(f"Start loading {DOMAIN} integration, Entry ID: {entry.entry_id}")
-
-        await self._api.initialize()
 
         await self.async_request_refresh()
 
@@ -76,13 +99,22 @@ class AquaTempCoordinator(DataUpdateCoordinator):
         param_device_id = self._config_manager.get_api_param(APIParam.DeviceId)
         param_custom_model = self._config_manager.get_api_param(APIParam.CustomModel)
 
-        device_data = self.get_device_data(device_code)
+        device_data = self.get_device_data(device_code) or {}
         device_nickname = device_data.get(param_nickname)
         device_model = device_data.get(param_custom_model)
         device_id = device_data.get(param_device_id)
 
         if param_custom_model in device_data:
             device_model = device_data.get(param_custom_model)
+
+        try:
+            from homeassistant.helpers import device_registry as dr
+            dev_reg = dr.async_get(self.hass)
+            device_entry = dev_reg.async_get_device(identifiers={(DOMAIN, device_id)})
+            if device_entry and device_entry.name_by_user:
+                device_nickname = device_entry.name_by_user
+        except Exception:
+            pass
 
         device_info = DeviceInfo(
             identifiers={(DOMAIN, device_id)},
@@ -128,12 +160,22 @@ class AquaTempCoordinator(DataUpdateCoordinator):
 
     async def set_hvac_mode(self, device_code: str, hvac_mode: HVACMode):
         await self._api.set_hvac_mode(device_code, hvac_mode)
-
+        await asyncio.sleep(1)
         await self.async_request_refresh()
 
     async def set_temperature(self, device_code: str, temperature: float):
         await self._api.set_temperature(device_code, temperature)
+        await asyncio.sleep(1)
+        await self.async_request_refresh()
 
+    async def set_power(self, device_code: str, is_on: bool):
+        await self._api.set_power(device_code, is_on)
+        await asyncio.sleep(1)
+        await self.async_request_refresh()
+
+    async def set_operation_mode(self, device_code: str, operation_value: str):
+        await self._api.set_operation_mode(device_code, operation_value)
+        await asyncio.sleep(1)
         await self.async_request_refresh()
 
     async def set_fan_mode(self, device_code: str, fan_mode):
